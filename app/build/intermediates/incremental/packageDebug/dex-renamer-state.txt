@@ -1,0 +1,7 @@
+#Sat Jul 22 20:00:29 BST 2017
+base.0=C\:\\Users\\User\\Workspace\\android-play-location\\TheWrittenWorld\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run_8fc45a05e4cbe042e886f27603c317eb2ffe3cd8
+renamed.1=classes.dex
+renamed.0=classes2.dex
+file.1=C\:\\Users\\User\\Workspace\\android-play-location\\TheWrittenWorld\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run-bootstrap_cb311b551ca89f1d582e6cbd7ae9b3ebcd55c8c3\\classes.dex
+base.1=C\:\\Users\\User\\Workspace\\android-play-location\\TheWrittenWorld\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run-bootstrap_cb311b551ca89f1d582e6cbd7ae9b3ebcd55c8c3
+file.0=C\:\\Users\\User\\Workspace\\android-play-location\\TheWrittenWorld\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run_8fc45a05e4cbe042e886f27603c317eb2ffe3cd8\\classes.dex
