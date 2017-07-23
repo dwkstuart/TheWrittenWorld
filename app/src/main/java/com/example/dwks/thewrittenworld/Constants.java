@@ -21,6 +21,6 @@ class Constants {
 
     //Globals, not good practice
     public static HashMap<String,PlaceObject> places = new HashMap<String ,PlaceObject>();
-
+    public static ArrayList<PlaceObject> placeObjects = new ArrayList<>();
     public static ArrayList<Geofence> geofenceArrayList = new ArrayList<Geofence>();
 }

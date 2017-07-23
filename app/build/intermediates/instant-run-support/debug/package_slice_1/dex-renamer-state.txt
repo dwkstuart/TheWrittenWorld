@@ -1,4 +1,4 @@
-#Sat Jul 22 20:00:29 BST 2017
-base.0=C\:\\Users\\User\\Workspace\\android-play-location\\TheWrittenWorld\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\5\\slice_1
+#Sun Jul 23 00:55:18 BST 2017
+base.0=C\:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\5\\slice_1
 renamed.0=classes.dex
-file.0=C\:\\Users\\User\\Workspace\\android-play-location\\TheWrittenWorld\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\5\\slice_1\\classes.dex
+file.0=C\:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\5\\slice_1\\classes.dex

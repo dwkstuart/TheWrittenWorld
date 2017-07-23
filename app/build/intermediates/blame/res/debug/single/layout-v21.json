@@ -4,18 +4,6 @@
         "source": "C:\\Users\\User\\.android\\build-cache\\e58e57d0aae924c0c606d221cf965704339603f8\\output\\res\\layout-v21\\notification_template_custom_big.xml"
     },
     {
-        "merged": "C:\\Users\\User\\Workspace\\android-play-location\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_action_tombstone.xml",
-        "source": "C:\\Users\\User\\.android\\build-cache\\e58e57d0aae924c0c606d221cf965704339603f8\\output\\res\\layout-v21\\notification_action_tombstone.xml"
-    },
-    {
-        "merged": "C:\\Users\\User\\Workspace\\android-play-location\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\place_autocomplete_fragment.xml",
-        "source": "C:\\Users\\User\\.android\\build-cache\\b8a59fb9ae3289ef951affa650468bcaa691b358\\output\\res\\layout-v21\\place_autocomplete_fragment.xml"
-    },
-    {
-        "merged": "C:\\Users\\User\\Workspace\\android-play-location\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_template_custom_big.xml",
-        "source": "C:\\Users\\User\\.android\\build-cache\\e58e57d0aae924c0c606d221cf965704339603f8\\output\\res\\layout-v21\\notification_template_custom_big.xml"
-    },
-    {
         "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_action.xml",
         "source": "C:\\Users\\User\\.android\\build-cache\\e58e57d0aae924c0c606d221cf965704339603f8\\output\\res\\layout-v21\\notification_action.xml"
     },
@@ -26,13 +14,5 @@
     {
         "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_action_tombstone.xml",
         "source": "C:\\Users\\User\\.android\\build-cache\\e58e57d0aae924c0c606d221cf965704339603f8\\output\\res\\layout-v21\\notification_action_tombstone.xml"
-    },
-    {
-        "merged": "C:\\Users\\User\\Workspace\\android-play-location\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_template_icon_group.xml",
-        "source": "C:\\Users\\User\\.android\\build-cache\\e58e57d0aae924c0c606d221cf965704339603f8\\output\\res\\layout-v21\\notification_template_icon_group.xml"
-    },
-    {
-        "merged": "C:\\Users\\User\\Workspace\\android-play-location\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\layout-v21\\notification_action.xml",
-        "source": "C:\\Users\\User\\.android\\build-cache\\e58e57d0aae924c0c606d221cf965704339603f8\\output\\res\\layout-v21\\notification_action.xml"
     }
 ]

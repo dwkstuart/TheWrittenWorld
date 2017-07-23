@@ -8,15 +8,19 @@
         android:minSdkVersion="15"
         android:targetSdkVersion="26" />
 
-    <meta-data
-        android:name="android.support.VERSION"
-        android:value="26.0.0-alpha1" /> <!-- Include required permissions for Google Maps API to run. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- Include required permissions for Google Maps API to run. -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
         android:required="true" />
+
+    <meta-data
+        android:name="android.support.VERSION"
+        android:value="26.0.0-alpha1" />
 
     <application
         android:allowBackup="true"
@@ -25,6 +29,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
+
+        <!--
+     The API key for Google Maps-based APIs is defined as a string resource.
+     (See the file "res/values/google_maps_api.xml").
+     Note that the API key is linked to the encryption key used to sign the APK.
+     You need a different API key for each encryption key, including the release key that is used to
+     sign the APK for publishing.
+     You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAp7yU76GsAxQzYoDyX2GxgKKMIlY9qmaA" />
+
         <activity android:name="com.example.dwks.thewrittenworld.MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,6 +50,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.example.dwks.thewrittenworld.ChooseAndLoad" />
+        <activity android:name="com.example.dwks.thewrittenworld.MapDisplay" />
         <activity
             android:name="com.google.android.gms.common.api.GoogleApiActivity"
             android:exported="false"
