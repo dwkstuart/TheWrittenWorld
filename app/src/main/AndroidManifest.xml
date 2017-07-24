@@ -12,8 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-
-
         <!--
      The API key for Google Maps-based APIs is defined as a string resource.
      (See the file "res/values/google_maps_api.xml").
@@ -21,10 +19,11 @@
      You need a different API key for each encryption key, including the release key that is used to
      sign the APK for publishing.
      You can define the keys for the debug and release targets in src/debug/ and src/release/.
--->
+        -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAp7yU76GsAxQzYoDyX2GxgKKMIlY9qmaA" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,7 +32,14 @@
             </intent-filter>
         </activity>
         <activity android:name=".ChooseAndLoad" />
-        <activity android:name=".MapDisplay"></activity>
+        <activity android:name=".MapDisplay" />
+
+        <service
+            android:name=".GeofenceIntentService"
+            android:exported="false" />
+
+        <activity android:name=".PlaceDetailScreen" />
+        <activity android:name=".ListOfPlaces"></activity>
     </application>
 
 </manifest>

@@ -105,11 +105,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.loadPlaces:
                 this.loadPlaces();
-
-                for (PlaceObject place : constants.placeObjects) {
-                    constants.places.put(String.valueOf(place.getId()), place);
-
-                }
+                this.populateHashMap();
                 Log.d(TAG, String.valueOf(constants.places.isEmpty()));
                 createFenceButton.setEnabled(true);
                 break;
@@ -124,6 +120,14 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 Intent  map = new Intent(this, MapDisplay.class);
                 startActivity(map);
                 break;
+        }
+    }
+
+    private void populateHashMap() {
+
+        for (PlaceObject placeObject : constants.placeObjects) {
+                constants.places.put(placeObject.getDb_key(),placeObject);
+
         }
     }
 
@@ -158,8 +162,10 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
      */
     private void populateGeofenceList() {
 
+
         for (PlaceObject place : constants.placeObjects) {
             //Create a geofence object for each place not ticked off as visited
+            Log.d(TAG, "populate geofence for loop");
             if (!place.isVisited()) {
                 Geofence geofence = (new Geofence.Builder()
                         .setRequestId(place.getDb_key())
@@ -189,10 +195,11 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        LocationServices.GeofencingApi.addGeofences(
-                googleApiClient,
-                request,
-                pendingIntent);
+        //TODO add pending intent creator, add transition class
+//        LocationServices.GeofencingApi.addGeofences(
+//                googleApiClient,
+//                request,
+//                pendingIntent);
     }
 
     @Override

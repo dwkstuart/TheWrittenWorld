@@ -68,6 +68,13 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        PlaceObject pickedPlace = markersCollection.get(marker);
+        String id = pickedPlace.getDb_key();
+
+        //open details page
+        Intent i = new Intent(this, PlaceDetailScreen.class);
+        i.putExtra("ID", id);
+        startActivity(i);
         return false;
     }
 
@@ -77,6 +84,10 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         map.setOnMarkerClickListener(this);
         createGoogleApi();
         googleApiClient.connect();
+        String contents = constants.placeObjects.toString();
+        //noinspection MissingPermission
+        map.setMyLocationEnabled(true);
+        userLastLocation = map.getMyLocation();
 
         if(userLastLocation != null){
             Log.d(TAG, "user location is not null");
@@ -109,7 +120,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
             requestPermissions();
             return;
         }
-        userLastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+        //userLastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
         startLocationUpdates();
 
     }

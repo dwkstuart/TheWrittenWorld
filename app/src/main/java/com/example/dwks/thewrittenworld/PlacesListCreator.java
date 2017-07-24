@@ -32,7 +32,7 @@ public class PlacesListCreator {
             e.printStackTrace();
         }
 
-        for (int i = 0; i<inputJsonArray.length()-1; i++){
+        for (int i = 0; i < inputJsonArray.length()-1; i++){
             JSONObject initalObject = null;
             try {
                 initalObject = inputJsonArray.getJSONObject(i);
