@@ -51,6 +51,13 @@
         </activity>
         <activity android:name="com.example.dwks.thewrittenworld.ChooseAndLoad" />
         <activity android:name="com.example.dwks.thewrittenworld.MapDisplay" />
+
+        <service
+            android:name="com.example.dwks.thewrittenworld.GeofenceIntentService"
+            android:exported="false" />
+
+        <activity android:name="com.example.dwks.thewrittenworld.PlaceDetailScreen" />
+        <activity android:name="com.example.dwks.thewrittenworld.ListOfPlaces" />
         <activity
             android:name="com.google.android.gms.common.api.GoogleApiActivity"
             android:exported="false"

@@ -31,6 +31,11 @@
         tools:layout_editor_absoluteX="46dp"
         tools:layout_editor_absoluteY="330dp" />
 
+    <EditText
+        android:id="@+id/enterListName"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content" />
+
     <Button
         android:id="@+id/loadPlaces"
         android:layout_width="wrap_content"

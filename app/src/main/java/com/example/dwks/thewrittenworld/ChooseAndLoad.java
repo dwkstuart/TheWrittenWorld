@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -39,6 +40,8 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     private Button loadPlacesButton;
     private Button createFenceButton;
     private Button loadMap;
+    private Button showList;
+    private EditText listName;
 
    // private ArrayList<PlaceObject> placeObjects;
 
@@ -69,11 +72,16 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         loadPlacesButton = (Button) findViewById(R.id.loadPlaces);
         createFenceButton = (Button) findViewById(R.id.createGeofences);
         loadMap = (Button) findViewById(R.id.ViewMap);
+        showList = (Button) findViewById(R.id.ViewList);
+        listName = (EditText) findViewById(R.id.enterListName);
 
         loadPlacesButton.setOnClickListener(this);
         createFenceButton.setOnClickListener(this);
         loadMap.setOnClickListener(this);
+        showList.setOnClickListener(this);
+        showList.setEnabled(false);
         createFenceButton.setEnabled(false);
+
 
     }
 
@@ -104,10 +112,21 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.loadPlaces:
+
                 this.loadPlaces();
                 this.populateHashMap();
                 Log.d(TAG, String.valueOf(constants.places.isEmpty()));
                 createFenceButton.setEnabled(true);
+                showList.setEnabled(true);
+                //populate db
+                UserPlacesDbHelper db = new UserPlacesDbHelper(this);
+                String listTitle = String.valueOf(listName.getText());
+                for(PlaceObject object: constants.placeObjects){
+                    Log.d(TAG, object.getBookTitle());
+                    db.addNewList(object,listTitle);
+                }
+                listName.setText("");
+
                 break;
             case R.id.createGeofences:
                 this.populateGeofenceList();
@@ -119,6 +138,11 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
             case R.id.ViewMap:
                 Intent  map = new Intent(this, MapDisplay.class);
                 startActivity(map);
+                break;
+
+            case R.id.ViewList:
+                Intent list = new Intent(this, ListOfPlaces.class);
+                startActivity(list);
                 break;
         }
     }
@@ -185,6 +209,10 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
     //add a request to the monitoring list
     private void addGeofences(GeofencingRequest request) {
+
+        Intent intent = new Intent(this, GeofenceIntentService.class);
+        PendingIntent pendingIntent = PendingIntent.getService(this,123,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -196,12 +224,16 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
             return;
         }
         //TODO add pending intent creator, add transition class
-//        LocationServices.GeofencingApi.addGeofences(
-//                googleApiClient,
-//                request,
-//                pendingIntent);
+        LocationServices.GeofencingApi.addGeofences(
+                googleApiClient,
+                request,
+                pendingIntent).setResultCallback(this);
     }
 
+//    private void createIntents(){
+//        Intent intent = new Intent(this, GeofenceIntentService.class);
+//        PendingIntent pendingIntent = PendingIntent.getService(this,123,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//    }
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         addGeofences(getGeofencingRequest());

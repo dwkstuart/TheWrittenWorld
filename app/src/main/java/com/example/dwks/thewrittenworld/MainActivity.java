@@ -1,6 +1,7 @@
 package com.example.dwks.thewrittenworld;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.widget.Button;
 //Homepage
 
 public class MainActivity extends AppCompatActivity {
+    private SQLiteDatabase mDB;
 
     Button loadScreen;
     @Override
@@ -24,5 +26,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+
+
+        UserPlacesDbHelper userPlacesDbHelper = new UserPlacesDbHelper(this);
+
+        mDB = userPlacesDbHelper.getWritableDatabase();
+        userPlacesDbHelper.onUpgrade(mDB,1,3);
+
     }
 }

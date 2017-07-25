@@ -6813,11 +6813,11 @@
                 "from": {
                     "file": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\src\\main\\res\\values\\strings.xml",
                     "position": {
-                        "startLine": 6,
+                        "startLine": 4,
                         "startColumn": 4,
-                        "startOffset": 79,
+                        "startOffset": 75,
                         "endColumn": 78,
-                        "endOffset": 153
+                        "endOffset": 149
                     }
                 }
             },
@@ -6928,12 +6928,12 @@
                 "from": {
                     "file": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\src\\main\\res\\values\\strings.xml",
                     "position": {
-                        "startLine": 8,
+                        "startLine": 6,
                         "startColumn": 4,
-                        "startOffset": 262,
-                        "endLine": 9,
+                        "startOffset": 258,
+                        "endLine": 7,
                         "endColumn": 31,
-                        "endOffset": 385
+                        "endOffset": 381
                     }
                 }
             },
@@ -6948,11 +6948,11 @@
                 "from": {
                     "file": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\src\\main\\res\\values\\strings.xml",
                     "position": {
-                        "startLine": 7,
+                        "startLine": 5,
                         "startColumn": 4,
-                        "startOffset": 159,
+                        "startOffset": 155,
                         "endColumn": 101,
-                        "endOffset": 256
+                        "endOffset": 252
                     }
                 }
             },
