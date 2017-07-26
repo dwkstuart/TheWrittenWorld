@@ -1,5 +1,7 @@
 package com.example.dwks.thewrittenworld;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
 
@@ -15,7 +17,8 @@ public class PlaceObject {
     private static final String TAG = PlaceObject.class.getSimpleName();
     //Instance vaiables
     private int id; //Database unique ID
-    private String header, bookTitle, snippet, authorFirstName, autherSecondName, longDescription, associatedQuote, imageURI;
+    private String header, snippet, authorFirstName, autherSecondName, longDescription, associatedQuote, imageURI;
+    private String bookTitle = "default";
     private double latitude, longitude;
     private boolean visited = false; //mark if have visited or not
     private JSONObject jsonObject;
@@ -32,13 +35,14 @@ public class PlaceObject {
     //Constructor for getting place object from Firebase query
     public PlaceObject(DataSnapshot dataSnapshot){
         bookTitle = dataSnapshot.child("title").getValue().toString();
+        Log.d("Booktitle =" , bookTitle);
         latitude = Double.parseDouble(dataSnapshot.child("latitude").getValue().toString());
         longitude = Double.parseDouble(dataSnapshot.child("longitude").getValue().toString());
         String authorname = dataSnapshot.child("author").toString();
         String[] names = authorname.split(" ");
         authorFirstName = names[0];
         autherSecondName = names[1];
-        db_key = dataSnapshot.child("db_key").toString();
+        db_key = dataSnapshot.child("db_key").getValue().toString();
         latLng = new LatLng(latitude, longitude);
 
 
@@ -109,20 +113,12 @@ public class PlaceObject {
     }
 
     public double getLatitude() {
-        try {
-            jsonObject.getString("latitude");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
         return latitude;
     }
 
     public double getLongitude() {
-        try {
-            jsonObject.getDouble("longitude");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
         return longitude;
     }
 

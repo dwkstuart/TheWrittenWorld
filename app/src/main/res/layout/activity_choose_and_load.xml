@@ -5,7 +5,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.dwks.thewrittenworld.ChooseAndLoad">
+    tools:context="com.example.dwks.thewrittenworld.ChooseAndLoad"
+    android:weightSum="1">
 
     <Button
         android:id="@+id/createGeofences"
@@ -43,5 +44,12 @@
         android:text="Load Selected Places"
         tools:layout_editor_absoluteX="46dp"
         tools:layout_editor_absoluteY="79dp" />
+
+    <TextView
+        android:id="@+id/InfoBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.15"
+        android:text="TextView" />
 
 </LinearLayout>

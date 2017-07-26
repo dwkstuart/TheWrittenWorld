@@ -163,7 +163,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     /////////// //////////////////////////////
     // instance variables for fetching location
     private LocationRequest locationRequest;
-    private static final int UPDATEINTERVAL = 10000;
+    private static final int UPDATEINTERVAL = 15000;
     private static final int FASTESTINTERVAL = 9000;
 
     private static final int REQ_PERMISSION = 999;
@@ -294,6 +294,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
     @Override
     public void onLocationChanged(Location location) {
+        //Log.d(TAG, "Location changed, Lat= " + location.getLatitude() + " Long = " + location.getLongitude());
         startLocationUpdates();
     }
 }

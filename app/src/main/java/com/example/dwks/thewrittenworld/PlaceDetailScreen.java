@@ -39,8 +39,9 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
             String id = input.getStringExtra("ID");
             Log.d(TAG, "recieved id string =" + id);
             Constants constants = Constants.getInstance();
-            Log.d(TAG, "Map populated =  " + constants.places.isEmpty());
-            Log.d(TAG, "object exists" + constants.places.containsKey(id));
+            Log.d(TAG, "HashMap empty =  " + constants.places.isEmpty());
+            Log.d(TAG, "object exists?  " + constants.places.containsKey(id));
+            Log.d(TAG, constants.places.toString());
             placeObject = constants.places.get(id);
             if (placeObject != null) {
                 String title = placeObject.getBookTitle();
@@ -66,9 +67,10 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
         }
         map.setMyLocationEnabled(true);
        //place marker of point of interest and zoom camera
+        if(placeObject != null){
         LatLng placeLocation = new LatLng(placeObject.getLatitude(),placeObject.getLongitude());
         map.addMarker(new MarkerOptions().position(placeLocation));
         CameraPosition cameraPosition = new CameraPosition.Builder().target(placeLocation).zoom(10).build();
-        map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));}
     }
 }

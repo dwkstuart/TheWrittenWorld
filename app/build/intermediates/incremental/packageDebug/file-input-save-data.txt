@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Wed Jul 26 11:04:01 BST 2017
+#Wed Jul 26 16:36:37 BST 2017
 210.set=ANDROID_RESOURCE
 282.file=C\:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\resources-debug.ap_\\res\\color\\abc_hint_foreground_material_dark.xml
 14.set=ANDROID_RESOURCE

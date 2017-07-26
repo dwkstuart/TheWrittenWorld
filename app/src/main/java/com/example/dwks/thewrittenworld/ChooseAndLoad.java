@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -32,8 +34,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 //TODO Decide whether to update to just use GeofencingApiClient
@@ -42,13 +42,17 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         GoogleApiClient.OnConnectionFailedListener,
         com.google.android.gms.location.LocationListener, ResultCallback<Status> {
 
+
+
     private final static String TAG = ChooseAndLoad.class.getSimpleName();
-    //Buttons
+    //Buttons and text fields
+
     private Button loadPlacesButton;
     private Button createFenceButton;
     private Button loadMap;
     private Button showList;
     private EditText listName;
+    private TextView infoText;
 
    // private ArrayList<PlaceObject> placeObjects;
 
@@ -81,6 +85,8 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         loadMap = (Button) findViewById(R.id.ViewMap);
         showList = (Button) findViewById(R.id.ViewList);
         listName = (EditText) findViewById(R.id.enterListName);
+        infoText = (TextView) findViewById(R.id.InfoBox);
+
 
         loadPlacesButton.setOnClickListener(this);
         createFenceButton.setOnClickListener(this);
@@ -88,6 +94,85 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         showList.setOnClickListener(this);
         showList.setEnabled(false);
         createFenceButton.setEnabled(false);
+
+
+    }
+
+    class LoadAysncTask extends AsyncTask<String, Integer, Boolean>{
+        Constants constants = Constants.getInstance();
+        String searchTerm;
+        FirebaseDatabase database;
+        DatabaseReference myRef;
+
+        public LoadAysncTask(String title) {
+        this.searchTerm = title;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+            myRef = database.getReference("places/");
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+
+
+
+            final Query recentQuery = myRef.orderByChild("title").equalTo(searchTerm);
+
+            recentQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                   int counter =0;
+                    //Log.d("Data snapshot =", dataSnapshot.toString());
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        PlaceObject object = new PlaceObject(postSnapshot);
+                        Log.d(TAG, object.getDb_key());
+                        constants.placeObjects.add(object);
+                        //populate HashMap
+                        constants.places.put(object.getDb_key(), object);
+                    }
+                    infoText.setText("Number of Results : " + constants.placeObjects.size());
+                    Log.d(TAG, "Size of array : " + constants.placeObjects.size());
+                    createFenceButton.setEnabled(true);
+                    showList.setEnabled(true);
+
+
+                }
+
+
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    ;
+                }
+
+            });
+
+            Log.d(TAG,"On background finished");
+            return true;
+
+
+        }
+
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            if(aBoolean) {
+
+
+                //infoText.setText("Number of places found related to " + searchTerm + " = " + constants.placeObjects.size());
+            }
+        }
 
 
     }
@@ -107,15 +192,21 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                         PlaceObject object = new PlaceObject(postSnapshot);
                     Log.d(TAG, object.getDb_key());
                     tempList.add(object);
+                    //populate HashMap
+                    constants.places.put(object.getDb_key(),object);
+
                 }
                 constants.placeObjects = tempList;
                 Log.d(TAG, "Size of array : " + constants.placeObjects.size());
+
+
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
+
         });
 
         //String placesJson = this.assestJsonFile();
@@ -123,22 +214,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 //                .getPointOfInterestObjects();
     }
 
-    //LOAD FROM ASSEST WILL BE REPLACED WITH SOME METHOD FOR DATABASE LOADING////
-    private String assestJsonFile() {
-        String json = null;
-        try {
-            InputStream is = getAssets().open("dickensJSON");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return json;
-    }
+//
 
     @Override
     public void onClick(View v) {
@@ -146,20 +222,20 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
             case R.id.loadPlaces:
 
                 String title = String.valueOf(listName.getText());
-                this.loadPlaces(title);
-                this.populateHashMap();
-                Log.d(TAG, String.valueOf(constants.places.isEmpty()));
-                createFenceButton.setEnabled(true);
-                showList.setEnabled(true);
-                //populate db
-                //UserPlacesDbHelper db = new UserPlacesDbHelper(this);
-//                String listTitle = String.valueOf(listName.getText());
-//                for(PlaceObject object: constants.placeObjects){
-//                    db.addNewList(object,listTitle);
-//                }
-                listName.setText("");
-                //listName.setEnabled(false);
+
+                new LoadAysncTask(title).execute();
+
+//                this.loadPlaces(title);
+//
+//
+//                createFenceButton.setEnabled(true);
+//                showList.setEnabled(true);
+////                listName.setEnabled(false);
+////                loadPlacesButton.setEnabled(false);
+
+
                 break;
+
             case R.id.createGeofences:
                 this.populateGeofenceList();
                 createGoogleApi();
@@ -176,14 +252,6 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 Intent list = new Intent(this, ListOfPlaces.class);
                 startActivity(list);
                 break;
-        }
-    }
-
-    private void populateHashMap() {
-
-        for (PlaceObject placeObject : constants.placeObjects) {
-                constants.places.put(placeObject.getDb_key(),placeObject);
-
         }
     }
 
@@ -209,6 +277,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         GeofencingRequest builder = new GeofencingRequest.Builder()
                 .addGeofences(constants.geofenceArrayList)
                 .setInitialTrigger(Geofence.GEOFENCE_TRANSITION_ENTER)
+                .setInitialTrigger(Geofence.GEOFENCE_TRANSITION_DWELL)
                 .build();
         return builder;
     }
@@ -218,10 +287,6 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
      */
     private void populateGeofenceList() {
 
-        //Run on new Thread to reduce work
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
 
 
         for (PlaceObject place : constants.placeObjects) {
@@ -229,8 +294,10 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
             if (!place.isVisited()) {
                 Geofence geofence = (new Geofence.Builder()
                         .setRequestId(place.getDb_key())
-                        .setCircularRegion(place.getLatitude(), place.getLongitude(), 100)
+                        .setCircularRegion(place.getLatitude(), place.getLongitude(), 500)
                         .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+                        .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
+                        .setLoiteringDelay(10000)
                         .setExpirationDuration(Geofence.NEVER_EXPIRE)
                         .build());
 
@@ -240,8 +307,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         }
         int arraylength = constants.geofenceArrayList.size();
         Log.d(TAG, String.valueOf(arraylength));
-    }
-        }).start();
+
     }
 
     //add a request to the monitoring list
@@ -296,4 +362,30 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     public void onLocationChanged(Location location) {
 
     }
+
+    //TODO remove if not using assest load
+//    public void populateHashMap() {
+//            Log.d(TAG, "HashMap populated");
+//        for (PlaceObject placeObject : constants.placeObjects) {
+//                    constants.places.put(placeObject.getDb_key(),placeObject);
+//            Log.d(TAG, "HashMap populated for loop");
+//        }
+//    }
+
+    //LOAD FROM ASSEST WILL BE REPLACED WITH SOME METHOD FOR DATABASE LOADING////
+//    private String assestJsonFile() {
+//        String json = null;
+//        try {
+//            InputStream is = getAssets().open("dickensJSON");
+//            int size = is.available();
+//            byte[] buffer = new byte[size];
+//            is.read(buffer);
+//            is.close();
+//            json = new String(buffer, "UTF-8");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//        return json;
+//    }
 }
