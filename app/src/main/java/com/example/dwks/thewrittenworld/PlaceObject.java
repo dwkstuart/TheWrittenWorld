@@ -1,6 +1,7 @@
 package com.example.dwks.thewrittenworld;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.DataSnapshot;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +27,20 @@ public class PlaceObject {
         //Best to take JSON jsonObject here?
         jsonObject = input;
         this.initialisePOIObject();
+    }
+
+    //Constructor for getting place object from Firebase query
+    public PlaceObject(DataSnapshot dataSnapshot){
+        bookTitle = dataSnapshot.child("title").getValue().toString();
+        latitude = Double.parseDouble(dataSnapshot.child("latitude").getValue().toString());
+        longitude = Double.parseDouble(dataSnapshot.child("longitude").getValue().toString());
+        String authorname = dataSnapshot.child("author").toString();
+        String[] names = authorname.split(" ");
+        authorFirstName = names[0];
+        autherSecondName = names[1];
+        db_key = dataSnapshot.child("db_key").toString();
+
+
     }
 
     public String getDb_key() {
