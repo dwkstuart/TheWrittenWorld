@@ -25,9 +25,16 @@ import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingApi;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 //TODO Decide whether to update to just use GeofencingApiClient
 
@@ -85,10 +92,35 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
     }
 
-    private void loadPlaces() {
-        String placesJson = this.assestJsonFile();
-        constants.placeObjects = new PlacesListCreator(placesJson)
-                .getPointOfInterestObjects();
+    private void loadPlaces(String booktitle) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        final ArrayList<PlaceObject> tempList = new ArrayList<>();
+        DatabaseReference myRef = database.getReference("places/");
+
+        Query recentQuery =myRef.orderByChild("title").equalTo(booktitle);
+        recentQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //Log.d("Data snapshot =", dataSnapshot.toString());
+                for(DataSnapshot postSnapshot: dataSnapshot.getChildren()){
+                        PlaceObject object = new PlaceObject(postSnapshot);
+                    Log.d(TAG, object.getDb_key());
+                    tempList.add(object);
+                }
+                constants.placeObjects = tempList;
+                Log.d(TAG, "Size of array : " + constants.placeObjects.size());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        //String placesJson = this.assestJsonFile();
+//        constants.placeObjects = new PlacesListCreator(placesJson)
+//                .getPointOfInterestObjects();
     }
 
     //LOAD FROM ASSEST WILL BE REPLACED WITH SOME METHOD FOR DATABASE LOADING////
@@ -113,19 +145,20 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.loadPlaces:
 
-                this.loadPlaces();
+                String title = String.valueOf(listName.getText());
+                this.loadPlaces(title);
                 this.populateHashMap();
                 Log.d(TAG, String.valueOf(constants.places.isEmpty()));
                 createFenceButton.setEnabled(true);
                 showList.setEnabled(true);
                 //populate db
-                UserPlacesDbHelper db = new UserPlacesDbHelper(this);
-                String listTitle = String.valueOf(listName.getText());
-                for(PlaceObject object: constants.placeObjects){
-                    db.addNewList(object,listTitle);
-                }
+                //UserPlacesDbHelper db = new UserPlacesDbHelper(this);
+//                String listTitle = String.valueOf(listName.getText());
+//                for(PlaceObject object: constants.placeObjects){
+//                    db.addNewList(object,listTitle);
+//                }
                 listName.setText("");
-                listName.setEnabled(false);
+                //listName.setEnabled(false);
                 break;
             case R.id.createGeofences:
                 this.populateGeofenceList();

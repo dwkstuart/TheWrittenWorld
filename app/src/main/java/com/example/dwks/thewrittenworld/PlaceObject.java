@@ -39,6 +39,7 @@ public class PlaceObject {
         authorFirstName = names[0];
         autherSecondName = names[1];
         db_key = dataSnapshot.child("db_key").toString();
+        latLng = new LatLng(latitude, longitude);
 
 
     }
