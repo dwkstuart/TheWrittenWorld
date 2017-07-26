@@ -122,11 +122,10 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 UserPlacesDbHelper db = new UserPlacesDbHelper(this);
                 String listTitle = String.valueOf(listName.getText());
                 for(PlaceObject object: constants.placeObjects){
-                    Log.d(TAG, object.getBookTitle());
                     db.addNewList(object,listTitle);
                 }
                 listName.setText("");
-
+                listName.setEnabled(false);
                 break;
             case R.id.createGeofences:
                 this.populateGeofenceList();
@@ -186,10 +185,14 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
      */
     private void populateGeofenceList() {
 
+        //Run on new Thread to reduce work
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
 
         for (PlaceObject place : constants.placeObjects) {
             //Create a geofence object for each place not ticked off as visited
-            Log.d(TAG, "populate geofence for loop");
             if (!place.isVisited()) {
                 Geofence geofence = (new Geofence.Builder()
                         .setRequestId(place.getDb_key())
@@ -204,7 +207,8 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         }
         int arraylength = constants.geofenceArrayList.size();
         Log.d(TAG, String.valueOf(arraylength));
-
+    }
+        }).start();
     }
 
     //add a request to the monitoring list

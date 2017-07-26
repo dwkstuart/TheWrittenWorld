@@ -397,7 +397,7 @@ public final class R {
         public static final int button_material_dark = 0x7f0c0011;
         public static final int button_material_light = 0x7f0c0012;
         public static final int design_bottom_navigation_shadow_color = 0x7f0c001e;
-        public static final int design_error = 0x7f0c0069;
+        public static final int design_error = 0x7f0c0068;
         public static final int design_fab_shadow_end_color = 0x7f0c001f;
         public static final int design_fab_shadow_mid_color = 0x7f0c0020;
         public static final int design_fab_shadow_start_color = 0x7f0c0021;
@@ -408,7 +408,7 @@ public final class R {
         public static final int design_snackbar_background_color = 0x7f0c0026;
         public static final int design_textinput_error_color_dark = 0x7f0c0027;
         public static final int design_textinput_error_color_light = 0x7f0c0028;
-        public static final int design_tint_password_toggle = 0x7f0c006a;
+        public static final int design_tint_password_toggle = 0x7f0c0069;
         public static final int dim_foreground_disabled_material_dark = 0x7f0c0029;
         public static final int dim_foreground_disabled_material_light = 0x7f0c002a;
         public static final int dim_foreground_material_dark = 0x7f0c002b;
@@ -448,8 +448,8 @@ public final class R {
         public static final int secondary_text_disabled_material_light = 0x7f0c004c;
         public static final int switch_thumb_disabled_material_dark = 0x7f0c004d;
         public static final int switch_thumb_disabled_material_light = 0x7f0c004e;
-        public static final int switch_thumb_material_dark = 0x7f0c006b;
-        public static final int switch_thumb_material_light = 0x7f0c006c;
+        public static final int switch_thumb_material_dark = 0x7f0c006a;
+        public static final int switch_thumb_material_light = 0x7f0c006b;
         public static final int switch_thumb_normal_material_dark = 0x7f0c004f;
         public static final int switch_thumb_normal_material_light = 0x7f0c0050;
     }
@@ -689,12 +689,12 @@ public final class R {
         public static final int avd_show_password_1 = 0x7f020080;
         public static final int avd_show_password_2 = 0x7f020081;
         public static final int avd_show_password_3 = 0x7f020082;
-        public static final int design_bottom_navigation_item_background = 0x7f020068;
-        public static final int design_fab_background = 0x7f020069;
-        public static final int design_ic_visibility = 0x7f02006a;
-        public static final int design_ic_visibility_off = 0x7f02006b;
-        public static final int design_password_eye = 0x7f02006c;
-        public static final int design_snackbar_background = 0x7f02006d;
+        public static final int design_bottom_navigation_item_background = 0x7f02006a;
+        public static final int design_fab_background = 0x7f02006b;
+        public static final int design_ic_visibility = 0x7f02006c;
+        public static final int design_ic_visibility_off = 0x7f02006d;
+        public static final int design_password_eye = 0x7f02006e;
+        public static final int design_snackbar_background = 0x7f02006f;
         public static final int navigation_empty_icon = 0x7f020070;
         public static final int notification_action_background = 0x7f020071;
         public static final int notification_bg = 0x7f020072;
@@ -972,11 +972,11 @@ public final class R {
         public static final int appbar_scrolling_view_behavior = 0x7f070033;
         public static final int bottom_sheet_behavior = 0x7f070034;
         public static final int character_counter_pattern = 0x7f070035;
-        public static final int password_toggle_content_description = 0x7f070037;
-        public static final int path_password_eye = 0x7f070038;
-        public static final int path_password_eye_mask_strike_through = 0x7f070039;
-        public static final int path_password_eye_mask_visible = 0x7f07003a;
-        public static final int path_password_strike_through = 0x7f07003b;
+        public static final int password_toggle_content_description = 0x7f07003e;
+        public static final int path_password_eye = 0x7f07003f;
+        public static final int path_password_eye_mask_strike_through = 0x7f070040;
+        public static final int path_password_eye_mask_visible = 0x7f070041;
+        public static final int path_password_strike_through = 0x7f070042;
         public static final int search_menu_title = 0x7f070024;
         public static final int status_bar_notification_info_overflow = 0x7f070025;
     }

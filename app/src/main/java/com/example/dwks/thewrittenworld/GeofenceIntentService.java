@@ -2,6 +2,8 @@ package com.example.dwks.thewrittenworld;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
@@ -37,6 +39,8 @@ public class GeofenceIntentService extends IntentService {
                String triggeredID = event.getRequestId();
                 //ID matches DB Key
                 PlaceObject placeTriggered = constants.places.get(triggeredID);
+                Toast.makeText(this, placeTriggered.getBookTitle(), Toast.LENGTH_LONG);
+                Log.d("Intent Service", "Triggered");
 
 
             }
