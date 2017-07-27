@@ -1,5 +1,6 @@
 package com.example.dwks.thewrittenworld;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -12,7 +13,7 @@ import org.json.JSONObject;
  * Created by User on 22/07/2017.
  */
 
-public class PlaceObject {
+public class PlaceObject implements Comparable<PlaceObject> {
 
     private static final String TAG = PlaceObject.class.getSimpleName();
     //Instance vaiables
@@ -133,5 +134,27 @@ public class PlaceObject {
     public LatLng getLatLng() {
         return latLng;
     }
+
+
+
+    @Override
+    public int compareTo(@NonNull PlaceObject other) {
+       int compare = db_key.compareTo(other.db_key);
+        Log.d(TAG, "Compare" + compare);
+        return compare;
+    }
+
+//    //Need to implement comparable so that the custom object can be used in a set
+//    @Override
+//    public int compareTo(@NonNull Object o) {
+//        Log.d(TAG, "Calls compare to method");
+//
+//        PlaceObject other = (PlaceObject) o;
+//        Log.d(TAG,"Original Object " + this.bookTitle + " compared to " + other.getBookTitle());
+//
+//        Log.d(TAG, "Result of comapare: " + result);
+//       return result;
+//    }
+
 
 }

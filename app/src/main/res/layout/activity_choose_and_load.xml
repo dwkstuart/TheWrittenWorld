@@ -17,6 +17,13 @@
         tools:layout_editor_absoluteY="161dp" />
 
     <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/removeGeofences"
+        android:text="Stop Alerts"
+        />
+
+    <Button
         android:id="@+id/ViewMap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,6 +57,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.15"
-        android:text="TextView" />
+        android:text="" />
 
 </LinearLayout>

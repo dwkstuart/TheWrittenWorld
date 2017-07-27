@@ -3,6 +3,7 @@ package com.example.dwks.thewrittenworld;
 
 import android.Manifest;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -34,7 +35,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 //TODO Decide whether to update to just use GeofencingApiClient
 
@@ -47,6 +53,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     private final static String TAG = ChooseAndLoad.class.getSimpleName();
     //Buttons and text fields
 
+    private Button deleteFences;
     private Button loadPlacesButton;
     private Button createFenceButton;
     private Button loadMap;
@@ -82,6 +89,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
         loadPlacesButton = (Button) findViewById(R.id.loadPlaces);
         createFenceButton = (Button) findViewById(R.id.createGeofences);
+        deleteFences =(Button) findViewById(R.id.removeGeofences);
         loadMap = (Button) findViewById(R.id.ViewMap);
         showList = (Button) findViewById(R.id.ViewList);
         listName = (EditText) findViewById(R.id.enterListName);
@@ -92,6 +100,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         createFenceButton.setOnClickListener(this);
         loadMap.setOnClickListener(this);
         showList.setOnClickListener(this);
+        deleteFences.setOnClickListener(this);
         showList.setEnabled(false);
         createFenceButton.setEnabled(false);
 
@@ -141,7 +150,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                         constants.places.put(object.getDb_key(), object);
                     }
                     infoText.setText("Number of Results : " + constants.placeObjects.size());
-                    Log.d(TAG, "Size of array : " + constants.placeObjects.size());
+                    Log.d(TAG, "Size of : " + constants.placeObjects.size());
                     createFenceButton.setEnabled(true);
                     showList.setEnabled(true);
 
@@ -180,7 +189,6 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     private void loadPlaces(String booktitle) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        final ArrayList<PlaceObject> tempList = new ArrayList<>();
         DatabaseReference myRef = database.getReference("places/");
 
         Query recentQuery =myRef.orderByChild("title").equalTo(booktitle);
@@ -191,14 +199,13 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 for(DataSnapshot postSnapshot: dataSnapshot.getChildren()){
                         PlaceObject object = new PlaceObject(postSnapshot);
                     Log.d(TAG, object.getDb_key());
-                    tempList.add(object);
+                    constants.placeObjects.add(object);
                     //populate HashMap
                     constants.places.put(object.getDb_key(),object);
 
                 }
-                constants.placeObjects = tempList;
-                Log.d(TAG, "Size of array : " + constants.placeObjects.size());
 
+                Log.d(TAG, "Size of array : " + constants.placeObjects.size());
 
             }
 
@@ -225,22 +232,21 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
                 new LoadAysncTask(title).execute();
 
-//                this.loadPlaces(title);
-//
-//
-//                createFenceButton.setEnabled(true);
-//                showList.setEnabled(true);
-////                listName.setEnabled(false);
-////                loadPlacesButton.setEnabled(false);
-
+ //               saveToCache();
 
                 break;
 
             case R.id.createGeofences:
                 this.populateGeofenceList();
                 createGoogleApi();
+                if (constants.geofenceArrayList.size()>0){
                 googleApiClient.connect();
-                createFenceButton.setEnabled(false);
+                createFenceButton.setEnabled(false);}
+                else infoText.setText("You've visited everywhere in the list!");
+                break;
+
+            case R.id.removeGeofences:
+                this.removeAllGeofence();
                 break;
 
             case R.id.ViewMap:
@@ -253,6 +259,33 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 startActivity(list);
                 break;
         }
+    }
+
+//    private void saveToCache(){
+//
+////        saveToCache(cachePlacesMap, constants.places);
+////        saveToCache(cachePlacesSet, constants.placeObjects)
+//        Log.d("Save", "Save to cache called");
+//        FileOutputStream fileOutputStream = null;
+//        try {
+//            fileOutputStream = openFileOutput("saveFileName", Context.MODE_PRIVATE);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//        try {
+//            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+//            objectOutputStream.writeObject(constants.places);
+//
+//
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+
     }
 
     private void createGoogleApi() {
@@ -291,6 +324,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
         for (PlaceObject place : constants.placeObjects) {
             //Create a geofence object for each place not ticked off as visited
+            Log.d(TAG, "Place is vistied " + place.isVisited());
             if (!place.isVisited()) {
                 Geofence geofence = (new Geofence.Builder()
                         .setRequestId(place.getDb_key())
@@ -301,7 +335,11 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                         .setExpirationDuration(Geofence.NEVER_EXPIRE)
                         .build());
 
+                Log.d(TAG, "Added to Geofence List" + place.getBookTitle());
+                //TODO check if this arraylist needs to be constant
                 constants.geofenceArrayList.add(geofence);
+                //Need to be able to link a geofence to an object to remove geofences individual from Pending Monitoring list
+                constants.placeObjectGeofenceHashMap.put(place,geofence);
             }
 
         }
@@ -310,11 +348,20 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
     }
 
+
+
+     private PendingIntent getGeofenceIntent(){
+         if (pendingIntent != null)
+             return pendingIntent;
+
+         Intent intent = new Intent(this, GeofenceIntentService.class);
+         PendingIntent pendingIntent = PendingIntent.getService(this,123,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+         return pendingIntent;
+     }
     //add a request to the monitoring list
     private void addGeofences(GeofencingRequest request) {
 
-        Intent intent = new Intent(this, GeofenceIntentService.class);
-        PendingIntent pendingIntent = PendingIntent.getService(this,123,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        pendingIntent = getGeofenceIntent();
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -327,16 +374,31 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
             return;
         }
         //TODO add pending intent creator, add transition class
-        LocationServices.GeofencingApi.addGeofences(
+        geofencingApi.addGeofences(
                 googleApiClient,
                 request,
                 pendingIntent).setResultCallback(this);
+
     }
 
-//    private void createIntents(){
-//        Intent intent = new Intent(this, GeofenceIntentService.class);
-//        PendingIntent pendingIntent = PendingIntent.getService(this,123,intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//    }
+    private  void removeAllGeofence(){
+        if(googleApiClient != null) {
+            Log.d(TAG, "Remove fences");
+            List<String> removeAll = new ArrayList<String>();
+            for (Geofence fence : constants.geofenceArrayList) {
+                removeAll.add(fence.getRequestId());
+            }
+            Log.d(TAG, "Size of list" + constants.geofenceArrayList.size());
+            constants.geofenceArrayList.clear();
+            geofencingApi.removeGeofences(googleApiClient, removeAll);
+            Log.d(TAG, "Should be 0 " + constants.geofenceArrayList.size());
+        }
+
+    }
+
+
+
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         addGeofences(getGeofencingRequest());

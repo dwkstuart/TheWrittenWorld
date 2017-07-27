@@ -37,8 +37,9 @@ private int mNumberOfItems;
 
     @Override
     public void onBindViewHolder(PlaceItemViewHolder holder, int position) {
-            String bookTitle = constants.placeObjects.get(position).getBookTitle();
-        holder.placeTitle.setText(bookTitle);
+        //TODO FIX ISSUE WITH CHANGING TO SET
+        //   String bookTitle = constants.placeObjects.get(position).getBookTitle();
+        //holder.placeTitle.setText(bookTitle);
 
     }
 

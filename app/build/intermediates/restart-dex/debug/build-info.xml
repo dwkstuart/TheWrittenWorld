@@ -6,22 +6,22 @@
     density="420dpi"
     format="10"
     plugin-version="2.3.3"
-    timestamp="1501090609847"
+    timestamp="1501173733900"
     token="-2101879112085199408"
     verifier="COLD_SWAP_REQUESTED" >
 
     <task
         name="javac"
-        duration="277" />
+        duration="275" />
     <task
         name="instant-run-dex"
         duration="0" />
     <task
         name="instant-run-transform"
-        duration="98" />
+        duration="40" />
     <task
         name="verifier"
-        duration="19" />
+        duration="12" />
 
     <artifact
         location="C:\Users\User\Workspace\TheWrittenWorld\app\build\intermediates\split-apk\debug\slices\slice_6.apk"
@@ -29,7 +29,7 @@
 
     <build
         build-mode="FULL"
-        timestamp="1501083392641"
+        timestamp="1501171174577"
         verifier="FULL_BUILD_REQUESTED" >
         <artifact
             location="C:\Users\User\Workspace\TheWrittenWorld\app\build\intermediates\split-apk\debug\slices\slice_6.apk"
@@ -70,7 +70,15 @@
     </build>
     <build
         build-mode="COLD"
-        timestamp="1501090609847"
+        timestamp="1501172834204"
+        verifier="COLD_SWAP_REQUESTED" >
+        <artifact
+            location="C:\Users\User\Workspace\TheWrittenWorld\app\build\outputs\apk\app-debug.apk"
+            type="SPLIT_MAIN" />
+    </build>
+    <build
+        build-mode="COLD"
+        timestamp="1501173733900"
         verifier="COLD_SWAP_REQUESTED" >
         <artifact
             location="C:\Users\User\Workspace\TheWrittenWorld\app\build\intermediates\split-apk\debug\slices\slice_6.apk"

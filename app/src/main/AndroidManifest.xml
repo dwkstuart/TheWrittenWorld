@@ -3,6 +3,7 @@
     package="com.example.dwks.thewrittenworld">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -39,7 +40,8 @@
             android:exported="false" />
 
         <activity android:name=".PlaceDetailScreen" />
-        <activity android:name=".ListOfPlaces"></activity>
+        <activity android:name=".ListOfPlaces" />
+
     </application>
 
 </manifest>

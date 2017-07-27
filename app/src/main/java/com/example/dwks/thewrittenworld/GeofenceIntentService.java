@@ -59,7 +59,8 @@ public class GeofenceIntentService extends IntentService {
                 Log.d(TAG, "Place Object = " + placeTriggered.toString());
                 if (placeTriggered != null){
                 Log.d(TAG, "place trigger is not null" + placeTriggered.getBookTitle());
-                this.sendNotification(placeTriggered.getBookTitle());}
+                this.sendNotification(placeTriggered.getBookTitle(), placeTriggered.getDb_key());
+                }
                 Log.d("Intent Service", "Triggered");
 
 
@@ -74,9 +75,10 @@ public class GeofenceIntentService extends IntentService {
      * Posts a notification in the notification bar when a transition is detected.
      * If the user clicks the notification, control goes to the MainActivity.
      */
-    private void sendNotification(String notificationDetails) {
+    private void sendNotification(String notificationDetails, String ID) {
         // Create an explicit content Intent that starts the main Activity.
-        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+        Intent notificationIntent = new Intent(getApplicationContext(), PlaceDetailScreen.class);
+        notificationIntent.putExtra("ID", ID);
 
         // Construct a task stack.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
