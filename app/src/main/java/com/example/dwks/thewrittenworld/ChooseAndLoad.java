@@ -228,7 +228,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     }
 
     private void saveAsJson(){
-      
+
     }
 
     //TODO is this used now we have AysnTask
