@@ -1,7 +1,6 @@
 package com.example.dwks.thewrittenworld;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
@@ -18,7 +17,7 @@ public class PlaceObject implements Comparable<PlaceObject> {
     private static final String TAG = PlaceObject.class.getSimpleName();
     //Instance vaiables
     private int id; //Database unique ID
-    private String header, snippet, authorFirstName, autherSecondName, longDescription, associatedQuote, imageURI;
+    private String header, location, authorFirstName, autherSecondName, longDescription, associatedQuote, imageURI;
     private String bookTitle = "default";
     private double latitude, longitude;
     private boolean visited = false; //mark if have visited or not
@@ -33,10 +32,11 @@ public class PlaceObject implements Comparable<PlaceObject> {
         this.initialisePOIObject();
     }
 
+
+
     //Constructor for getting place object from Firebase query
     public PlaceObject(DataSnapshot dataSnapshot){
         bookTitle = dataSnapshot.child("title").getValue().toString();
-        Log.d("Booktitle =" , bookTitle);
         latitude = Double.parseDouble(dataSnapshot.child("latitude").getValue().toString());
         longitude = Double.parseDouble(dataSnapshot.child("longitude").getValue().toString());
         String authorname = dataSnapshot.child("author").toString();
@@ -45,6 +45,7 @@ public class PlaceObject implements Comparable<PlaceObject> {
         autherSecondName = names[1];
         db_key = dataSnapshot.child("db_key").getValue().toString();
         latLng = new LatLng(latitude, longitude);
+        location = dataSnapshot.child("location").getValue().toString();
 
 
     }
@@ -60,7 +61,7 @@ public class PlaceObject implements Comparable<PlaceObject> {
             bookTitle = jsonObject.getString("title");
             latitude = jsonObject.getDouble("latitude");
             longitude = jsonObject.getDouble("longitude");
-            snippet = jsonObject.getString("location");
+            location = jsonObject.getString("location");
             String authorname = jsonObject.getString("author");
             String[] names = authorname.split(" ");
             authorFirstName = names[0];
@@ -73,7 +74,9 @@ public class PlaceObject implements Comparable<PlaceObject> {
         }
     }
 
-
+    public String getLocation() {
+        return location;
+    }
 
 
     public int getId() {
@@ -88,9 +91,6 @@ public class PlaceObject implements Comparable<PlaceObject> {
         return bookTitle;
     }
 
-    public String getSnippet() {
-        return snippet;
-    }
 
 
     public String getAuthorFirstName() {
@@ -140,21 +140,9 @@ public class PlaceObject implements Comparable<PlaceObject> {
     @Override
     public int compareTo(@NonNull PlaceObject other) {
        int compare = db_key.compareTo(other.db_key);
-        Log.d(TAG, "Compare" + compare);
         return compare;
     }
 
-//    //Need to implement comparable so that the custom object can be used in a set
-//    @Override
-//    public int compareTo(@NonNull Object o) {
-//        Log.d(TAG, "Calls compare to method");
-//
-//        PlaceObject other = (PlaceObject) o;
-//        Log.d(TAG,"Original Object " + this.bookTitle + " compared to " + other.getBookTitle());
-//
-//        Log.d(TAG, "Result of comapare: " + result);
-//       return result;
-//    }
 
 
 }

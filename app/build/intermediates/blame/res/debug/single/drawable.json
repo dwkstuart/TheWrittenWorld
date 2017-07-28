@@ -12,24 +12,16 @@
         "source": "C:\\Users\\User\\.android\\build-cache\\e58e57d0aae924c0c606d221cf965704339603f8\\output\\res\\drawable\\abc_vector_test.xml"
     },
     {
-        "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\common_google_signin_btn_icon_dark_normal.xml",
-        "source": "C:\\Users\\User\\.android\\build-cache\\8457d0f86ffad68a2b93d9ea5575e07ffa734c58\\output\\res\\drawable\\common_google_signin_btn_icon_dark_normal.xml"
-    },
-    {
         "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_ratingbar_small_material.xml",
         "source": "C:\\Users\\User\\.android\\build-cache\\e58e57d0aae924c0c606d221cf965704339603f8\\output\\res\\drawable\\abc_ratingbar_small_material.xml"
     },
     {
-        "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\common_google_signin_btn_text_disabled.xml",
-        "source": "C:\\Users\\User\\.android\\build-cache\\8457d0f86ffad68a2b93d9ea5575e07ffa734c58\\output\\res\\drawable\\common_google_signin_btn_text_disabled.xml"
+        "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_borderless_material.xml",
+        "source": "C:\\Users\\User\\.android\\build-cache\\e58e57d0aae924c0c606d221cf965704339603f8\\output\\res\\drawable\\abc_btn_borderless_material.xml"
     },
     {
         "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_radio_material.xml",
         "source": "C:\\Users\\User\\.android\\build-cache\\e58e57d0aae924c0c606d221cf965704339603f8\\output\\res\\drawable\\abc_btn_radio_material.xml"
-    },
-    {
-        "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_borderless_material.xml",
-        "source": "C:\\Users\\User\\.android\\build-cache\\e58e57d0aae924c0c606d221cf965704339603f8\\output\\res\\drawable\\abc_btn_borderless_material.xml"
     },
     {
         "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\common_google_signin_btn_text_dark_focused.xml",
@@ -42,10 +34,6 @@
     {
         "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\common_google_signin_btn_text_light_focused.xml",
         "source": "C:\\Users\\User\\.android\\build-cache\\4c7764ddddf37c9f1daa2ae3297115a6823d5a43\\output\\res\\drawable\\common_google_signin_btn_text_light_focused.xml"
-    },
-    {
-        "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\common_google_signin_btn_text_light_normal.xml",
-        "source": "C:\\Users\\User\\.android\\build-cache\\8457d0f86ffad68a2b93d9ea5575e07ffa734c58\\output\\res\\drawable\\common_google_signin_btn_text_light_normal.xml"
     },
     {
         "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_seekbar_tick_mark_material.xml",
@@ -86,10 +74,6 @@
     {
         "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_tab_indicator_material.xml",
         "source": "C:\\Users\\User\\.android\\build-cache\\e58e57d0aae924c0c606d221cf965704339603f8\\output\\res\\drawable\\abc_tab_indicator_material.xml"
-    },
-    {
-        "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\common_google_signin_btn_icon_light_normal.xml",
-        "source": "C:\\Users\\User\\.android\\build-cache\\8457d0f86ffad68a2b93d9ea5575e07ffa734c58\\output\\res\\drawable\\common_google_signin_btn_icon_light_normal.xml"
     },
     {
         "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\design_password_eye.xml",
@@ -156,10 +140,6 @@
         "source": "C:\\Users\\User\\.android\\build-cache\\e58e57d0aae924c0c606d221cf965704339603f8\\output\\res\\drawable\\abc_ic_clear_material.xml"
     },
     {
-        "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\common_google_signin_btn_icon_disabled.xml",
-        "source": "C:\\Users\\User\\.android\\build-cache\\8457d0f86ffad68a2b93d9ea5575e07ffa734c58\\output\\res\\drawable\\common_google_signin_btn_icon_disabled.xml"
-    },
-    {
         "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_item_background_holo_light.xml",
         "source": "C:\\Users\\User\\.android\\build-cache\\e58e57d0aae924c0c606d221cf965704339603f8\\output\\res\\drawable\\abc_item_background_holo_light.xml"
     },
@@ -214,10 +194,6 @@
     {
         "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_switch_thumb_material.xml",
         "source": "C:\\Users\\User\\.android\\build-cache\\e58e57d0aae924c0c606d221cf965704339603f8\\output\\res\\drawable\\abc_switch_thumb_material.xml"
-    },
-    {
-        "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\common_google_signin_btn_text_dark_normal.xml",
-        "source": "C:\\Users\\User\\.android\\build-cache\\8457d0f86ffad68a2b93d9ea5575e07ffa734c58\\output\\res\\drawable\\common_google_signin_btn_text_dark_normal.xml"
     },
     {
         "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\drawable\\abc_btn_colored_material.xml",

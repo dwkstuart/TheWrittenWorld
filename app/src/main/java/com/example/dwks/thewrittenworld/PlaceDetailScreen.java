@@ -26,6 +26,7 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
     private GoogleMap map;
     private PlaceObject placeObject;
     private TextView titleText;
+    private TextView locationName;
     private CheckBox checkBox;
 
     @Override
@@ -53,6 +54,8 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
                 String title = placeObject.getBookTitle();
                 titleText = (TextView) findViewById(R.id.place_title);
                 titleText.setText(title);
+                locationName = (TextView) findViewById(R.id.details);
+                locationName.setText(placeObject.getLocation());
                 checkBox.setChecked(placeObject.isVisited());
                 Log.d(TAG, "Place visited = " + placeObject.isVisited());
 

@@ -3,20 +3,24 @@ package com.example.dwks.thewrittenworld;
 
 import android.Manifest;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,12 +39,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 //TODO Decide whether to update to just use GeofencingApiClient
 
@@ -60,7 +61,9 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     private Button showList;
     private EditText listName;
     private TextView infoText;
+    private Spinner titleDrop;
 
+    private String selectedTitle ="";
    // private ArrayList<PlaceObject> placeObjects;
 
     //Geofencing
@@ -68,19 +71,63 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     private PendingIntent pendingIntent;
     private GoogleApiClient googleApiClient;
 
+
+    private ArrayList<String> spinnerData = new ArrayList<String>();
+
     Constants constants = Constants.getInstance();
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_and_load);
 
         setUpButtons();
+        getTitles();
         pendingIntent = null;
         geofencingApi = LocationServices.GeofencingApi;
 
+
+
+
     }
 
+    private void getTitles(){
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("places/");
+        final Query titleQuery = myRef.orderByChild("title");
+
+      titleQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                TreeSet<String> titles = new TreeSet<String>();
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    PlaceObject object = new PlaceObject(postSnapshot);
+                    titles.add(object.getBookTitle());
+
+                }
+                for (String title:titles){
+                    spinnerData.add(title);
+                }
+
+            }
+
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                ;
+            }
+
+        });
+
+        Log.d(TAG, spinnerData.toString());
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerData);
+        titleDrop.setAdapter(adapter);
+        titleDrop.setOnItemSelectedListener(new onItemSelectedListener());
+
+    }
 
     /**
      * Helper Method to initialise buttons and set listeners
@@ -92,9 +139,10 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         deleteFences =(Button) findViewById(R.id.removeGeofences);
         loadMap = (Button) findViewById(R.id.ViewMap);
         showList = (Button) findViewById(R.id.ViewList);
-        listName = (EditText) findViewById(R.id.enterListName);
+        //listName = (EditText) findViewById(R.id.enterListName);
         infoText = (TextView) findViewById(R.id.InfoBox);
-
+        titleDrop= (Spinner) findViewById(R.id.titleSpinner);
+        spinnerData.add("Choose a Book");
 
         loadPlacesButton.setOnClickListener(this);
         createFenceButton.setOnClickListener(this);
@@ -128,6 +176,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         @Override
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
+
         }
 
         @Override
@@ -141,16 +190,13 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                    int counter =0;
-                    //Log.d("Data snapshot =", dataSnapshot.toString());
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                         PlaceObject object = new PlaceObject(postSnapshot);
-                        Log.d(TAG, object.getDb_key());
                         constants.placeObjects.add(object);
                         //populate HashMap
                         constants.places.put(object.getDb_key(), object);
                     }
                     infoText.setText("Number of Results : " + constants.placeObjects.size());
-                    Log.d(TAG, "Size of : " + constants.placeObjects.size());
                     createFenceButton.setEnabled(true);
                     showList.setEnabled(true);
 
@@ -166,7 +212,6 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
             });
 
-            Log.d(TAG,"On background finished");
             return true;
 
 
@@ -176,26 +221,28 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
-            if(aBoolean) {
 
-
-                //infoText.setText("Number of places found related to " + searchTerm + " = " + constants.placeObjects.size());
-            }
         }
 
 
     }
 
-    private void loadPlaces(String booktitle) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private void saveAsJson(){
+        String convertToJson  = new ObjectMappper
+        onstants.placeObjects
+    }
 
-        DatabaseReference myRef = database.getReference("places/");
+    //TODO is this used now we have AysnTask
+    private void loadPlaces(String booktitle) {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        final DatabaseReference myRef = database.getReference("places/");
+
 
         Query recentQuery =myRef.orderByChild("title").equalTo(booktitle);
         recentQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //Log.d("Data snapshot =", dataSnapshot.toString());
                 for(DataSnapshot postSnapshot: dataSnapshot.getChildren()){
                         PlaceObject object = new PlaceObject(postSnapshot);
                     Log.d(TAG, object.getDb_key());
@@ -206,7 +253,6 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 }
 
                 Log.d(TAG, "Size of array : " + constants.placeObjects.size());
-
             }
 
             @Override
@@ -226,9 +272,10 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+
             case R.id.loadPlaces:
 
-                String title = String.valueOf(listName.getText());
+                String title = String.valueOf(selectedTitle);
 
                 new LoadAysncTask(title).execute();
 
@@ -261,32 +308,9 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         }
     }
 
-//    private void saveToCache(){
-//
-////        saveToCache(cachePlacesMap, constants.places);
-////        saveToCache(cachePlacesSet, constants.placeObjects)
-//        Log.d("Save", "Save to cache called");
-//        FileOutputStream fileOutputStream = null;
-//        try {
-//            fileOutputStream = openFileOutput("saveFileName", Context.MODE_PRIVATE);
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//
-//
-//        try {
-//            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-//            objectOutputStream.writeObject(constants.places);
-//
-//
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
 
-    }
+
+
 
     private void createGoogleApi() {
         Log.d(TAG, "create API");
@@ -324,18 +348,16 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
         for (PlaceObject place : constants.placeObjects) {
             //Create a geofence object for each place not ticked off as visited
-            Log.d(TAG, "Place is vistied " + place.isVisited());
             if (!place.isVisited()) {
                 Geofence geofence = (new Geofence.Builder()
                         .setRequestId(place.getDb_key())
-                        .setCircularRegion(place.getLatitude(), place.getLongitude(), 500)
+                        .setCircularRegion(place.getLatitude(), place.getLongitude(), 800)
                         .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
                         .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
-                        .setLoiteringDelay(10000)
+                        .setLoiteringDelay(5000)
                         .setExpirationDuration(Geofence.NEVER_EXPIRE)
                         .build());
 
-                Log.d(TAG, "Added to Geofence List" + place.getBookTitle());
                 //TODO check if this arraylist needs to be constant
                 constants.geofenceArrayList.add(geofence);
                 //Need to be able to link a geofence to an object to remove geofences individual from Pending Monitoring list
@@ -344,7 +366,6 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
         }
         int arraylength = constants.geofenceArrayList.size();
-        Log.d(TAG, String.valueOf(arraylength));
 
     }
 
@@ -378,6 +399,8 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 googleApiClient,
                 request,
                 pendingIntent).setResultCallback(this);
+
+        Log.d(TAG,"geofence added" + request.toString());
 
     }
 
@@ -423,6 +446,21 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     @Override
     public void onLocationChanged(Location location) {
 
+    }
+
+    private class onItemSelectedListener implements android.widget.AdapterView.OnItemSelectedListener {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            Log.d(TAG, "onSpinnerSelected");
+            selectedTitle = adapterView.getSelectedItem().toString();
+
+
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
     }
 
     //TODO remove if not using assest load
