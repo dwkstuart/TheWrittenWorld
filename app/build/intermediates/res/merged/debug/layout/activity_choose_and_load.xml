@@ -5,7 +5,54 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.dwks.thewrittenworld.ChooseAndLoad">
+    tools:context="com.example.dwks.thewrittenworld.ChooseAndLoad"
+    android:weightSum="1"
+    android:layout_marginTop="30dp">
+
+    <!--
+    <EditText
+        android:id="@+id/enterListName"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content" />
+-->
+    <Spinner
+        android:id="@+id/titleSpinner"
+        android:layout_width="326dp"
+        android:layout_height="wrap_content"
+        android:dropDownWidth="300dp"
+        android:padding="10dp">
+
+    </Spinner>
+
+    <TextView
+        android:id="@+id/InfoBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.15"
+        android:text=""
+        android:textSize="20dp" />
+
+    <Button
+        android:id="@+id/loadPlaces"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Load the Locations from The Selected Book"
+        android:textSize="20dp"
+        tools:layout_editor_absoluteX="46dp"
+        tools:layout_editor_absoluteY="79dp" />
+
+    <Button
+        android:id="@+id/ViewMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="1dp"
+        android:fontFamily="serif-monospace"
+        android:text="See Map"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:typeface="normal"
+        tools:layout_editor_absoluteX="46dp"
+        tools:layout_editor_absoluteY="231dp" />
 
     <Button
         android:id="@+id/createGeofences"
@@ -16,12 +63,10 @@
         tools:layout_editor_absoluteY="161dp" />
 
     <Button
-        android:id="@+id/ViewMap"
+        android:id="@+id/removeGeofences"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="See Map"
-        tools:layout_editor_absoluteX="46dp"
-        tools:layout_editor_absoluteY="231dp" />
+        android:text="Stop Alerts" />
 
     <Button
         android:id="@+id/ViewList"
@@ -31,17 +76,5 @@
         tools:layout_editor_absoluteX="46dp"
         tools:layout_editor_absoluteY="330dp" />
 
-    <EditText
-        android:id="@+id/enterListName"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/loadPlaces"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Load Selected Places"
-        tools:layout_editor_absoluteX="46dp"
-        tools:layout_editor_absoluteY="79dp" />
 
 </LinearLayout>

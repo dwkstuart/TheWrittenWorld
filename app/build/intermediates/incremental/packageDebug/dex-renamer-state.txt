@@ -1,4 +1,4 @@
-#Wed Jul 26 11:04:01 BST 2017
+#Fri Jul 28 10:40:01 BST 2017
 base.0=C\:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run_b4e54d7fd8ff9a7a50d010fcca0b8010dd239cfb
 renamed.1=classes2.dex
 renamed.0=classes.dex

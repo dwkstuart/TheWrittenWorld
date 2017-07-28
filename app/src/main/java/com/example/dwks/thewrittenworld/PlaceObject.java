@@ -1,6 +1,9 @@
 package com.example.dwks.thewrittenworld;
 
+import android.support.annotation.NonNull;
+
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.database.DataSnapshot;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,12 +12,13 @@ import org.json.JSONObject;
  * Created by User on 22/07/2017.
  */
 
-public class PlaceObject {
+public class PlaceObject implements Comparable<PlaceObject> {
 
     private static final String TAG = PlaceObject.class.getSimpleName();
     //Instance vaiables
     private int id; //Database unique ID
-    private String header, bookTitle, snippet, authorFirstName, autherSecondName, longDescription, associatedQuote, imageURI;
+    private String header, location, authorFirstName, autherSecondName, longDescription, associatedQuote, imageURI;
+    private String bookTitle = "default";
     private double latitude, longitude;
     private boolean visited = false; //mark if have visited or not
     private JSONObject jsonObject;
@@ -28,6 +32,24 @@ public class PlaceObject {
         this.initialisePOIObject();
     }
 
+
+
+    //Constructor for getting place object from Firebase query
+    public PlaceObject(DataSnapshot dataSnapshot){
+        bookTitle = dataSnapshot.child("title").getValue().toString();
+        latitude = Double.parseDouble(dataSnapshot.child("latitude").getValue().toString());
+        longitude = Double.parseDouble(dataSnapshot.child("longitude").getValue().toString());
+        String authorname = dataSnapshot.child("author").toString();
+        String[] names = authorname.split(" ");
+        authorFirstName = names[0];
+        autherSecondName = names[1];
+        db_key = dataSnapshot.child("db_key").getValue().toString();
+        latLng = new LatLng(latitude, longitude);
+        location = dataSnapshot.child("location").getValue().toString();
+
+
+    }
+
     public String getDb_key() {
         return db_key;
     }
@@ -39,7 +61,7 @@ public class PlaceObject {
             bookTitle = jsonObject.getString("title");
             latitude = jsonObject.getDouble("latitude");
             longitude = jsonObject.getDouble("longitude");
-            snippet = jsonObject.getString("location");
+            location = jsonObject.getString("location");
             String authorname = jsonObject.getString("author");
             String[] names = authorname.split(" ");
             authorFirstName = names[0];
@@ -52,7 +74,9 @@ public class PlaceObject {
         }
     }
 
-
+    public String getLocation() {
+        return location;
+    }
 
 
     public int getId() {
@@ -67,9 +91,6 @@ public class PlaceObject {
         return bookTitle;
     }
 
-    public String getSnippet() {
-        return snippet;
-    }
 
 
     public String getAuthorFirstName() {
@@ -93,20 +114,12 @@ public class PlaceObject {
     }
 
     public double getLatitude() {
-        try {
-            jsonObject.getString("latitude");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
         return latitude;
     }
 
     public double getLongitude() {
-        try {
-            jsonObject.getDouble("longitude");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
         return longitude;
     }
 
@@ -121,5 +134,15 @@ public class PlaceObject {
     public LatLng getLatLng() {
         return latLng;
     }
+
+
+
+    @Override
+    public int compareTo(@NonNull PlaceObject other) {
+       int compare = db_key.compareTo(other.db_key);
+        return compare;
+    }
+
+
 
 }

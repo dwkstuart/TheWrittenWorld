@@ -1,6 +1,6 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:2:1-45:12
+ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:2:1-47:12
 	package
 		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:3:5-47
 		INJECTED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml
@@ -17,8 +17,12 @@ uses-permission#android.permission.ACCESS_FINE_LOCATION
 ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:5:5-79
 	android:name
 		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:5:22-76
+uses-permission#android.permission.WRITE_INTERNAL_STORAGE
+ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:6:5-81
+	android:name
+		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:6:22-78
 application
-ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:7:5-43:19
+ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:8:5-45:19
 MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\User\.android\build-cache\1a05de58919ffcead1e1f3c43f5f709c754f8b87\output\AndroidManifest.xml:9:5-20
 MERGED from [com.google.android.gms:play-services-location:10.0.1] C:\Users\User\.android\build-cache\b9977deb2e466b2da81d278811187337f84dcd0c\output\AndroidManifest.xml:4:5-19
 MERGED from [com.google.android.gms:play-services-maps:10.0.1] C:\Users\User\.android\build-cache\68d55ff93245d2bbd58d40692960a12f99039521\output\AndroidManifest.xml:24:5-19
@@ -42,59 +46,59 @@ MERGED from [com.android.support:support-core-ui:26.0.0-alpha1] C:\Users\User\.a
 MERGED from [com.android.support:support-core-utils:26.0.0-alpha1] C:\Users\User\.android\build-cache\a624da7c8f4b87b334f4ac61f23967968ccb1d44\output\AndroidManifest.xml:29:5-20
 MERGED from [com.android.support:support-compat:26.0.0-alpha1] C:\Users\User\.android\build-cache\6925acf3b7252ffae71b899197c886071507aa66\output\AndroidManifest.xml:29:5-20
 	android:label
-		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:10:9-41
+		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:11:9-41
 	android:supportsRtl
-		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:12:9-35
+		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:13:9-35
 	android:roundIcon
-		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:11:9-54
+		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:12:9-54
 	android:allowBackup
-		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:8:9-35
+		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:9:9-35
 	android:icon
-		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:9:9-43
+		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:10:9-43
 	android:theme
-		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:13:9-40
+		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:14:9-40
 meta-data#com.google.android.geo.API_KEY
-ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:23:9-25:71
+ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:24:9-26:71
 	android:value
-		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:25:13-68
+		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:26:13-68
 	android:name
-		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:24:13-58
+		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:25:13-58
 activity#com.example.dwks.thewrittenworld.MainActivity
-ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:27:9-33:20
+ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:28:9-34:20
 	android:name
-		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:27:19-47
+		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:28:19-47
 intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
-ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:28:13-32:29
+ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:29:13-33:29
 action#android.intent.action.MAIN
-ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:29:17-69
+ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:30:17-69
 	android:name
-		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:29:25-66
+		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:30:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:31:17-77
+ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:32:17-77
 	android:name
-		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:31:27-74
+		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:32:27-74
 activity#com.example.dwks.thewrittenworld.ChooseAndLoad
-ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:34:9-51
+ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:35:9-51
 	android:name
-		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:34:19-48
+		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:35:19-48
 activity#com.example.dwks.thewrittenworld.MapDisplay
-ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:35:9-48
+ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:36:9-48
 	android:name
-		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:35:19-45
+		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:36:19-45
 service#com.example.dwks.thewrittenworld.GeofenceIntentService
-ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:37:9-39:40
+ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:38:9-40:40
 	android:exported
-		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:39:13-37
+		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:40:13-37
 	android:name
-		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:38:13-50
+		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:39:13-50
 activity#com.example.dwks.thewrittenworld.PlaceDetailScreen
-ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:41:9-55
+ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:42:9-55
 	android:name
-		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:41:19-52
+		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:42:19-52
 activity#com.example.dwks.thewrittenworld.ListOfPlaces
-ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:42:9-59
+ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:43:9-50
 	android:name
-		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:42:19-47
+		ADDED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml:43:19-47
 uses-sdk
 INJECTED from C:\Users\User\Workspace\TheWrittenWorld\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 MERGED from [com.android.support.constraint:constraint-layout:1.0.2] C:\Users\User\.android\build-cache\1a05de58919ffcead1e1f3c43f5f709c754f8b87\output\AndroidManifest.xml:5:5-7:41

@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -23,6 +25,9 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
     private MapFragment mapFragment;
     private GoogleMap map;
     private PlaceObject placeObject;
+    private TextView titleText;
+    private TextView locationName;
+    private CheckBox checkBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +36,8 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
 
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.small_map);
         mapFragment.getMapAsync(this);
+        checkBox = (CheckBox) findViewById(R.id.visitedCheckBox);
+
 
         Intent input = getIntent();
         if (input.hasExtra("ID")) {
@@ -38,15 +45,34 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
 
             String id = input.getStringExtra("ID");
             Log.d(TAG, "recieved id string =" + id);
-            Constants constants = Constants.getInstance();
-            Log.d(TAG, "Map populated =  " + constants.places.isEmpty());
-            Log.d(TAG, "object exists" + constants.places.containsKey(id));
+            final Constants constants = Constants.getInstance();
+            Log.d(TAG, "HashMap empty =  " + constants.places.isEmpty());
+            Log.d(TAG, "object exists?  " + constants.places.containsKey(id));
+            Log.d(TAG, constants.places.toString());
             placeObject = constants.places.get(id);
             if (placeObject != null) {
                 String title = placeObject.getBookTitle();
-                TextView titleText = (TextView) findViewById(R.id.place_title);
+                titleText = (TextView) findViewById(R.id.place_title);
                 titleText.setText(title);
+                locationName = (TextView) findViewById(R.id.details);
+                locationName.setText(placeObject.getLocation());
+                checkBox.setChecked(placeObject.isVisited());
+                Log.d(TAG, "Place visited = " + placeObject.isVisited());
+
             }
+            checkBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (checkBox.isChecked()){
+                        placeObject.setVisited(true);
+                    }
+                    else if(checkBox.isChecked()== false)
+                        placeObject.setVisited(false);
+                Log.d(TAG, "On click result, is visited = " + placeObject.isVisited());
+                }
+
+            });
+
         }
 
     }
@@ -66,9 +92,12 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
         }
         map.setMyLocationEnabled(true);
        //place marker of point of interest and zoom camera
+        if(placeObject != null){
         LatLng placeLocation = new LatLng(placeObject.getLatitude(),placeObject.getLongitude());
         map.addMarker(new MarkerOptions().position(placeLocation));
         CameraPosition cameraPosition = new CameraPosition.Builder().target(placeLocation).zoom(10).build();
-        map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));}
     }
+
+
 }

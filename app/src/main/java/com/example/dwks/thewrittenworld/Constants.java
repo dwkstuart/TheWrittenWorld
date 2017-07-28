@@ -4,6 +4,7 @@ import com.google.android.gms.location.Geofence;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeSet;
 
 /**
  * Created by User on 22/07/2017.
@@ -23,6 +24,9 @@ class Constants {
     //Map with IDs from DB linked to objects, used to retrieve places when intents are fired
     public static HashMap<String,PlaceObject> places = new HashMap<String ,PlaceObject>();
 
-    public static ArrayList<PlaceObject> placeObjects = new ArrayList<>();
+    public static TreeSet<PlaceObject> placeObjects = new TreeSet<PlaceObject>();
     public static ArrayList<Geofence> geofenceArrayList = new ArrayList<Geofence>();
+
+    public  static  HashMap<PlaceObject, Geofence> placeObjectGeofenceHashMap = new HashMap<>();
+
 }

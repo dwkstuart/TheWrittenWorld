@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /**
  * Created by User on 21/07/2017.
  */
-
+//TODO probably don't need this class if just using Firebase
 //Creates a list of point of view objects to be used in the list view and for creating markers in the map view//
 
 public class PlacesListCreator {

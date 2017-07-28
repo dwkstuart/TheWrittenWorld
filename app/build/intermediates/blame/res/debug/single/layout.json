@@ -88,12 +88,12 @@
         "source": "C:\\Users\\User\\.android\\build-cache\\4c1e60902cd2b2154a951afd1ec436800b8d4192\\output\\res\\layout\\design_navigation_menu.xml"
     },
     {
-        "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\layout\\design_navigation_menu_item.xml",
-        "source": "C:\\Users\\User\\.android\\build-cache\\4c1e60902cd2b2154a951afd1ec436800b8d4192\\output\\res\\layout\\design_navigation_menu_item.xml"
-    },
-    {
         "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\layout\\activity_place_detail_screen.xml",
         "source": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\src\\main\\res\\layout\\activity_place_detail_screen.xml"
+    },
+    {
+        "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\layout\\design_navigation_menu_item.xml",
+        "source": "C:\\Users\\User\\.android\\build-cache\\4c1e60902cd2b2154a951afd1ec436800b8d4192\\output\\res\\layout\\design_navigation_menu_item.xml"
     },
     {
         "merged": "C:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\res\\merged\\debug\\layout\\select_dialog_singlechoice_material.xml",
