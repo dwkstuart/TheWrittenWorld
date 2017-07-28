@@ -228,8 +228,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     }
 
     private void saveAsJson(){
-        String convertToJson  = new ObjectMappper
-        onstants.placeObjects
+      
     }
 
     //TODO is this used now we have AysnTask
