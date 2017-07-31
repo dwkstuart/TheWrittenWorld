@@ -13,6 +13,7 @@ import android.util.Log;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,10 +60,19 @@ public class GeofenceIntentService extends IntentService {
                 Log.d(TAG, "Place Object = " + placeTriggered.toString());
                 if (placeTriggered != null){
                 Log.d(TAG, "place trigger is not null" + placeTriggered.getBookTitle());
+                    //remove triggered fence
+                    List<String> remove = new ArrayList<>();
+                    remove.add(triggeredID);
+                    Log.d(TAG, remove.toString());
+                    CreateGeofence geohandler = new CreateGeofence(this.getApplicationContext());
+                    geohandler.removeGeofence(remove);
+
                 this.sendNotification(placeTriggered.getBookTitle(), placeTriggered.getDb_key());
+
+
+
                 }
                 Log.d("Intent Service", "Triggered");
-
 
             }
 

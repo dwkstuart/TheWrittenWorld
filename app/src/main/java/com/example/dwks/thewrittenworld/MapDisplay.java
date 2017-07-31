@@ -92,6 +92,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         map.setMyLocationEnabled(true);
         //userLastLocation = map.getMyLocation();
 
+
         if(userLastLocation != null){
             Log.d(TAG, "user location is not null");
             LatLng currentspot = new LatLng(userLastLocation.getLatitude(),userLastLocation.getLongitude());

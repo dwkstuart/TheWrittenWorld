@@ -1,18 +1,13 @@
 package com.example.dwks.thewrittenworld;
 //Class to confirm data to use, calls methods to make geofences and has buttons to launch Map and List View
 
-import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -22,16 +17,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingApi;
-import com.google.android.gms.location.GeofencingRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,17 +30,15 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.TreeSet;
 
 //TODO Decide whether to update to just use GeofencingApiClient
 
-public class ChooseAndLoad extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        com.google.android.gms.location.LocationListener, ResultCallback<Status> {
+public class ChooseAndLoad extends AppCompatActivity implements View.OnClickListener,
+        ResultCallback<Status> {
 
 
-
+    private CreateGeofence gfG;
     private final static String TAG = ChooseAndLoad.class.getSimpleName();
     //Buttons and text fields
 
@@ -84,8 +72,8 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
         setUpButtons();
         getTitles();
-        pendingIntent = null;
-        geofencingApi = LocationServices.GeofencingApi;
+//        pendingIntent = null;
+//        geofencingApi = LocationServices.GeofencingApi;
 
 
 
@@ -155,9 +143,16 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
     }
 
+    @Override
+    public void onResult(@NonNull Status status) {
+
+    }
+
     class LoadAysncTask extends AsyncTask<String, Integer, Boolean>{
         Constants constants = Constants.getInstance();
         String searchTerm;
+        //TODO
+
         FirebaseDatabase database;
         DatabaseReference myRef;
 
@@ -278,21 +273,25 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
                 new LoadAysncTask(title).execute();
 
- //               saveToCache();
 
                 break;
 
             case R.id.createGeofences:
-                this.populateGeofenceList();
-                createGoogleApi();
-                if (constants.geofenceArrayList.size()>0){
-                googleApiClient.connect();
-                createFenceButton.setEnabled(false);}
-                else infoText.setText("You've visited everywhere in the list!");
+                gfG =new CreateGeofence(this.getApplicationContext());
+                gfG.startGeofence();
+//                this.populateGeofenceList();
+//                createGoogleApi();
+//                if (constants.geofenceArrayList.size()>0){
+//                googleApiClient.connect();
+//                createFenceButton.setEnabled(false);}
+//                else infoText.setText("You've visited everywhere in the list!");
+
                 break;
 
             case R.id.removeGeofences:
-                this.removeAllGeofence();
+
+                gfG.removeAllGeofence();
+
                 break;
 
             case R.id.ViewMap:
@@ -310,142 +309,142 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
 
 
-
-    private void createGoogleApi() {
-        Log.d(TAG, "create API");
-        if (googleApiClient == null) {
-            googleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
-        }
-    }
-
-
-    /**Creates the geofencing requests
-     * modified from Google GeoLocation sample code
-     * avaialable at https://github.com/googlesamples/android-play-location/tree/master/Geofencing
-     *
-     * @return
-     */
-    private GeofencingRequest getGeofencingRequest() {
-        GeofencingRequest builder = new GeofencingRequest.Builder()
-                .addGeofences(constants.geofenceArrayList)
-                .setInitialTrigger(Geofence.GEOFENCE_TRANSITION_ENTER)
-                .setInitialTrigger(Geofence.GEOFENCE_TRANSITION_DWELL)
-                .build();
-        return builder;
-    }
-
-    /**Populates the constant geofence list with the places that have not yet been marked as visited
-     *
-     */
-    private void populateGeofenceList() {
-
-
-
-        for (PlaceObject place : constants.placeObjects) {
-            //Create a geofence object for each place not ticked off as visited
-            if (!place.isVisited()) {
-                Geofence geofence = (new Geofence.Builder()
-                        .setRequestId(place.getDb_key())
-                        .setCircularRegion(place.getLatitude(), place.getLongitude(), 800)
-                        .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
-                        .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
-                        .setLoiteringDelay(5000)
-                        .setExpirationDuration(Geofence.NEVER_EXPIRE)
-                        .build());
-
-                //TODO check if this arraylist needs to be constant
-                constants.geofenceArrayList.add(geofence);
-                //Need to be able to link a geofence to an object to remove geofences individual from Pending Monitoring list
-                constants.placeObjectGeofenceHashMap.put(place,geofence);
-            }
-
-        }
-        int arraylength = constants.geofenceArrayList.size();
-
-    }
-
-
-
-     private PendingIntent getGeofenceIntent(){
-         if (pendingIntent != null)
-             return pendingIntent;
-
-         Intent intent = new Intent(this, GeofenceIntentService.class);
-         PendingIntent pendingIntent = PendingIntent.getService(this,123,intent, PendingIntent.FLAG_UPDATE_CURRENT);
-         return pendingIntent;
-     }
-    //add a request to the monitoring list
-    private void addGeofences(GeofencingRequest request) {
-
-        pendingIntent = getGeofenceIntent();
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        //TODO add pending intent creator, add transition class
-        geofencingApi.addGeofences(
-                googleApiClient,
-                request,
-                pendingIntent).setResultCallback(this);
-
-        Log.d(TAG,"geofence added" + request.toString());
-
-    }
-
-    private  void removeAllGeofence(){
-        if(googleApiClient != null) {
-            Log.d(TAG, "Remove fences");
-            List<String> removeAll = new ArrayList<String>();
-            for (Geofence fence : constants.geofenceArrayList) {
-                removeAll.add(fence.getRequestId());
-            }
-            Log.d(TAG, "Size of list" + constants.geofenceArrayList.size());
-            constants.geofenceArrayList.clear();
-            geofencingApi.removeGeofences(googleApiClient, removeAll);
-            Log.d(TAG, "Should be 0 " + constants.geofenceArrayList.size());
-        }
-
-    }
-
-
-
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        addGeofences(getGeofencingRequest());
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-            Toast.makeText(this, "Google API Connection Failed", Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onResult(@NonNull Status status) {
-
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-
-    }
+//
+//    private void createGoogleApi() {
+//        Log.d(TAG, "create API");
+//        if (googleApiClient == null) {
+//            googleApiClient = new GoogleApiClient.Builder(this)
+//                    .addConnectionCallbacks(this)
+//                    .addOnConnectionFailedListener(this)
+//                    .addApi(LocationServices.API)
+//                    .build();
+//        }
+//    }
+//
+//
+//    /**Creates the geofencing requests
+//     * modified from Google GeoLocation sample code
+//     * avaialable at https://github.com/googlesamples/android-play-location/tree/master/Geofencing
+//     *
+//     * @return
+//     */
+//    private GeofencingRequest getGeofencingRequest() {
+//        GeofencingRequest builder = new GeofencingRequest.Builder()
+//                .addGeofences(constants.geofenceArrayList)
+//                .setInitialTrigger(Geofence.GEOFENCE_TRANSITION_ENTER)
+//                .setInitialTrigger(Geofence.GEOFENCE_TRANSITION_DWELL)
+//                .build();
+//        return builder;
+//    }
+//
+//    /**Populates the constant geofence list with the places that have not yet been marked as visited
+//     *
+//     */
+//    private void populateGeofenceList() {
+//
+//
+//
+//        for (PlaceObject place : constants.placeObjects) {
+//            //Create a geofence object for each place not ticked off as visited
+//            if (!place.isVisited()) {
+//                Geofence geofence = (new Geofence.Builder()
+//                        .setRequestId(place.getDb_key())
+//                        .setCircularRegion(place.getLatitude(), place.getLongitude(), 800)
+//                        .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+//                        .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
+//                        .setLoiteringDelay(5000)
+//                        .setExpirationDuration(Geofence.NEVER_EXPIRE)
+//                        .build());
+//
+//                //TODO check if this arraylist needs to be constant
+//                constants.geofenceArrayList.add(geofence);
+//                //Need to be able to link a geofence to an object to remove geofences individual from Pending Monitoring list
+//                constants.placeObjectGeofenceHashMap.put(place,geofence);
+//            }
+//
+//        }
+//        int arraylength = constants.geofenceArrayList.size();
+//
+//    }
+//
+//
+//
+//     private PendingIntent getGeofenceIntent(){
+//         if (pendingIntent != null)
+//             return pendingIntent;
+//
+//         Intent intent = new Intent(this, GeofenceIntentService.class);
+//         PendingIntent pendingIntent = PendingIntent.getService(this,123,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//         return pendingIntent;
+//     }
+//    //add a request to the monitoring list
+//    private void addGeofences(GeofencingRequest request) {
+//
+//        pendingIntent = getGeofenceIntent();
+//
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            // TODO: Consider calling
+//            //    ActivityCompat#requestPermissions
+//            // here to request the missing permissions, and then overriding
+//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//            //                                          int[] grantResults)
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for ActivityCompat#requestPermissions for more details.
+//            return;
+//        }
+//        //TODO add pending intent creator, add transition class
+//        geofencingApi.addGeofences(
+//                googleApiClient,
+//                request,
+//                pendingIntent).setResultCallback(this);
+//
+//        Log.d(TAG,"geofence added" + request.toString());
+//
+//    }
+//
+//    private  void removeAllGeofence(){
+//        if(googleApiClient != null) {
+//            Log.d(TAG, "Remove fences");
+//            List<String> removeAll = new ArrayList<String>();
+//            for (Geofence fence : constants.geofenceArrayList) {
+//                removeAll.add(fence.getRequestId());
+//            }
+//            Log.d(TAG, "Size of list" + constants.geofenceArrayList.size());
+//            constants.geofenceArrayList.clear();
+//            geofencingApi.removeGeofences(googleApiClient, removeAll);
+//            Log.d(TAG, "Should be 0 " + constants.geofenceArrayList.size());
+//        }
+//
+//    }
+//
+//
+//
+//
+//    @Override
+//    public void onConnected(@Nullable Bundle bundle) {
+//        addGeofences(getGeofencingRequest());
+//
+//    }
+//
+//    @Override
+//    public void onConnectionSuspended(int i) {
+//
+//    }
+//
+//    @Override
+//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+//            Toast.makeText(this, "Google API Connection Failed", Toast.LENGTH_LONG).show();
+//    }
+//
+//    @Override
+//    public void onResult(@NonNull Status status) {
+//
+//    }
+//
+//    @Override
+//    public void onLocationChanged(Location location) {
+//
+//    }
 
     private class onItemSelectedListener implements android.widget.AdapterView.OnItemSelectedListener {
         @Override
