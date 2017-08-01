@@ -277,7 +277,9 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 break;
 
             case R.id.createGeofences:
+                Log.d(TAG, "Create geofence button pressed");
                 gfG =new CreateGeofence(this.getApplicationContext());
+                Log.d(TAG, gfG.toString());
                 gfG.startGeofence();
 //                this.populateGeofenceList();
 //                createGoogleApi();

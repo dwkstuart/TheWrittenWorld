@@ -49,16 +49,18 @@ public class CreateGeofence extends Application implements  GoogleApiClient.Conn
     public CreateGeofence(Context appContext) {
     Log.d(TAG,"Create geofences constructed");
         context = appContext;
-        pendingIntent = null;
-        geofencingApi = LocationServices.GeofencingApi;
+
 
 
     }
-        public void startGeofence(){
-
-
-            this.createGoogleApi();
+    public void startGeofence(){
+        pendingIntent = null;
+        geofencingApi = LocationServices.GeofencingApi;
+        this.populateGeofenceList();
+        Log.d(TAG, "Start geofence");
+        this.createGoogleApi();
             if (constants.geofenceArrayList.size()>0){
+
                 googleApiClient.connect();}
 
         }
@@ -133,7 +135,7 @@ public class CreateGeofence extends Application implements  GoogleApiClient.Conn
     }
     //add a request to the monitoring list
     private void addGeofences(GeofencingRequest request) {
-
+        Log.d(TAG, "Add Geofenced method");
         pendingIntent = getGeofenceIntent();
 
         if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

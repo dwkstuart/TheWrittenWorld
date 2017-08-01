@@ -68,6 +68,7 @@ public class GeofenceIntentService extends IntentService implements
         context = this.getApplicationContext();
     }
 
+
     private void createGoogleApi() {
         Log.d(TAG, "create API");
         Log.d(TAG, this.toString());

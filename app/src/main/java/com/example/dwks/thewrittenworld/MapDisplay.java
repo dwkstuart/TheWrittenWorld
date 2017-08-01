@@ -78,10 +78,14 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
 
         if(constants.lastLocation != null){
-            Log.d(TAG, "user location is not null");
+            Log.d(TAG, "Map display user location is not null" + constants.lastLocation.getLatitude());
+
             LatLng currentspot = new LatLng(constants.lastLocation.getLatitude(),constants.lastLocation.getLongitude());
-            CameraPosition cameraPosition = new CameraPosition.Builder().target(currentspot).build();
+            Log.d(TAG,currentspot.toString());
+            CameraPosition cameraPosition = new CameraPosition.Builder().target(currentspot).zoom(7).build();
+
             map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
         }
         addMarkers();
     }
