@@ -5,13 +5,23 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +33,19 @@ import java.util.List;
  * TODO: Customize class - update intent actions, extra parameters and static
  * helper methods.
  */
-public class GeofenceIntentService extends IntentService {
+public class GeofenceIntentService extends IntentService implements
+        GoogleApiClient.ConnectionCallbacks,
+        com.google.android.gms.location.LocationListener,
+        GoogleApiClient.OnConnectionFailedListener {
 
     private Constants constants = Constants.getInstance();
-
+    private Context context;
     private static final String TAG = "GeofenceTransitionsIS";
+
+    //GoogleApi Client
+    //Geofencing
+   // private GeofencingApi geofencingApi;
+    private GoogleApiClient googleApiClient;
 
     /**
      * This constructor is required, and calls the super IntentService(String)
@@ -41,7 +59,31 @@ public class GeofenceIntentService extends IntentService {
 
 
     @Override
+    public void onStart(@Nullable Intent intent, int startId) {
+        super.onStart(intent, startId);
+
+        Log.d(TAG,"Service started");
+        createGoogleApi();
+        googleApiClient.connect();
+        context = this.getApplicationContext();
+    }
+
+    private void createGoogleApi() {
+        Log.d(TAG, "create API");
+        Log.d(TAG, this.toString());
+        if (googleApiClient == null) {
+            googleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+    }
+
+
+    @Override
     protected void onHandleIntent(Intent intent) {
+
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
                 if (geofencingEvent.hasError())
                     return;
@@ -127,20 +169,67 @@ public class GeofenceIntentService extends IntentService {
         mNotificationManager.notify(0, builder.build());
     }
 
-    /**
-     * Maps geofence transition types to their human-readable equivalents.
-     *
-     * @param transitionType    A transition type constant defined in Geofence
-     * @return                  A String indicating the type of transition
-     */
-    private String getTransitionString(int transitionType) {
-        switch (transitionType) {
-            case Geofence.GEOFENCE_TRANSITION_ENTER:
-                return "Entered";
-            case Geofence.GEOFENCE_TRANSITION_DWELL:
-                return "sitting inside";
-            default:
-                return "Unknown transition";
+
+    /////////// //////////////////////////////
+    // instance variables for fetching location
+    private LocationRequest locationRequest;
+    private static final int UPDATEINTERVAL = 20000;
+    private static final int FASTESTINTERVAL = 15000;
+
+    private static final int REQ_PERMISSION = 999;
+
+    private void startLocationUpdates() {
+        locationRequest = LocationRequest.create()
+                .setFastestInterval(FASTESTINTERVAL)
+                .setInterval(UPDATEINTERVAL)
+                .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "Check self permissions and returns");
+        //    requestPermissions();
+            return;
         }
+        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+
+
     }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        //Log.d(TAG, "Location changed, Lat= " + location.getLatitude() + " Long = " + location.getLongitude());
+        startLocationUpdates();
+       // Log.d(TAG, String.valueOf(constants.lastLocation.getLatitude()));
+    }
+
+
+    private void findLocation() {
+        Log.d(TAG, "findLocation()");
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+           // requestPermissions();
+            return;
+        }
+        constants.lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+
+        startLocationUpdates();
+
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        findLocation();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+
+
 }

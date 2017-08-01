@@ -289,7 +289,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 break;
 
             case R.id.removeGeofences:
-
+                Log.d(TAG, gfG.toString());
                 gfG.removeAllGeofence();
 
                 break;

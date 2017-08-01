@@ -55,7 +55,8 @@ public class CreateGeofence extends Application implements  GoogleApiClient.Conn
 
     }
         public void startGeofence(){
-            this.populateGeofenceList();
+
+
             this.createGoogleApi();
             if (constants.geofenceArrayList.size()>0){
                 googleApiClient.connect();}
@@ -166,7 +167,9 @@ public class CreateGeofence extends Application implements  GoogleApiClient.Conn
             }
             Log.d(TAG, "Size of list" + constants.geofenceArrayList.size());
             constants.geofenceArrayList.clear();
-            geofencingApi.removeGeofences(googleApiClient, removeAll);
+            if(!removeAll.isEmpty()) {
+                geofencingApi.removeGeofences(googleApiClient, removeAll);
+            }
             Log.d(TAG, "Should be 0 " + constants.geofenceArrayList.size());
         }
     }

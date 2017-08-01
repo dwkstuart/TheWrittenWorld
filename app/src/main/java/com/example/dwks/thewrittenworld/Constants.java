@@ -1,6 +1,9 @@
 package com.example.dwks.thewrittenworld;
 
+import android.location.Location;
+
 import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.LocationServices;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,5 +31,7 @@ class Constants {
     public static ArrayList<Geofence> geofenceArrayList = new ArrayList<Geofence>();
 
     public  static  HashMap<PlaceObject, Geofence> placeObjectGeofenceHashMap = new HashMap<>();
+
+    public Location lastLocation;
 
 }
