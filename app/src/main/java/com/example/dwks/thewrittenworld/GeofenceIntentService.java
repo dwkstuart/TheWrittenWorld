@@ -1,6 +1,7 @@
 package com.example.dwks.thewrittenworld;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -157,10 +158,12 @@ public class GeofenceIntentService extends IntentService implements
                 .setColor(Color.RED)
                 .setContentTitle(notificationDetails)
                 .setContentText("Test")
-                .setContentIntent(notificationPendingIntent);
+                .setContentIntent(notificationPendingIntent
+                );
 
         // Dismiss notification once the user touches it.
         builder.setAutoCancel(true);
+        builder.setDefaults(Notification.DEFAULT_ALL);
 
         // Get an instance of the Notification manager
         NotificationManager mNotificationManager =
@@ -230,6 +233,7 @@ public class GeofenceIntentService extends IntentService implements
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
 
 
 

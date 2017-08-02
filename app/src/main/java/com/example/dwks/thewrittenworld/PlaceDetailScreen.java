@@ -1,6 +1,6 @@
 package com.example.dwks.thewrittenworld;
 
-import android.Manifest;
+        import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -9,17 +9,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
+        import com.bumptech.glide.Glide;
+        import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.OnStreetViewPanoramaReadyCallback;
+import com.google.android.gms.maps.StreetViewPanorama;
+import com.google.android.gms.maps.StreetViewPanoramaFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.StreetViewPanoramaCamera;
 
-public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCallback {
+public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCallback, OnStreetViewPanoramaReadyCallback {
 
     private static final String TAG = PlaceDetailScreen.class.getSimpleName();
     private MapFragment mapFragment;
@@ -28,6 +34,8 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
     private TextView titleText;
     private TextView locationName;
     private CheckBox checkBox;
+    private StreetViewPanoramaFragment streetViewPanoramaFragment;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +44,15 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
 
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.small_map);
         mapFragment.getMapAsync(this);
+
+        imageView =(ImageView) findViewById(R.id.detailImage);
+
+        String test2 ="http://ste.india.com/sites/default/files/2016/01/21/452974-monkey.jpg";
+
+        //String testURL = "https://maps.googleapis.com/maps/api/streetview?size=600x300&location=46.414382,10.013988&heading=151.78&pitch=-0.76&key=" + getString(R.string.GOOGLE_API_KEY);
+
+//        streetViewPanoramaFragment = (StreetViewPanoramaFragment) getFragmentManager().findFragmentById(R.id.streetviewpanorama);
+//        streetViewPanoramaFragment.getStreetViewPanoramaAsync(this);
         checkBox = (CheckBox) findViewById(R.id.visitedCheckBox);
 
 
@@ -68,11 +85,14 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
                     }
                     else if(checkBox.isChecked()== false)
                         placeObject.setVisited(false);
-                Log.d(TAG, "On click result, is visited = " + placeObject.isVisited());
+                    Log.d(TAG, "On click result, is visited = " + placeObject.isVisited());
                 }
 
             });
 
+            String testURL = "https://maps.googleapis.com/maps/api/streetview?size=600x300&location="+ placeObject.getLatitude()+"," +placeObject.getLongitude()+"&heading=151.78&pitch=-0.76&key=" + getString(R.string.GOOGLE_API_KEY);
+
+            Glide.with(getApplicationContext()).load(testURL).into(imageView);
         }
 
     }
@@ -91,13 +111,31 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
             return;
         }
         map.setMyLocationEnabled(true);
-       //place marker of point of interest and zoom camera
+        //place marker of point of interest and zoom camera
         if(placeObject != null){
-        LatLng placeLocation = new LatLng(placeObject.getLatitude(),placeObject.getLongitude());
-        map.addMarker(new MarkerOptions().position(placeLocation));
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(placeLocation).zoom(10).build();
-        map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));}
+            LatLng placeLocation = new LatLng(placeObject.getLatitude(),placeObject.getLongitude());
+            map.addMarker(new MarkerOptions().position(placeLocation));
+            CameraPosition cameraPosition = new CameraPosition.Builder().target(placeLocation).zoom(10).build();
+            map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));}
     }
 
 
+    @Override
+    public void onStreetViewPanoramaReady(StreetViewPanorama streetViewPanorama) {
+        streetViewPanorama.setPosition(placeObject.getLatLng());
+        streetViewPanorama.setStreetNamesEnabled(false);
+        float ZOOM_BY = 0.5f;
+        StreetViewPanoramaCamera svCamera = new StreetViewPanoramaCamera.Builder()
+                .zoom(streetViewPanorama.getPanoramaCamera().zoom + ZOOM_BY)
+                .build();
+        streetViewPanorama.animateTo(svCamera, 0);
+
+    }
+
+    private String uriBuilder(){
+
+
+
+        return null;
+    }
 }

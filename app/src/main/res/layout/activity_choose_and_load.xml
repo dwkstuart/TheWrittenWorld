@@ -19,6 +19,7 @@
         android:id="@+id/titleSpinner"
         android:layout_width="326dp"
         android:layout_height="wrap_content"
+        android:background="@color/common_google_signin_btn_text_light_default"
         android:dropDownWidth="300dp"
         android:padding="10dp">
 

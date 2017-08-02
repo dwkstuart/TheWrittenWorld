@@ -280,7 +280,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 //                Snackbar.LENGTH_INDEFINITE)
 //                .setAction(getString(actionStringId), listener).show();
 //    }
-//
+
 //    @Override
 //    public void onLocationChanged(Location location) {
 //        //Log.d(TAG, "Location changed, Lat= " + location.getLatitude() + " Long = " + location.getLongitude());
