@@ -14,10 +14,7 @@ gen/
 out/
 
 # Gradle files
-#build/
 
-#tempfile
-#app/build
 
 
 # Local configuration file (sdk path, etc)
