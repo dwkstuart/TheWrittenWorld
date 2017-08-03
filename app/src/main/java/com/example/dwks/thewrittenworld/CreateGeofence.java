@@ -49,13 +49,16 @@ public class CreateGeofence extends Application implements  GoogleApiClient.Conn
     public CreateGeofence(Context appContext) {
     Log.d(TAG,"Create geofences constructed");
         context = appContext;
+        //initialise APIs
+        createGoogleApi();
+
+        geofencingApi = LocationServices.GeofencingApi;
 
 
 
     }
     public void startGeofence(){
         pendingIntent = null;
-        geofencingApi = LocationServices.GeofencingApi;
         this.populateGeofenceList();
         Log.d(TAG, "Start geofence");
         this.createGoogleApi();
@@ -179,10 +182,14 @@ public class CreateGeofence extends Application implements  GoogleApiClient.Conn
      public  void removeGeofence(List<String> toBeRemovedFence){
          Log.d(TAG, "Remove fences method call");
 
-         if(googleApiClient != null) {
-            Log.d(TAG, "Remove fence");
+         if(googleApiClient != null && googleApiClient.isConnected()) {
+            Log.d(TAG, "Remove fence called, API client not null");
             List<String> removeFrence = toBeRemovedFence;
-            geofencingApi.removeGeofences(googleApiClient, removeFrence);
+             if(geofencingApi !=null) {
+              Log.d(TAG, "geofencing APi is not null");
+
+                 geofencingApi.removeGeofences(googleApiClient, removeFrence);
+             }
         }
     }
 

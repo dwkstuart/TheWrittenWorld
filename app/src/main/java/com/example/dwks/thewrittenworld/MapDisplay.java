@@ -1,6 +1,8 @@
 package com.example.dwks.thewrittenworld;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -92,6 +94,13 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
     private void addMarkers() {
         MarkerOptions markerOptions;
+        Log.d(TAG, "add markers");
+
+        SharedPreferences pref = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+        String jsonSet = pref.getString("PLACE_OBJECT_MAP", "pref does not exist");
+
+
+
 
         for (PlaceObject placeObject : constants.placeObjects) {
             if (!placeObject.isVisited()) {

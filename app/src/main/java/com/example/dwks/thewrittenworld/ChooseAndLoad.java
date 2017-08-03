@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -22,14 +21,20 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.GeofencingApi;
+import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 //TODO Decide whether to update to just use GeofencingApiClient
@@ -47,7 +52,6 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     private Button createFenceButton;
     private Button loadMap;
     private Button showList;
-    private EditText listName;
     private TextView infoText;
     private Spinner titleDrop;
 
@@ -58,6 +62,8 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     private GeofencingApi geofencingApi;
     private PendingIntent pendingIntent;
     private GoogleApiClient googleApiClient;
+    //get instance of Firebase database to use for queries
+    //private FirebaseDatabase database = FirebaseDatabase.getInstance();
 
 
     private ArrayList<String> spinnerData = new ArrayList<String>();
@@ -73,16 +79,19 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         setUpButtons();
         getTitles();
 //        pendingIntent = null;
-//        geofencingApi = LocationServices.GeofencingApi;
+          geofencingApi = LocationServices.GeofencingApi;
 
 
 
 
     }
 
+    /**Gets the distinct book titles on
+     *
+     */
     private void getTitles(){
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+       FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("places/");
         final Query titleQuery = myRef.orderByChild("title");
 
@@ -127,10 +136,10 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         deleteFences =(Button) findViewById(R.id.removeGeofences);
         loadMap = (Button) findViewById(R.id.ViewMap);
         showList = (Button) findViewById(R.id.ViewList);
-        //listName = (EditText) findViewById(R.id.enterListName);
         infoText = (TextView) findViewById(R.id.InfoBox);
         titleDrop= (Spinner) findViewById(R.id.titleSpinner);
         spinnerData.add("Choose a Book");
+
 
         loadPlacesButton.setOnClickListener(this);
         createFenceButton.setOnClickListener(this);
@@ -139,6 +148,8 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         deleteFences.setOnClickListener(this);
         showList.setEnabled(false);
         createFenceButton.setEnabled(false);
+        infoText.setText("Places Selected : " + constants.placeObjects.size());
+
 
 
     }
@@ -153,7 +164,9 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         String searchTerm;
         //TODO
 
-        FirebaseDatabase database;
+      //  FirebaseDatabase database;
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
         DatabaseReference myRef;
 
         public LoadAysncTask(String title) {
@@ -163,16 +176,12 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            database = FirebaseDatabase.getInstance();
 
             myRef = database.getReference("places/");
+            Log.d(TAG, myRef.toString());
         }
 
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-
-        }
 
         @Override
         protected Boolean doInBackground(String... strings) {
@@ -190,12 +199,22 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                         constants.placeObjects.add(object);
                         //populate HashMap
                         constants.places.put(object.getDb_key(), object);
+
                     }
                     infoText.setText("Number of Results : " + constants.placeObjects.size());
                     createFenceButton.setEnabled(true);
                     showList.setEnabled(true);
 
-
+//                    ArrayList<PlaceObject> tester = new ArrayList<PlaceObject>();
+//                    for(PlaceObject placeObject2 : constants.placeObjects){
+//                        tester.add(placeObject2);
+//                    }
+//
+//                    String jsonPlaceObjectsSet = saveAsJson(tester);
+//                    SharedPreferences sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
+//                    SharedPreferences.Editor editor = sharedPreferences.edit();
+//                    editor.putString("PLACE_OBJECT_SET", jsonPlaceObjectsSet);
+//                    editor.commit();
                 }
 
 
@@ -222,9 +241,26 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
     }
 
-    private void saveAsJson(){
+    //TEST
+    private String saveAsJson(){
+        Gson gson = new Gson();
+        String jsonPlacesList = gson.toJson(constants.geofenceArrayList);
+        String jsonHashMap =  gson.toJson(constants.places);
+        String jsonTreeSet = gson.toJson(constants.placeObjects);
 
+        //list parsing not working as Geofences can't becreated that way
+        Log.d(TAG, "Json List "  + jsonPlacesList);
+        Log.d(TAG,  "Json Tree Set" + jsonTreeSet);
+        Log.d(TAG, "Json Hash Map" + jsonHashMap);
+
+        Map<String, PlaceObject> mapJson = gson.fromJson(jsonHashMap, new TypeToken<HashMap<String ,PlaceObject>>() {}.getType());
+        Log.d(TAG, mapJson.toString());
+
+        Set<PlaceObject> set = gson.fromJson(jsonTreeSet, new TypeToken<TreeSet<PlaceObject>>() {}.getType());
+        Log.d(TAG, "Geofence parsed set" + set.toString());
+        return jsonPlacesList;
     }
+
 
     //TODO is this used now we have AysnTask
     private void loadPlaces(String booktitle) {
@@ -263,6 +299,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
 //
 
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -287,13 +324,14 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 //                googleApiClient.connect();
 //                createFenceButton.setEnabled(false);}
 //                else infoText.setText("You've visited everywhere in the list!");
-
+                saveAsJson();
                 break;
 
             case R.id.removeGeofences:
-                Log.d(TAG, gfG.toString());
-                gfG.removeAllGeofence();
-
+                if (gfG != null) {
+                    Log.d(TAG, gfG.toString());
+                    gfG.removeAllGeofence();
+                }
                 break;
 
             case R.id.ViewMap:
