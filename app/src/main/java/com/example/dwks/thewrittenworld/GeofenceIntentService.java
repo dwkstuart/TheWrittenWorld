@@ -24,7 +24,6 @@ import com.google.android.gms.location.GeofencingEvent;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,6 +41,8 @@ public class GeofenceIntentService extends IntentService implements
     private Constants constants = Constants.getInstance();
     private Context context;
     private static final String TAG = "GeofenceTransitionsIS";
+    public static final String ADD = "ADD";
+    public static final String REMOVE = "REMOVE";
 
     //GoogleApi Client
     //Geofencing
@@ -105,11 +106,11 @@ public class GeofenceIntentService extends IntentService implements
                 if (placeTriggered != null){
                 Log.d(TAG, "place trigger is not null" + placeTriggered.getBookTitle());
                     //remove triggered fence
-                    List<String> remove = new ArrayList<>();
-                    remove.add(triggeredID);
-                    Log.d(TAG, "geofence to remove = " + remove.toString());
-                    CreateGeofence geohandler = new CreateGeofence(this.getApplicationContext());
-                    geohandler.removeGeofence(remove);
+//                    List<String> remove = new ArrayList<>();
+//                    remove.add(triggeredID);
+//                    Log.d(TAG, "geofence to remove = " + remove.toString());
+                    CreateGeofence geohandler = new CreateGeofence(this.getApplicationContext(),REMOVE, triggeredID);
+                    //geohandler.removeGeofence(triggeredID);
                     Log.d(TAG,constants.geofenceArrayList.toString());
 
                 this.sendNotification(placeTriggered.getBookTitle(), placeTriggered.getDb_key());

@@ -42,18 +42,28 @@ public class CreateGeofence extends Application implements  GoogleApiClient.Conn
     private GeofencingApi geofencingApi;
     private PendingIntent pendingIntent;
     private GoogleApiClient googleApiClient;
-
+    private String request_type ="";
+    private String removeFence;
     private static final String TAG = CreateGeofence.class.getSimpleName();
     Constants constants = Constants.getInstance();
 
-    public CreateGeofence(Context appContext) {
+    public CreateGeofence(Context appContext, String request_type, String fenceToBeRemoved) {
     Log.d(TAG,"Create geofences constructed");
+        this.request_type = request_type;
+        this.removeFence = fenceToBeRemoved;
         context = appContext;
         //initialise APIs
         createGoogleApi();
 
-        geofencingApi = LocationServices.GeofencingApi;
+        boolean testEqualityADD = (request_type.equals(ADD));
+        boolean testEqualityREMOVE = (request_type.equals(REMOVE));
 
+        Log.d(TAG, request_type + " equals ADD = " + testEqualityADD + " equals REMOVE " + testEqualityREMOVE);
+
+        geofencingApi = LocationServices.GeofencingApi;
+        if(request_type.equals(REMOVE)){
+            googleApiClient.connect();
+        }
 
 
     }
@@ -179,26 +189,38 @@ public class CreateGeofence extends Application implements  GoogleApiClient.Conn
         }
     }
 
-     public  void removeGeofence(List<String> toBeRemovedFence){
+     public  void removeGeofence(String toBeRemovedFence){
          Log.d(TAG, "Remove fences method call");
+
+         List<String> remove = new ArrayList<>();
+         remove.add(toBeRemovedFence);
+         Log.d(TAG, "geofence to remove = " + remove.toString());
 
          if(googleApiClient != null && googleApiClient.isConnected()) {
             Log.d(TAG, "Remove fence called, API client not null");
-            List<String> removeFrence = toBeRemovedFence;
              if(geofencingApi !=null) {
               Log.d(TAG, "geofencing APi is not null");
 
-                 geofencingApi.removeGeofences(googleApiClient, removeFrence);
+                 geofencingApi.removeGeofences(googleApiClient, remove);
              }
         }
     }
 
+    public static final String ADD = "ADD";
+    public static final String REMOVE = "REMOVE";
 
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        addGeofences(getGeofencingRequest());
-
+       Log.d(TAG, "on connected, request type = " + request_type);
+        if ( request_type.equals(ADD)) {
+           addGeofences(getGeofencingRequest());
+           Log.d(TAG, "add geofence called, request type = " + request_type);
+       }
+       else if (request_type.equals(REMOVE)){
+            removeGeofence(removeFence);
+            Log.d(TAG, "Remove Geofence " +  removeFence);
+        }
     }
 
     @Override

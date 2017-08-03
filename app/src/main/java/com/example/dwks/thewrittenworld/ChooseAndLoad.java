@@ -249,15 +249,15 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         String jsonTreeSet = gson.toJson(constants.placeObjects);
 
         //list parsing not working as Geofences can't becreated that way
-        Log.d(TAG, "Json List "  + jsonPlacesList);
-        Log.d(TAG,  "Json Tree Set" + jsonTreeSet);
-        Log.d(TAG, "Json Hash Map" + jsonHashMap);
+//        Log.d(TAG, "Json List "  + jsonPlacesList);
+//        Log.d(TAG,  "Json Tree Set" + jsonTreeSet);
+//        Log.d(TAG, "Json Hash Map" + jsonHashMap);
 
         Map<String, PlaceObject> mapJson = gson.fromJson(jsonHashMap, new TypeToken<HashMap<String ,PlaceObject>>() {}.getType());
-        Log.d(TAG, mapJson.toString());
+//        Log.d(TAG, mapJson.toString());
 
         Set<PlaceObject> set = gson.fromJson(jsonTreeSet, new TypeToken<TreeSet<PlaceObject>>() {}.getType());
-        Log.d(TAG, "Geofence parsed set" + set.toString());
+ //       Log.d(TAG, "Geofence parsed set" + set.toString());
         return jsonPlacesList;
     }
 
@@ -315,7 +315,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
             case R.id.createGeofences:
                 Log.d(TAG, "Create geofence button pressed");
-                gfG =new CreateGeofence(this.getApplicationContext());
+                gfG =new CreateGeofence(this.getApplicationContext(), "ADD", null);
                 Log.d(TAG, gfG.toString());
                 gfG.startGeofence();
 //                this.populateGeofenceList();
