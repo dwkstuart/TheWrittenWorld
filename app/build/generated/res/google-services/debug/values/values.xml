@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">689550046132-a49nemmdpv0aelnt3avo6r33ratpcbd4.apps.googleusercontent.com</string>
+    <string name="firebase_database_url" translatable="false">https://thewrittenworld-dc08c.firebaseio.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">689550046132</string>
+    <string name="google_api_key" translatable="false">AIzaSyCLhva2p-W4zJkcCPQRwDkNxW3T01hYFTI</string>
+    <string name="google_app_id" translatable="false">1:689550046132:android:ef53154c00a3744d</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCLhva2p-W4zJkcCPQRwDkNxW3T01hYFTI</string>
+    <string name="google_storage_bucket" translatable="false">thewrittenworld-dc08c.appspot.com</string>
+</resources>
