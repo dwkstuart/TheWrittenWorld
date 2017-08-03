@@ -139,6 +139,7 @@ public class PlaceObject implements Comparable<PlaceObject> {
 
     @Override
     public int compareTo(@NonNull PlaceObject other) {
+
        int compare = db_key.compareTo(other.db_key);
         return compare;
     }

@@ -1,16 +1,15 @@
 package com.example.dwks.thewrittenworld;
 
-import android.Manifest;
-import android.content.Intent;
-import android.content.pm.PackageManager;
+        import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -28,6 +27,7 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
     private TextView titleText;
     private TextView locationName;
     private CheckBox checkBox;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +36,8 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
 
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.small_map);
         mapFragment.getMapAsync(this);
+
+        imageView =(ImageView) findViewById(R.id.detailImage);
         checkBox = (CheckBox) findViewById(R.id.visitedCheckBox);
 
 
@@ -68,11 +70,15 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
                     }
                     else if(checkBox.isChecked()== false)
                         placeObject.setVisited(false);
-                Log.d(TAG, "On click result, is visited = " + placeObject.isVisited());
+                    Log.d(TAG, "On click result, is visited = " + placeObject.isVisited());
                 }
 
             });
 
+            //Used for default if DB does not contain any preset image
+            String googleStreetViewImage = "https://maps.googleapis.com/maps/api/streetview?size=600x300&location="+ placeObject.getLatitude()+"," +placeObject.getLongitude()+"&heading=151.78&pitch=-0.76&key=" + getString(R.string.GOOGLE_API_KEY);
+
+            Glide.with(getApplicationContext()).load(googleStreetViewImage).into(imageView);
         }
 
     }
@@ -80,23 +86,15 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
+
+        //noinspection MissingPermission, asked for on starting app
         map.setMyLocationEnabled(true);
-       //place marker of point of interest and zoom camera
+        //place marker of point of interest and zoom camera
         if(placeObject != null){
-        LatLng placeLocation = new LatLng(placeObject.getLatitude(),placeObject.getLongitude());
-        map.addMarker(new MarkerOptions().position(placeLocation));
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(placeLocation).zoom(10).build();
-        map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));}
+            LatLng placeLocation = new LatLng(placeObject.getLatitude(),placeObject.getLongitude());
+            map.addMarker(new MarkerOptions().position(placeLocation));
+            CameraPosition cameraPosition = new CameraPosition.Builder().target(placeLocation).zoom(10).build();
+            map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));}
     }
 
 

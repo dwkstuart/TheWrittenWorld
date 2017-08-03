@@ -8,6 +8,8 @@ import android.widget.LinearLayout;
 
 public class ListOfPlaces extends AppCompatActivity {
 
+    PlaceAdapter placeAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,7 +23,7 @@ public class ListOfPlaces extends AppCompatActivity {
 
         recyclerView.setHasFixedSize(true);
 
-        PlaceAdapter placeAdapter = new PlaceAdapter();
+        placeAdapter = new PlaceAdapter();
 
         recyclerView.setAdapter(placeAdapter);
 
