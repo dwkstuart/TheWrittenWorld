@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
         loadScreen = (Button) findViewById(R.id.setup);
 //        final Intent i = new Intent(this, ChooseAndLoad.class);
+       //TODO handle case where location is not found
         final Intent i = new Intent(this, FindNearby.class);
 
         loadScreen.setOnClickListener(new View.OnClickListener() {

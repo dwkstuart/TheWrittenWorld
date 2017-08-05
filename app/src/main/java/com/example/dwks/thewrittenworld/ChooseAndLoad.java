@@ -64,9 +64,9 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
     private ArrayList<String> spinnerData = new ArrayList<String>();
 
-    private TreeSet<PlaceObject> nearbyLong = new TreeSet<PlaceObject>();
-    private TreeSet<PlaceObject> nearbyLat = new TreeSet<PlaceObject>();
-    private TreeSet<PlaceObject> nearbyObject;
+//    private TreeSet<PlaceObject> nearbyLong = new TreeSet<PlaceObject>();
+//    private TreeSet<PlaceObject> nearbyLat = new TreeSet<PlaceObject>();
+//    private TreeSet<PlaceObject> nearbyObject;
 
     Constants constants = Constants.getInstance();
 
@@ -80,9 +80,9 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         getTitles();
 //        pendingIntent = null;
           geofencingApi = LocationServices.GeofencingApi;
-
-        if(constants.lastLocation != null)
-        findNearby();
+        infoText.setText("Number of markers set : " + constants.placeObjects.size());
+        //if(constants.lastLocation != null)
+        //findNearby();
 
 
 
@@ -164,59 +164,59 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
 
 
-    private void findNearby(){
-
-        Toast.makeText(getApplicationContext(),"Searching for Nearby Places", Toast.LENGTH_LONG).show();
-
-        Database db = new Database();
-
-        db.nearbyPlacesLatitude(new firebaseDataListener() {
-                @Override
-                public void onStart() {
-
-                }
-
-                @Override
-                public void onSuccess(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    PlaceObject object = new PlaceObject(postSnapshot);
-                    Log.d(TAG, object.getBookTitle() + " " + object.getLongitude());
-                    nearbyLong.add(object);
-                }
-                    Log.d(TAG,"Longitude set = " + nearbyLong.toString());
-            }
-
-                @Override
-                public void onFailed(DatabaseError databaseError) {
-
-                }
-
-            });
-
-            db.nearbyPlacesLongitude(new firebaseDataListener() {
-                @Override
-                public void onStart() {
-
-                }
-
-                @Override
-                public void onSuccess(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                        PlaceObject object = new PlaceObject(postSnapshot);
-                        nearbyLat.add(object);
-                        Log.d(TAG, object.getBookTitle() + "latitude = " + object.getLatitude());
-                    }
-                    Log.d(TAG,"Latitude set = " + nearbyLat.toString());
-                }
-
-                @Override
-                public void onFailed(DatabaseError databaseError) {
-
-                }
-            });
-
-
-    }
+//    private void findNearby(){
+//
+//        Toast.makeText(getApplicationContext(),"Searching for Nearby Places", Toast.LENGTH_LONG).show();
+//
+//        Database db = new Database();
+//
+//        db.nearbyPlacesLatitude(new firebaseDataListener() {
+//                @Override
+//                public void onStart() {
+//
+//                }
+//
+//                @Override
+//                public void onSuccess(DataSnapshot dataSnapshot) {
+//                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+//                    PlaceObject object = new PlaceObject(postSnapshot);
+//                    Log.d(TAG, object.getBookTitle() + " " + object.getLongitude());
+//                    nearbyLong.add(object);
+//                }
+//                    Log.d(TAG,"Longitude set = " + nearbyLong.toString());
+//            }
+//
+//                @Override
+//                public void onFailed(DatabaseError databaseError) {
+//
+//                }
+//
+//            });
+//
+//            db.nearbyPlacesLongitude(new firebaseDataListener() {
+//                @Override
+//                public void onStart() {
+//
+//                }
+//
+//                @Override
+//                public void onSuccess(DataSnapshot dataSnapshot) {
+//                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+//                        PlaceObject object = new PlaceObject(postSnapshot);
+//                        nearbyLat.add(object);
+//                        Log.d(TAG, object.getBookTitle() + "latitude = " + object.getLatitude());
+//                    }
+//                    Log.d(TAG,"Latitude set = " + nearbyLat.toString());
+//                }
+//
+//                @Override
+//                public void onFailed(DatabaseError databaseError) {
+//
+//                }
+//            });
+//
+//
+//    }
 
 
 
@@ -276,19 +276,19 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
 //
 
-    private void addNearByPlaces(){
-        nearbyObject = nearbyLat;
-        nearbyObject.retainAll(nearbyLong);
-        Toast.makeText(getApplicationContext(),"Found " + nearbyObject.size() + " places nearby", Toast.LENGTH_LONG).show();
-
-        Log.d(TAG, "Nearby places" + nearbyObject.toString());
-        constants.placeObjects.addAll(nearbyObject);
-
-        for(PlaceObject object:constants.placeObjects) {
-            constants.places.put(object.getDb_key(),object);
-        }
-        Log.d(TAG,constants.places.toString());
-    }
+//    private void addNearByPlaces(){
+//        nearbyObject = nearbyLat;
+//        nearbyObject.retainAll(nearbyLong);
+//        Toast.makeText(getApplicationContext(),"Found " + nearbyObject.size() + " places nearby", Toast.LENGTH_LONG).show();
+//
+//        Log.d(TAG, "Nearby places" + nearbyObject.toString());
+//        constants.placeObjects.addAll(nearbyObject);
+//
+//        for(PlaceObject object:constants.placeObjects) {
+//            constants.places.put(object.getDb_key(),object);
+//        }
+//        Log.d(TAG,constants.places.toString());
+//    }
 
     private void findBookPlaces(String title){
           Database db = new Database();
@@ -328,7 +328,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
             case R.id.loadPlaces:
 
-                this.addNearByPlaces();
+                //this.addNearByPlaces();
                 String title = String.valueOf(selectedTitle);
                 this.findBookPlaces(title);
 

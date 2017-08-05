@@ -32,7 +32,13 @@ public class FindNearby extends AppCompatActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_nearby);
+        if (constants.lastLocation != null){
         this.locateNearby();
+        }
+        else {
+            findNearby.setEnabled(false);
+            Toast.makeText(this.getApplicationContext(),"User location not found", Toast.LENGTH_LONG).show();
+        }
         this.setButtons();
     }
 

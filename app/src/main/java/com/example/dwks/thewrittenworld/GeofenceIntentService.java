@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -135,6 +134,8 @@ public class GeofenceIntentService extends IntentService implements
         // Create an explicit content Intent that starts the main Activity.
         Intent notificationIntent = new Intent(getApplicationContext(), PlaceDetailScreen.class);
         notificationIntent.putExtra("ID", ID);
+        PlaceObject placeTriggered = constants.places.get(ID);
+
 
         // Construct a task stack.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
@@ -153,13 +154,10 @@ public class GeofenceIntentService extends IntentService implements
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 
         // Define the notification settings.
-        builder.setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
-                // In a real app, you may want to use a library like Volley
-                // to decode the Bitmap.
-
-                .setColor(Color.RED)
+        builder.setSmallIcon(R.drawable.book_outlint_marker)
+               //.setColor(Color.RED)
                 .setContentTitle(notificationDetails)
-                .setContentText("Test")
+                .setContentText(placeTriggered.getLocation())
                 .setContentIntent(notificationPendingIntent
                 );
 
