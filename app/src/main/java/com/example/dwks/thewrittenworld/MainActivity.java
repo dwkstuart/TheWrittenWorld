@@ -29,7 +29,9 @@ public class MainActivity extends AppCompatActivity {
         startService(service);
 
         loadScreen = (Button) findViewById(R.id.setup);
-        final Intent i = new Intent(this, ChooseAndLoad.class);
+//        final Intent i = new Intent(this, ChooseAndLoad.class);
+        final Intent i = new Intent(this, FindNearby.class);
+
         loadScreen.setOnClickListener(new View.OnClickListener() {
             @Override
 
