@@ -93,6 +93,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     }
 
     private void addMarkers() {
+        markersCollection.clear();
         MarkerOptions markerOptions;
         Log.d(TAG, "add markers");
 
@@ -111,11 +112,23 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                 marker.setTag(placeObject);
                 markersCollection.put(marker, placeObject);
             }
+            else if (placeObject.isVisited()) {
+                Log.d(TAG, "Place is visited add marker loop" + placeObject.getBookTitle());
+                markerOptions = new MarkerOptions().
+                        position(placeObject.getLatLng())
+                        .title(placeObject.getBookTitle())
+                        .rotation(90);
+                Marker marker = map.addMarker(markerOptions);
+                marker.setTag(placeObject);
+                markersCollection.put(marker, placeObject);
+            }
 
         }
     }
 
-//    private void findLocation() {
+
+
+    //    private void findLocation() {
 //        Log.d(TAG, "findLocation()");
 //        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 //            requestPermissions();

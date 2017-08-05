@@ -3,7 +3,6 @@ package com.example.dwks.thewrittenworld;
 
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -24,10 +24,6 @@ import com.google.android.gms.location.GeofencingApi;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -68,6 +64,10 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
     private ArrayList<String> spinnerData = new ArrayList<String>();
 
+    private TreeSet<PlaceObject> nearbyLong = new TreeSet<PlaceObject>();
+    private TreeSet<PlaceObject> nearbyLat = new TreeSet<PlaceObject>();
+    private TreeSet<PlaceObject> nearbyObject;
+
     Constants constants = Constants.getInstance();
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
@@ -81,6 +81,8 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 //        pendingIntent = null;
           geofencingApi = LocationServices.GeofencingApi;
 
+        if(constants.lastLocation != null)
+        findNearby();
 
 
 
@@ -91,31 +93,32 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
      */
     private void getTitles(){
 
-       FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("places/");
-        final Query titleQuery = myRef.orderByChild("title");
-
-      titleQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                TreeSet<String> titles = new TreeSet<String>();
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    PlaceObject object = new PlaceObject(postSnapshot);
-                    titles.add(object.getBookTitle());
+        Database db =   new Database();
+        db.getUniqueTitles(new firebaseDataListener() {
+                @Override
+                public void onStart() {
+                    Toast.makeText(getApplicationContext(),"Searching Database", Toast.LENGTH_LONG).show();
 
                 }
-                for (String title:titles){
-                    spinnerData.add(title);
+
+                @Override
+                public void onSuccess(DataSnapshot dataSnapshot) {
+                    TreeSet<String> titles = new TreeSet<String>();
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        PlaceObject object = new PlaceObject(postSnapshot);
+                        titles.add(object.getBookTitle());
+
+                    }
+                    for (String title:titles){
+                        spinnerData.add(title);
+                    }
+
                 }
 
-            }
+                @Override
+                public void onFailed(DatabaseError databaseError) {
 
-
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                ;
-            }
+                }
 
         });
 
@@ -159,87 +162,65 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
     }
 
-    class LoadAysncTask extends AsyncTask<String, Integer, Boolean>{
-        Constants constants = Constants.getInstance();
-        String searchTerm;
-        //TODO
-
-      //  FirebaseDatabase database;
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        DatabaseReference myRef;
-
-        public LoadAysncTask(String title) {
-        this.searchTerm = title;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            database = FirebaseDatabase.getInstance();
-
-            myRef = database.getReference("places/");
-            Log.d(TAG, myRef.toString());
-        }
 
 
-        @Override
-        protected Boolean doInBackground(String... strings) {
+    private void findNearby(){
 
+        Toast.makeText(getApplicationContext(),"Searching for Nearby Places", Toast.LENGTH_LONG).show();
 
+        Database db = new Database();
 
-            final Query recentQuery = myRef.orderByChild("title").equalTo(searchTerm);
-
-            recentQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+        db.nearbyPlacesLatitude(new firebaseDataListener() {
                 @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                   int counter =0;
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                        PlaceObject object = new PlaceObject(postSnapshot);
-                        constants.placeObjects.add(object);
-                        //populate HashMap
-                        constants.places.put(object.getDb_key(), object);
+                public void onStart() {
 
-                    }
-                    infoText.setText("Number of Results : " + constants.placeObjects.size());
-                    createFenceButton.setEnabled(true);
-                    showList.setEnabled(true);
-
-//                    ArrayList<PlaceObject> tester = new ArrayList<PlaceObject>();
-//                    for(PlaceObject placeObject2 : constants.placeObjects){
-//                        tester.add(placeObject2);
-//                    }
-//
-//                    String jsonPlaceObjectsSet = saveAsJson(tester);
-//                    SharedPreferences sharedPreferences = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-//                    SharedPreferences.Editor editor = sharedPreferences.edit();
-//                    editor.putString("PLACE_OBJECT_SET", jsonPlaceObjectsSet);
-//                    editor.commit();
                 }
 
-
+                @Override
+                public void onSuccess(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    PlaceObject object = new PlaceObject(postSnapshot);
+                    Log.d(TAG, object.getBookTitle() + " " + object.getLongitude());
+                    nearbyLong.add(object);
+                }
+                    Log.d(TAG,"Longitude set = " + nearbyLong.toString());
+            }
 
                 @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    ;
+                public void onFailed(DatabaseError databaseError) {
+
                 }
 
             });
 
-            return true;
+            db.nearbyPlacesLongitude(new firebaseDataListener() {
+                @Override
+                public void onStart() {
 
+                }
 
-        }
+                @Override
+                public void onSuccess(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        PlaceObject object = new PlaceObject(postSnapshot);
+                        nearbyLat.add(object);
+                        Log.d(TAG, object.getBookTitle() + "latitude = " + object.getLatitude());
+                    }
+                    Log.d(TAG,"Latitude set = " + nearbyLat.toString());
+                }
 
+                @Override
+                public void onFailed(DatabaseError databaseError) {
 
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-
-        }
+                }
+            });
 
 
     }
+
+
+
+
 
     //TEST
     private String saveAsJson(){
@@ -248,74 +229,115 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         String jsonHashMap =  gson.toJson(constants.places);
         String jsonTreeSet = gson.toJson(constants.placeObjects);
 
-        //list parsing not working as Geofences can't becreated that way
-//        Log.d(TAG, "Json List "  + jsonPlacesList);
-//        Log.d(TAG,  "Json Tree Set" + jsonTreeSet);
-//        Log.d(TAG, "Json Hash Map" + jsonHashMap);
 
         Map<String, PlaceObject> mapJson = gson.fromJson(jsonHashMap, new TypeToken<HashMap<String ,PlaceObject>>() {}.getType());
 //        Log.d(TAG, mapJson.toString());
 
         Set<PlaceObject> set = gson.fromJson(jsonTreeSet, new TypeToken<TreeSet<PlaceObject>>() {}.getType());
  //       Log.d(TAG, "Geofence parsed set" + set.toString());
-        return jsonPlacesList;
+        return jsonHashMap;
     }
 
 
-    //TODO is this used now we have AysnTask
-    private void loadPlaces(String booktitle) {
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        final DatabaseReference myRef = database.getReference("places/");
-
-
-        Query recentQuery =myRef.orderByChild("title").equalTo(booktitle);
-        recentQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for(DataSnapshot postSnapshot: dataSnapshot.getChildren()){
-                        PlaceObject object = new PlaceObject(postSnapshot);
-                    Log.d(TAG, object.getDb_key());
-                    constants.placeObjects.add(object);
-                    //populate HashMap
-                    constants.places.put(object.getDb_key(),object);
-
-                }
-
-                Log.d(TAG, "Size of array : " + constants.placeObjects.size());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-
-        });
+//    //TODO is this used now we have AysnTask
+//    private void loadPlaces(String booktitle) {
+//        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+//
+//        final DatabaseReference myRef = database.getReference("places/");
+//
+//
+//        Query recentQuery =myRef.orderByChild("title").equalTo(booktitle);
+//        recentQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                for(DataSnapshot postSnapshot: dataSnapshot.getChildren()){
+//                        PlaceObject object = new PlaceObject(postSnapshot);
+//                    Log.d(TAG, object.getDb_key());
+//                    constants.placeObjects.add(object);
+//                    //populate HashMap
+//                    constants.places.put(object.getDb_key(),object);
+//
+//                }
+//
+//                Log.d(TAG, "Size of array : " + constants.placeObjects.size());
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//
+//        });
 
         //String placesJson = this.assestJsonFile();
 //        constants.placeObjects = new PlacesListCreator(placesJson)
 //                .getPointOfInterestObjects();
-    }
+//    }
 
 //
 
+    private void addNearByPlaces(){
+        nearbyObject = nearbyLat;
+        nearbyObject.retainAll(nearbyLong);
+        Toast.makeText(getApplicationContext(),"Found " + nearbyObject.size() + " places nearby", Toast.LENGTH_LONG).show();
 
+        Log.d(TAG, "Nearby places" + nearbyObject.toString());
+        constants.placeObjects.addAll(nearbyObject);
+
+        for(PlaceObject object:constants.placeObjects) {
+            constants.places.put(object.getDb_key(),object);
+        }
+        Log.d(TAG,constants.places.toString());
+    }
+
+    private void findBookPlaces(String title){
+          Database db = new Database();
+        db.getBookPlaces(title, new firebaseDataListener() {
+
+            @Override
+            public void onStart() {
+                Toast.makeText(getApplicationContext(),"Loading Selection", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    PlaceObject object = new PlaceObject(postSnapshot);
+                    constants.placeObjects.add(object);
+                    //populate HashMap
+                    constants.places.put(object.getDb_key(), object);
+
+                }
+                infoText.setText("Number of Results : " + constants.placeObjects.size());
+                createFenceButton.setEnabled(true);
+                showList.setEnabled(true);
+            }
+
+            @Override
+            public void onFailed(DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
 
             case R.id.loadPlaces:
 
+                this.addNearByPlaces();
                 String title = String.valueOf(selectedTitle);
-
-                new LoadAysncTask(title).execute();
+                this.findBookPlaces(title);
 
 
                 break;
 
             case R.id.createGeofences:
                 Log.d(TAG, "Create geofence button pressed");
-                gfG =new CreateGeofence(this.getApplicationContext(), "ADD", null);
+                gfG = new CreateGeofence(this.getApplicationContext(), "ADD", null);
                 Log.d(TAG, gfG.toString());
                 gfG.startGeofence();
 //                this.populateGeofenceList();
@@ -335,7 +357,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 break;
 
             case R.id.ViewMap:
-                Intent  map = new Intent(this, MapDisplay.class);
+                Intent map = new Intent(this, MapDisplay.class);
                 startActivity(map);
                 break;
 
@@ -485,6 +507,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 //    public void onLocationChanged(Location location) {
 //
 //    }
+
 
     private class onItemSelectedListener implements android.widget.AdapterView.OnItemSelectedListener {
         @Override
