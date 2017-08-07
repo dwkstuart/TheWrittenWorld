@@ -24,13 +24,8 @@ import com.google.android.gms.location.GeofencingApi;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import java.util.TreeSet;
 
 //TODO Decide whether to update to just use GeofencingApiClient
@@ -221,22 +216,38 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
 
 
+//    //TEST
+//    private void saveAsJson(){
+//        Gson gson = new Gson();
+//        String jsonHashMap =  gson.toJson(constants.places);
+//        String jsonTreeSet = gson.toJson(constants.placeObjects);
+//
+//        Log.d(TAG, "Saved as json" + jsonHashMap);
+//
+//        SharedPreferences sharedPref = getSharedPreferences(String.valueOf(R.string.shared_pref_file), Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor= sharedPref.edit();
+//        editor.putString(String.valueOf(R.string.placesHashMap),jsonHashMap);
+//        editor.putString(String.valueOf(R.string.placesTreeSet),jsonTreeSet);
+//
+//        editor.commit();
+//        //Log.d(TAG, "Shared pref get all result" + sharedPref.getAll());
+//    }
+//
+//    private void loadFromJson(){
+//        Gson gson = new Gson();
+//        SharedPreferences sharedPref = getSharedPreferences(String.valueOf(R.string.shared_pref_file), Context.MODE_PRIVATE);
+//
+//        String jsonHashMap =  sharedPref.getString(String.valueOf(R.string.placesHashMap), "");
+//        String jsonTreeSet = sharedPref.getString(String.valueOf(R.string.placesTreeSet), "");
+//
+//
+//        Map<String, PlaceObject> mapJson = gson.fromJson(jsonHashMap, new TypeToken<HashMap<String ,PlaceObject>>() {}.getType());
+//        Log.d(TAG, "Loaded from shared pref " + mapJson.toString());
+//
+//        Set<PlaceObject> set = gson.fromJson(jsonTreeSet, new TypeToken<TreeSet<PlaceObject>>() {}.getType());
+//
+//    }
 
-    //TEST
-    private String saveAsJson(){
-        Gson gson = new Gson();
-        String jsonPlacesList = gson.toJson(constants.geofenceArrayList);
-        String jsonHashMap =  gson.toJson(constants.places);
-        String jsonTreeSet = gson.toJson(constants.placeObjects);
-
-
-        Map<String, PlaceObject> mapJson = gson.fromJson(jsonHashMap, new TypeToken<HashMap<String ,PlaceObject>>() {}.getType());
-//        Log.d(TAG, mapJson.toString());
-
-        Set<PlaceObject> set = gson.fromJson(jsonTreeSet, new TypeToken<TreeSet<PlaceObject>>() {}.getType());
- //       Log.d(TAG, "Geofence parsed set" + set.toString());
-        return jsonHashMap;
-    }
 
 
 //    //TODO is this used now we have AysnTask
@@ -322,6 +333,28 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
 
     }
+
+    //saves current hasmmap and treeset if app is destroyed
+
+
+    //Saves data when pause is called in case app is killed in background
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ProcessSharedPref processSharedPref = new ProcessSharedPref(this);
+        processSharedPref.saveAsJson();
+    }
+
+    //saves current hasmmap and treeset if app is destroyed
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        Log.d(TAG, "onDestroy called");
+        ProcessSharedPref processSharedPref = new ProcessSharedPref(this);
+        processSharedPref.saveAsJson();
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -346,7 +379,6 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 //                googleApiClient.connect();
 //                createFenceButton.setEnabled(false);}
 //                else infoText.setText("You've visited everywhere in the list!");
-                saveAsJson();
                 break;
 
             case R.id.removeGeofences:
@@ -359,6 +391,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
             case R.id.ViewMap:
                 Intent map = new Intent(this, MapDisplay.class);
                 startActivity(map);
+
                 break;
 
             case R.id.ViewList:
@@ -366,6 +399,8 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 startActivity(list);
                 break;
         }
+
+
     }
 
 

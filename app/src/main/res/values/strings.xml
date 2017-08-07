@@ -7,4 +7,8 @@
     <string name="permission_denied_explanation">Permission was denied, but is needed for core
         functionality.</string>
     <string name="GOOGLE_API_KEY">AIzaSyAp7yU76GsAxQzYoDyX2GxgKKMIlY9qmaA</string>
+    <string name="shared_pref_file">sharedpref</string>
+    <string name="placesHashMap">placesHashMap</string>
+    <string name="placesTreeSet">placesTreeSet</string>
+
 </resources>

@@ -13,12 +13,23 @@ import com.google.firebase.database.ValueEventListener;
 
 public class Database {
 
+    private FirebaseDatabase database;
+    static boolean peristanceEnabledCalled = false;
+
+    public Database() {
+        if(!peristanceEnabledCalled) {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+            peristanceEnabledCalled = true;
+        }
+        database= FirebaseDatabase.getInstance();
+    }
 
     //Find list of unique titles
     public void getUniqueTitles(final firebaseDataListener listener){
         listener.onStart();
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+       // FirebaseDatabase database = FirebaseDatabase.getInstance();
+      //database.setPersistenceEnabled(true);
         DatabaseReference myRef = database.getReference("places/");
         final Query titleQuery = myRef.orderByChild("title");
 
@@ -42,7 +53,7 @@ public class Database {
     public void getBookPlaces(String title, final firebaseDataListener listener) {
         listener.onStart();
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+      //  FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("places/");
 
         final Query recentQuery = myRef.orderByChild("title").equalTo(title);
@@ -71,7 +82,7 @@ public class Database {
 
         listener.onStart();
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("places/");
         final Query longitudeQuery = myRef.orderByChild("longitude").startAt(minLong).endAt(maxLong);
 
@@ -96,7 +107,7 @@ public class Database {
         Double maxLat = userLat + 1;
         Double minLat = userLat - 1;
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("places/");
         final Query latitudeQuery = myRef.orderByChild("latitude").startAt(minLat).endAt(maxLat);
 

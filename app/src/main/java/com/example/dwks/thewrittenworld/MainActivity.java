@@ -47,7 +47,10 @@ public class MainActivity extends AppCompatActivity {
 //        mDB = userPlacesDbHelper.getWritableDatabase();
 //        userPlacesDbHelper.onUpgrade(mDB,1,3);
 
-
+        ProcessSharedPref sharedPref = new ProcessSharedPref(this);
+        if (sharedPref.savedDataExists()){
+            Log.d(TAG, "savedData exists = true, load from JSON" );
+        sharedPref.loadFromJson();}
     }
 
     //    ////////////////////////////////////////////////////////////

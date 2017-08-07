@@ -17,7 +17,7 @@ public class PlaceObject implements Comparable<PlaceObject> {
     private static final String TAG = PlaceObject.class.getSimpleName();
     //Instance vaiables
     private int id; //Database unique ID
-    private String header, location, authorFirstName, autherSecondName, longDescription, associatedQuote, imageURI;
+    private String header, location, authorFirstName, authorSecondName, longDescription, associatedQuote, imageURI;
     private String bookTitle = "default";
     private double latitude, longitude;
     private boolean visited = false; //mark if have visited or not
@@ -42,7 +42,7 @@ public class PlaceObject implements Comparable<PlaceObject> {
         String authorname = dataSnapshot.child("author").getValue().toString();
         String[] names = authorname.split(" ");
         authorFirstName = names[0];
-        autherSecondName = names[1];
+        authorSecondName = names[1];
         db_key = dataSnapshot.child("db_key").getValue().toString();
         latLng = new LatLng(latitude, longitude);
         location = dataSnapshot.child("location").getValue().toString();
@@ -65,7 +65,7 @@ public class PlaceObject implements Comparable<PlaceObject> {
             String authorname = jsonObject.getString("author");
             String[] names = authorname.split(" ");
             authorFirstName = names[0];
-            autherSecondName = names[1];
+            authorSecondName = names[1];
             latLng = new LatLng(latitude, longitude);
             db_key = jsonObject.getString("db_key");
 
@@ -97,8 +97,8 @@ public class PlaceObject implements Comparable<PlaceObject> {
         return authorFirstName;
     }
 
-    public String getAutherSecondName() {
-        return autherSecondName;
+    public String getAuthorSecondName() {
+        return authorSecondName;
     }
 
     public String getLongDescription() {

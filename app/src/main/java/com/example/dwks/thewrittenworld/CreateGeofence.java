@@ -48,7 +48,7 @@ public class CreateGeofence extends Application implements  GoogleApiClient.Conn
     Constants constants = Constants.getInstance();
 
     public CreateGeofence(Context appContext, String request_type, String fenceToBeRemoved) {
-    Log.d(TAG,"Create geofences constructed");
+    Log.d(TAG,"Create geofences constructed with request type of " + request_type);
         this.request_type = request_type;
         this.removeFence = fenceToBeRemoved;
         context = appContext;
@@ -58,6 +58,7 @@ public class CreateGeofence extends Application implements  GoogleApiClient.Conn
 
         geofencingApi = LocationServices.GeofencingApi;
         if(request_type.equals(REMOVE)){
+            Log.d(TAG, "Remove request typr if called");
             googleApiClient.connect();
         }
 

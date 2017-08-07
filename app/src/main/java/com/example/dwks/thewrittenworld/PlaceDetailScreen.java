@@ -60,7 +60,7 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
                 locationName = (TextView) findViewById(R.id.details);
                 locationName.setText(placeObject.getLocation());
                 author = (TextView) findViewById(R.id.author);
-                author.setText("Written by " + placeObject.getAuthorFirstName() + " " + placeObject.getAutherSecondName());
+                author.setText("Written by " + placeObject.getAuthorFirstName() + " " + placeObject.getAuthorSecondName());
                 checkBox.setChecked(placeObject.isVisited());
                 Log.d(TAG, "Place visited = " + placeObject.isVisited());
 
