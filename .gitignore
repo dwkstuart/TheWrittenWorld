@@ -14,7 +14,7 @@ gen/
 out/
 
 # Gradle files
-#build/
+build/
 
 #tempfile
 app/build
