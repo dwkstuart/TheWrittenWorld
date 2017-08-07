@@ -1,5 +1,7 @@
 package com.example.dwks.thewrittenworld;
 
+import android.util.Log;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -123,6 +125,23 @@ public class Database {
             }
 
         });
+
+    }
+
+    public void uploadSaveSelection(String name, String jsonfile){
+
+        Log.d("Database", "Create called");
+        Constants constants = Constants.getInstance();
+
+
+        DatabaseReference mRef = database.getReference();
+        DatabaseReference childRef = mRef.child("user");
+        DatabaseReference userID = childRef.child(constants.currentUser.getId());
+        userID.child(name).setValue(jsonfile);
+
+
+
+
 
 
     }

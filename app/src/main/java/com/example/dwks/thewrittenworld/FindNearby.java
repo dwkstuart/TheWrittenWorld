@@ -25,6 +25,7 @@ public class FindNearby extends AppCompatActivity implements View.OnClickListene
 
     private Button findNearby;
     private TextView numNearby;
+    private TextView userName;
     private Button viewMap;
     private Button pickBooks;
 
@@ -36,12 +37,16 @@ public class FindNearby extends AppCompatActivity implements View.OnClickListene
 
         if (constants.lastLocation != null){
         this.locateNearby();
+            findNearby.setEnabled(true);
 
         }
         else {
             findNearby.setEnabled(false);
             Toast.makeText(this.getApplicationContext(),"User location not found", Toast.LENGTH_LONG).show();
         }
+
+        if(constants.currentUser != null)
+        userName.setText(constants.currentUser.getDisplayName());
     }
 
     private void setButtons(){
@@ -50,6 +55,7 @@ public class FindNearby extends AppCompatActivity implements View.OnClickListene
         numNearby = (TextView) findViewById(R.id.numPlacesNearby);
         viewMap = (Button) findViewById(R.id.seeMap);
         pickBooks = (Button) findViewById(R.id.findBook);
+        userName = (TextView) findViewById(R.id.userName);
 
         findNearby.setOnClickListener(this);
         viewMap.setOnClickListener(this);
@@ -125,6 +131,7 @@ public class FindNearby extends AppCompatActivity implements View.OnClickListene
             }
         });
 
+       // db.createSelection("test2", "test2");
 
     }
 
