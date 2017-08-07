@@ -1,7 +1,0 @@
-#Mon Aug 07 12:14:46 BST 2017
-base.0=C\:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run_b4e54d7fd8ff9a7a50d010fcca0b8010dd239cfb
-renamed.1=classes2.dex
-renamed.0=classes.dex
-file.1=C\:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run-bootstrap_ab15112b8d42e550293ba3eea278c7da26870208\\classes.dex
-base.1=C\:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run-bootstrap_ab15112b8d42e550293ba3eea278c7da26870208
-file.0=C\:\\Users\\User\\Workspace\\TheWrittenWorld\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run_b4e54d7fd8ff9a7a50d010fcca0b8010dd239cfb\\classes.dex
