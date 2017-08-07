@@ -39,7 +39,7 @@ public class PlaceObject implements Comparable<PlaceObject> {
         bookTitle = dataSnapshot.child("title").getValue().toString();
         latitude = Double.parseDouble(dataSnapshot.child("latitude").getValue().toString());
         longitude = Double.parseDouble(dataSnapshot.child("longitude").getValue().toString());
-        String authorname = dataSnapshot.child("author").toString();
+        String authorname = dataSnapshot.child("author").getValue().toString();
         String[] names = authorname.split(" ");
         authorFirstName = names[0];
         autherSecondName = names[1];

@@ -4,8 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -20,7 +23,8 @@ import java.util.HashMap;
 
 public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         GoogleMap.OnMapClickListener,
-        GoogleMap.OnMarkerClickListener
+        GoogleMap.OnMarkerClickListener,
+        View.OnClickListener
 {
 
 
@@ -31,6 +35,8 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     private MapFragment mapFragment;
     private GoogleMap map;
 
+   // private Boolean alertSet = false;
+    private FloatingActionButton setAlerts;
 //    //For showing user location
 //    GoogleApiClient googleApiClient;
 //    Location userLastLocation;
@@ -40,6 +46,16 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_display);
         initializeGoogleMap();
+
+        setAlerts = (FloatingActionButton) findViewById(R.id.setAlerts);
+        setAlerts.setOnClickListener(this);
+        //TODO see if we can change this when setting alerts elsewhere, using intents
+        if(!constants.geofenceArrayList.isEmpty() || constants.placeObjects.isEmpty())
+            setAlerts.setVisibility(View.INVISIBLE);
+        //if no alerts are set up and there are selected places
+        if(constants.geofenceArrayList.isEmpty() && !constants.placeObjects.isEmpty())
+            setAlerts.setVisibility(View.VISIBLE);
+
     }
 
     private void initializeGoogleMap() {
@@ -93,6 +109,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     }
 
     private void addMarkers() {
+        markersCollection.clear();
         MarkerOptions markerOptions;
         Log.d(TAG, "add markers");
 
@@ -111,11 +128,48 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                 marker.setTag(placeObject);
                 markersCollection.put(marker, placeObject);
             }
+            else if (placeObject.isVisited()) {
+                Log.d(TAG, "Place is visited add marker loop" + placeObject.getBookTitle());
+                markerOptions = new MarkerOptions().
+                        position(placeObject.getLatLng())
+                        .title(placeObject.getBookTitle())
+                        .rotation(90);
+                Marker marker = map.addMarker(markerOptions);
+                marker.setTag(placeObject);
+                markersCollection.put(marker, placeObject);
+            }
 
         }
     }
 
-//    private void findLocation() {
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.setAlerts){
+        CreateGeofence geofence = new CreateGeofence(this, "ADD", null);
+        geofence.startGeofence();
+            Toast.makeText(this, "Location Alerts Activated", Toast.LENGTH_LONG).show();
+        setAlerts.setVisibility(View.INVISIBLE);
+          //  alertSet = true;
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+       // outState.putBoolean("Alert Set", alertSet);
+        super.onSaveInstanceState(outState);
+
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+//        Boolean alertSet = savedInstanceState.getBoolean("Alert Set");
+//        if (alertSet)
+//        setAlerts.setVisibility(View.INVISIBLE);
+    }
+
+
+    //    private void findLocation() {
 //        Log.d(TAG, "findLocation()");
 //        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 //            requestPermissions();

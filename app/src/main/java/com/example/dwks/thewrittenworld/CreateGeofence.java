@@ -55,10 +55,6 @@ public class CreateGeofence extends Application implements  GoogleApiClient.Conn
         //initialise APIs
         createGoogleApi();
 
-        boolean testEqualityADD = (request_type.equals(ADD));
-        boolean testEqualityREMOVE = (request_type.equals(REMOVE));
-
-        Log.d(TAG, request_type + " equals ADD = " + testEqualityADD + " equals REMOVE " + testEqualityREMOVE);
 
         geofencingApi = LocationServices.GeofencingApi;
         if(request_type.equals(REMOVE)){

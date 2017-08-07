@@ -26,6 +26,7 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
     private PlaceObject placeObject;
     private TextView titleText;
     private TextView locationName;
+    private TextView author;
     private CheckBox checkBox;
     private ImageView imageView;
 
@@ -58,6 +59,8 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
                 titleText.setText(title);
                 locationName = (TextView) findViewById(R.id.details);
                 locationName.setText(placeObject.getLocation());
+                author = (TextView) findViewById(R.id.author);
+                author.setText("Written by " + placeObject.getAuthorFirstName() + " " + placeObject.getAutherSecondName());
                 checkBox.setChecked(placeObject.isVisited());
                 Log.d(TAG, "Place visited = " + placeObject.isVisited());
 
