@@ -131,7 +131,6 @@ public class FindNearby extends AppCompatActivity implements View.OnClickListene
             }
         });
 
-       // db.createSelection("test2", "test2");
 
     }
 

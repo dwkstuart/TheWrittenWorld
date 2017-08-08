@@ -18,7 +18,9 @@ public class Database {
     private FirebaseDatabase database;
     static boolean peristanceEnabledCalled = false;
 
+
     public Database() {
+        Log.d("DATABASE", "Database instance created");
         if(!peristanceEnabledCalled) {
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
             peristanceEnabledCalled = true;
@@ -130,6 +132,7 @@ public class Database {
 
     public void uploadSaveSelection(String name, String jsonfile){
 
+        Log.d("Save params", "Name = " + name + " json file contents : " + jsonfile);
         Log.d("Database", "Create called");
         Constants constants = Constants.getInstance();
 
@@ -138,6 +141,7 @@ public class Database {
         DatabaseReference childRef = mRef.child("user");
         DatabaseReference userID = childRef.child(constants.currentUser.getId());
         userID.child(name).setValue(jsonfile);
+
 
 
 

@@ -395,8 +395,10 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 break;
 
             case R.id.ViewList:
-                Intent list = new Intent(this, ListOfPlaces.class);
-                startActivity(list);
+               // TODO temp Intent list = new Intent(this, ListOfPlaces.class);
+
+                Intent save = new Intent(this, UserFiles.class);
+                startActivity(save);
                 break;
         }
 
