@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
@@ -28,6 +29,7 @@ public class FindNearby extends AppCompatActivity implements View.OnClickListene
     private TextView userName;
     private Button viewMap;
     private Button pickBooks;
+    private Button clearSelection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +47,10 @@ public class FindNearby extends AppCompatActivity implements View.OnClickListene
             Toast.makeText(this.getApplicationContext(),"User location not found", Toast.LENGTH_LONG).show();
         }
 
-        if(constants.currentUser != null)
-        userName.setText(constants.currentUser.getDisplayName());
+        if(FirebaseAuth.getInstance().getCurrentUser() != null)
+            userName.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+        //if(constants.currentUser != null)
+        //userName.setText(constants.currentUser.getDisplayName());
     }
 
     private void setButtons(){
@@ -56,7 +60,9 @@ public class FindNearby extends AppCompatActivity implements View.OnClickListene
         viewMap = (Button) findViewById(R.id.seeMap);
         pickBooks = (Button) findViewById(R.id.findBook);
         userName = (TextView) findViewById(R.id.userName);
+        clearSelection = (Button) findViewById(R.id.clearSelection);
 
+        clearSelection.setOnClickListener(this);
         findNearby.setOnClickListener(this);
         viewMap.setOnClickListener(this);
         pickBooks.setOnClickListener(this);
@@ -154,7 +160,14 @@ public class FindNearby extends AppCompatActivity implements View.OnClickListene
                 Intent addbookintent = new Intent(this, ChooseAndLoad.class);
                 startActivity(addbookintent);
                 break;
-
+            case R.id.clearSelection:
+                new CreateGeofence(this.getApplicationContext(),"",null)
+                        .removeAllGeofence();
+                constants.geofenceArrayList.clear();
+                constants.placeObjectGeofenceHashMap.clear();
+                constants.placeObjects.clear();
+                constants.places.clear();
+              break;
         }
 
 

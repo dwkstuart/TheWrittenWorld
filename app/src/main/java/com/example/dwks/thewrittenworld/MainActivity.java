@@ -24,6 +24,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 //Homepage
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener
@@ -33,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private SignInButton signIn;
     private Button signOut;
     private GoogleApiClient mGooogleApiClient;
+    private FirebaseAuth firebaseAuth;
 
     private static final int RC_SIGN_IN = 9001;
 
@@ -45,6 +49,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         requestPermissions();
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+
         Intent service = new Intent(this, GeofenceIntentService.class);
 
         startService(service);
@@ -86,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         GoogleSignInOptions googleSign = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
+                .requestIdToken(getString(R.string.default_web_client_id))
                 .build();
 
 
@@ -253,8 +261,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
             Log.d(TAG,"Account name = " + acct.getDisplayName());
-            Constants constants = Constants.getInstance();
-            constants.currentUser = acct;
+            firebaseAuth.signInWithCredential(GoogleAuthProvider.getCredential(acct.getIdToken(), null));
+            //Constants constants = Constants.getInstance();
+            //constants.currentUser = acct;
             //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             updateUI(true);
         } else {
@@ -279,12 +288,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     public void onResult(Status status) {
                         // [START_EXCLUDE]
                         updateUI(false);
+                        revokeAccess();
 
                         // [END_EXCLUDE]
                     }
                 });
-        Constants constants = Constants.getInstance();
-        constants.currentUser = null;
+        //Constants constants = Constants.getInstance();
+        //constants.currentUser = null;
     }
     // [END signOut]
 
