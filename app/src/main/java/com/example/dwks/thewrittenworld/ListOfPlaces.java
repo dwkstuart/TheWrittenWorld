@@ -1,31 +1,29 @@
 package com.example.dwks.thewrittenworld;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.widget.LinearLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
-public class ListOfPlaces extends AppCompatActivity {
+public class ListOfPlaces extends AppCompatActivity implements PlaceDetailFragment.OnListFragmentInteractionListener{
 
-    PlaceAdapter placeAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_of_places);
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_places);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayout.VERTICAL, false);
+    }
 
-        recyclerView.setLayoutManager(layoutManager);
+    @Override
+    public void onListFragmentInteraction(PlaceObject item) {
+        Toast.makeText(this, String.valueOf(item.getLongitude()), Toast.LENGTH_LONG).show();
+        String id = item.getDb_key();
 
-        recyclerView.setHasFixedSize(true);
-
-        placeAdapter = new PlaceAdapter();
-
-        recyclerView.setAdapter(placeAdapter);
+        Intent placeDetails = new Intent(this,PlaceDetailScreen.class);
+        placeDetails.putExtra("ID", id);
+        this.startActivity(placeDetails);
 
     }
 }

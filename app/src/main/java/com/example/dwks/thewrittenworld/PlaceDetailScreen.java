@@ -1,6 +1,6 @@
 package com.example.dwks.thewrittenworld;
 
-        import android.content.Intent;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -47,11 +47,9 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
             Log.d(TAG, "Has extra ID is true");
 
             String id = input.getStringExtra("ID");
-            Log.d(TAG, "recieved id string =" + id);
             final Constants constants = Constants.getInstance();
-            Log.d(TAG, "HashMap empty =  " + constants.places.isEmpty());
-            Log.d(TAG, "object exists?  " + constants.places.containsKey(id));
-            Log.d(TAG, constants.places.toString());
+
+
             placeObject = constants.places.get(id);
             if (placeObject != null) {
                 String title = placeObject.getBookTitle();
@@ -73,7 +71,7 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
                     }
                     else if(checkBox.isChecked()== false)
                         placeObject.setVisited(false);
-                    Log.d(TAG, "On click result, is visited = " + placeObject.isVisited());
+
                 }
 
             });
@@ -85,6 +83,7 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
         }
 
     }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {

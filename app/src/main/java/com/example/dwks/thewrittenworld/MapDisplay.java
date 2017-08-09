@@ -1,12 +1,13 @@
 package com.example.dwks.thewrittenworld;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -18,8 +19,12 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 
 import java.util.HashMap;
+import java.util.TreeSet;
 
 public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         GoogleMap.OnMapClickListener,
@@ -34,18 +39,19 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     private HashMap<Marker, PlaceObject> markersCollection = new HashMap<>();
     private MapFragment mapFragment;
     private GoogleMap map;
-
-   // private Boolean alertSet = false;
+    private BottomNavigationView bottomNavMenu;
     private FloatingActionButton setAlerts;
-//    //For showing user location
-//    GoogleApiClient googleApiClient;
-//    Location userLastLocation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_display);
+        setupBottomNavBar();
         initializeGoogleMap();
+
+        Log.d(TAG, "onCreate()");
+
 
         setAlerts = (FloatingActionButton) findViewById(R.id.setAlerts);
         setAlerts.setOnClickListener(this);
@@ -56,6 +62,38 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         if(constants.geofenceArrayList.isEmpty() && !constants.placeObjects.isEmpty())
             setAlerts.setVisibility(View.VISIBLE);
 
+    }
+
+
+    private void setupBottomNavBar(){
+        final Intent lookup = new Intent(this, ChooseAndLoad.class);
+        final Intent save = new Intent(this, UserFiles.class);
+        bottomNavMenu =(BottomNavigationView) findViewById(R.id.mapBottomNavBar);
+        bottomNavMenu.inflateMenu(R.menu.map_bottom_navigation);
+
+        bottomNavMenu.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.displayNearby:
+                        locateNearby();
+                        addNearByPlaces();
+                        break;
+                    case R.id.findPlaces:
+                        startActivity(lookup);
+                        break;
+                    case R.id.save_menu:
+                        if (FirebaseAuth.getInstance().getCurrentUser()==null){
+                            Toast.makeText(getApplicationContext(),"Log in to save or load", Toast.LENGTH_SHORT).show();
+                            break;
+                        }
+                        startActivity(save);
+                        break;
+
+                }
+                return false;
+            }
+        });
     }
 
     private void initializeGoogleMap() {
@@ -72,6 +110,9 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     @Override
     public boolean onMarkerClick(Marker marker) {
 
+        Log.d(TAG, "Marker clicked = " + marker.getId());
+        Log.d(TAG, "On marker click, collection empty? " + markersCollection.isEmpty());
+        Log.d(TAG, "Marker collection to string" + markersCollection.toString());
         PlaceObject pickedPlace = markersCollection.get(marker);
         String id = pickedPlace.getDb_key();
 
@@ -87,13 +128,8 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         map = googleMap;
         map.setOnMarkerClickListener(this);
         map.setBuildingsEnabled(true);
-//        createGoogleApi();
-//        googleApiClient.connect();
-//        String contents = constants.placeObjects.toString();
         //noinspection MissingPermission
         map.setMyLocationEnabled(true);
-        //userLastLocation = map.getMyLocation();
-
 
         if(constants.lastLocation != null){
             Log.d(TAG, "Map display user location is not null" + constants.lastLocation.getLatitude());
@@ -112,12 +148,6 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         markersCollection.clear();
         MarkerOptions markerOptions;
         Log.d(TAG, "add markers");
-
-        SharedPreferences pref = getSharedPreferences("MyPref", Context.MODE_PRIVATE);
-        String jsonSet = pref.getString("PLACE_OBJECT_MAP", "pref does not exist");
-
-
-
 
         for (PlaceObject placeObject : constants.placeObjects) {
             if (!placeObject.isVisited()) {
@@ -149,13 +179,11 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         geofence.startGeofence();
             Toast.makeText(this, "Location Alerts Activated", Toast.LENGTH_LONG).show();
         setAlerts.setVisibility(View.INVISIBLE);
-          //  alertSet = true;
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-       // outState.putBoolean("Alert Set", alertSet);
         super.onSaveInstanceState(outState);
 
     }
@@ -163,190 +191,82 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-//        Boolean alertSet = savedInstanceState.getBoolean("Alert Set");
-//        if (alertSet)
-//        setAlerts.setVisibility(View.INVISIBLE);
+
+    }
+
+    ////////////////////Find Nearby places code /////////////////////
+    private TreeSet<PlaceObject> nearbyLong = new TreeSet<PlaceObject>();
+    private TreeSet<PlaceObject> nearbyLat = new TreeSet<PlaceObject>();
+    private TreeSet<PlaceObject> nearbyObject;
+
+
+    private void addNearByPlaces(){
+        nearbyObject = nearbyLat;
+        nearbyObject.retainAll(nearbyLong);
+        Toast.makeText(getApplicationContext(),"Found " + nearbyObject.size() + "  places nearby", Toast.LENGTH_LONG).show();
+
+        Log.d(TAG, "Nearby places" + nearbyObject.toString());
+        constants.placeObjects.addAll(nearbyObject);
+
+        for(PlaceObject object:constants.placeObjects) {
+            constants.places.put(object.getDb_key(),object);
+        }
+        Log.d(TAG,constants.places.toString());
+    }
+
+    private void locateNearby(){
+
+        Toast.makeText(getApplicationContext(),"Searching for Nearby Places", Toast.LENGTH_LONG).show();
+
+        Database db = new Database();
+
+        db.nearbyPlacesLatitude(new firebaseDataListener() {
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    PlaceObject object = new PlaceObject(postSnapshot);
+                    Log.d(TAG, object.getBookTitle() + " " + object.getLongitude());
+                    nearbyLong.add(object);
+                }
+                Log.d(TAG,"Longitude set = " + nearbyLong.toString());
+            }
+
+            @Override
+            public void onFailed(DatabaseError databaseError) {
+
+            }
+
+        });
+
+        db.nearbyPlacesLongitude(new firebaseDataListener() {
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    PlaceObject object = new PlaceObject(postSnapshot);
+                    nearbyLat.add(object);
+                    Log.d(TAG, object.getBookTitle() + "latitude = " + object.getLatitude());
+                }
+                Log.d(TAG,"Latitude set = " + nearbyLat.toString());
+            }
+
+            @Override
+            public void onFailed(DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
 
-    //    private void findLocation() {
-//        Log.d(TAG, "findLocation()");
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            requestPermissions();
-//            return;
-//        }
-//        userLastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-//        startLocationUpdates();
-//
-//    }
-
-//    private void createGoogleApi() {
-//        Log.d(TAG, "create API");
-//        if (googleApiClient == null) {
-//            googleApiClient = new GoogleApiClient.Builder(this)
-//                    .addConnectionCallbacks(this)
-//                    .addOnConnectionFailedListener(this)
-//                    .addApi(LocationServices.API)
-//                    .build();
-//        }
-//    }
-//
-//        @Override
-//        public void onConnected(@Nullable Bundle bundle) {
-//               Log.d(TAG, "Connected");
-//                findLocation();
-//            if(userLastLocation != null){
-//                Log.d(TAG, "user location is not null");
-//                LatLng currentspot = new LatLng(userLastLocation.getLatitude(),userLastLocation.getLongitude());
-//                CameraPosition cameraPosition = new CameraPosition.Builder().target(currentspot).zoom(5).tilt(10).build();
-//                map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-//            }
-//        }
-//
-//        @Override
-//        public void onConnectionSuspended(int i) {
-//
-//        }
-//
-//    @Override
-//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-//
-//    }
-//    /////////// //////////////////////////////
-//    // instance variables for fetching location
-//    private LocationRequest locationRequest;
-//    private static final int UPDATEINTERVAL = 1000;
-//    private static final int FASTESTINTERVAL = 9000;
-//
-//    private static final int REQ_PERMISSION = 999;
-//
-//    private void startLocationUpdates() {
-//        locationRequest = LocationRequest.create()
-//                .setFastestInterval(FASTESTINTERVAL)
-//                .setInterval(UPDATEINTERVAL)
-//                .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-//
-//
-//        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            Log.d(TAG, "Check self permissions and returns");
-//            requestPermissions();
-//            return;
-//        }
-//        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
-//
-//
-//    }
-//
-//
-//
-////
-////    ////////////////////////////////////////////////////////////
-//    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-//
-//    /**
-//     * Return the current state of the permissions needed.
-//     */
-//    private boolean checkPermissions() {
-//        int permissionState = ActivityCompat.checkSelfPermission(this,
-//                Manifest.permission.ACCESS_FINE_LOCATION);
-//        return permissionState == PackageManager.PERMISSION_GRANTED;
-//    }
-//
-//    private void requestPermissions() {
-//        boolean shouldProvideRationale =
-//                ActivityCompat.shouldShowRequestPermissionRationale(this,
-//                        Manifest.permission.ACCESS_FINE_LOCATION);
-//
-//        // Provide an additional rationale to the user. This would happen if the user denied the
-//        // request previously, but didn't check the "Don't ask again" checkbox.
-//        if (shouldProvideRationale) {
-//            Log.i(TAG, "Displaying permission rationale to provide additional context.");
-//            showSnackbar(R.string.permission_rationale, android.R.string.ok,
-//                    new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View view) {
-//                            // Request permission
-//                            ActivityCompat.requestPermissions(MapDisplay.this,
-//                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-//                                    REQUEST_PERMISSIONS_REQUEST_CODE);
-//                        }
-//                    });
-//        } else {
-//            Log.i(TAG, "Requesting permission");
-//            // Request permission. It's possible this can be auto answered if device policy
-//            // sets the permission in a given state or the user denied the permission
-//            // previously and checked "Never ask again".
-//            ActivityCompat.requestPermissions(MapDisplay.this,
-//                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-//                    REQUEST_PERMISSIONS_REQUEST_CODE);
-//        }
-//    }
-//
-//    /**
-//     * Callback received when a permissions request has been completed.
-//     */
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-//                                           @NonNull int[] grantResults) {
-//        Log.i(TAG, "onRequestPermissionResult");
-//        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
-//            if (grantResults.length <= 0) {
-//                // If user interaction was interrupted, the permission request is cancelled and you
-//                // receive empty arrays.
-//                Log.i(TAG, "User interaction was cancelled.");
-//            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                Log.i(TAG, "Permission granted.");
-//
-//            } else {
-//                // Permission denied.
-//
-//                // Notify the user via a SnackBar that they have rejected a core permission for the
-//                // app, which makes the Activity useless. In a real app, core permissions would
-//                // typically be best requested during a welcome-screen flow.
-//
-//                // Additionally, it is important to remember that a permission might have been
-//                // rejected without asking the user for permission (device policy or "Never ask
-//                // again" prompts). Therefore, a user interface affordance is typically implemented
-//                // when permissions are denied. Otherwise, your app could appear unresponsive to
-//                // touches or interactions which have required permissions.
-//                showSnackbar(R.string.permission_denied_explanation, 1,
-//                        new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View view) {
-//                                //Build intent that displays the App settings screen.
-//                                Intent intent = new Intent();
-//                                intent.setAction(
-//                                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-//                                Uri uri = Uri.fromParts("package",
-//                                        BuildConfig.APPLICATION_ID, null);
-//                                intent.setData(uri);
-//                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                                startActivity(intent);
-//                            }
-//                        });
-//            }
-//        }
-//    }
-//
-//    /**
-//     * Shows a {@link Snackbar}.
-//     *
-//     * @param mainTextStringId The id for the string resource for the Snackbar text.
-//     * @param actionStringId   The text of the action item.
-//     * @param listener         The listener associated with the Snackbar action.
-//     */
-//    private void showSnackbar(final int mainTextStringId, final int actionStringId,
-//                              View.OnClickListener listener) {
-//        Snackbar.make(
-//                findViewById(android.R.id.content),
-//                getString(mainTextStringId),
-//                Snackbar.LENGTH_INDEFINITE)
-//                .setAction(getString(actionStringId), listener).show();
-//    }
-
-//    @Override
-//    public void onLocationChanged(Location location) {
-//        //Log.d(TAG, "Location changed, Lat= " + location.getLatitude() + " Long = " + location.getLongitude());
-//        startLocationUpdates();
-//    }
 }

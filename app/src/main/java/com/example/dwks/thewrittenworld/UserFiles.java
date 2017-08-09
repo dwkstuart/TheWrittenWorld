@@ -1,5 +1,6 @@
 package com.example.dwks.thewrittenworld;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -22,6 +23,7 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
 
     Constants constants= Constants.getInstance();
     Button save;
+    Button test;
     Button displayFiles;
     TextView userFiles;
     EditText fileName;
@@ -40,7 +42,9 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
         userFiles =(TextView) findViewById(R.id.usersFiles);
         fileName = (EditText) findViewById(R.id.enterFileName);
         displayFiles = (Button) findViewById(R.id.displayFileList);
+        test = (Button) findViewById(R.id.listTest);
 
+        test.setOnClickListener(this);
         save.setOnClickListener(this);
         displayFiles.setOnClickListener(this);
 
@@ -55,6 +59,10 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
                 break;
             case (R.id.displayFileList):
                 populateListsField();
+                break;
+            case (R.id.listTest):
+                Intent intent = new Intent(this, ListOfPlaces.class);
+                startActivity(intent);
                 break;
 
         }
