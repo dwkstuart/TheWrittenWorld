@@ -43,8 +43,8 @@
         <activity android:name=".PlaceDetailScreen" />
         <activity android:name=".ListOfPlaces" />
         <activity android:name=".FindNearby" />
-        <activity android:name=".UserFiles"></activity>
-
+        <activity android:name=".UserFiles" />
+        <activity android:name=".SavedCollections"></activity>
     </application>
 
 </manifest>

@@ -21,13 +21,14 @@ import java.util.TreeSet;
 
 public class UserFiles extends AppCompatActivity implements View.OnClickListener{
 
-    Constants constants= Constants.getInstance();
-    Button save;
-    Button test;
-    Button displayFiles;
-    TextView userFiles;
-    EditText fileName;
-    Database dbInstance;
+    private Constants constants= Constants.getInstance();
+    private Button save;
+    private Button test;
+    private Button displayFiles;
+    private TextView userFiles;
+    private EditText fileName;
+    private Database dbInstance;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,7 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
                 break;
             case (R.id.displayFileList):
                 populateListsField();
+
                 break;
             case (R.id.listTest):
                 Intent intent = new Intent(this, ListOfPlaces.class);
@@ -85,14 +87,20 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
                 Gson gson = new Gson();
-                List<String> savedTours = new ArrayList<String>();
+               ArrayList<SavedCollection> files = new ArrayList<SavedCollection>();
 
+                List<String> savedTours = new ArrayList<String>();
                 for (DataSnapshot list : dataSnapshot.getChildren()) {
-                    Set<PlaceObject> set = gson.fromJson(list.getValue().toString(), new TypeToken<TreeSet<PlaceObject>>() {}.getType());
-                    Log.d("List", list.getKey() + "number of places = " +set.size());
-                    userFiles.append(list.getKey() + " has " + set.size() + " places in it \n");
-                    savedTours.add(list.getKey());
+                    SavedCollection file = new SavedCollection(list.getKey(),list.getValue().toString());
+                    files.add(file);
+//                    Set<PlaceObject> set = gson.fromJson(list.getValue().toString(), new TypeToken<TreeSet<PlaceObject>>() {}.getType());
+                    Log.d("List", list.getKey() + "number of places = " +files.size());
+//                    userFiles.append(list.getKey() + " has " + set.size() + " places in it \n");
+//                    savedTours.add(list.getKey());
                 }
+                constants.files = files;
+                Intent fileListView = new Intent(getApplicationContext(), SavedCollections.class);
+                startActivity(fileListView);
             }
             @Override
             public void onFailed(DatabaseError databaseError) {

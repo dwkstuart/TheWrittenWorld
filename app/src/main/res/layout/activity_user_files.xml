@@ -45,13 +45,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="onClick"
-        android:text="Button" />
+        android:text="Show Current Locations" />
 
     <Button
         android:id="@+id/displayFileList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Show Current List" />
+        android:text="Show Saved Tours" />
 
     <TextView
         android:id="@+id/usersFiles"
