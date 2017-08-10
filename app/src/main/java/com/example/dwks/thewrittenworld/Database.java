@@ -1,5 +1,8 @@
 package com.example.dwks.thewrittenworld;
 
+import android.util.Log;
+
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -16,7 +19,9 @@ public class Database {
     private FirebaseDatabase database;
     static boolean peristanceEnabledCalled = false;
 
+
     public Database() {
+        Log.d("DATABASE", "Database instance created");
         if(!peristanceEnabledCalled) {
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
             peristanceEnabledCalled = true;
@@ -124,6 +129,70 @@ public class Database {
 
         });
 
+    }
+
+    public void uploadSaveSelection(String name, String jsonfile){
+
+        String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        Constants constants = Constants.getInstance();
+
+
+        DatabaseReference mRef = database.getReference();
+        DatabaseReference childRef = mRef.child("user");
+        DatabaseReference userID = childRef.child(UID);
+        userID.child(name).setValue(jsonfile);
 
     }
+
+    public void getUsersLists(final firebaseDataListener listener){
+
+        Constants constants = Constants.getInstance();
+        String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        //FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getInstance().getReference("user/" + UID);
+
+        final Query usersLists = myRef;
+        Log.d("userlist query", myRef.toString());
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot){
+                listener.onSuccess(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                listener.onFailed(databaseError);
+            }
+
+        });
+    }
+
+    public void getSavedList(String listName, final firebaseDataListener listener){
+
+        Constants constants = Constants.getInstance();
+        String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        //FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getInstance().getReference("user/" + UID +"/" + listName);
+
+        final Query usersLists = myRef;
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot){
+                listener.onSuccess(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                listener.onFailed(databaseError);
+            }
+
+        });
+    }
+
+
 }

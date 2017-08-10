@@ -22,6 +22,7 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.GeofencingApi;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
@@ -117,7 +118,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
         });
 
-        Log.d(TAG, spinnerData.toString());
+        //Set the contents of the drop down
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerData);
         titleDrop.setAdapter(adapter);
         titleDrop.setOnItemSelectedListener(new onItemSelectedListener());
@@ -144,7 +145,9 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         loadMap.setOnClickListener(this);
         showList.setOnClickListener(this);
         deleteFences.setOnClickListener(this);
+        if (FirebaseAuth.getInstance().getCurrentUser() == null)
         showList.setEnabled(false);
+        if(constants.placeObjects.isEmpty())
         createFenceButton.setEnabled(false);
         infoText.setText("Places Selected : " + constants.placeObjects.size());
 
@@ -159,148 +162,11 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
 
 
-//    private void findNearby(){
-//
-//        Toast.makeText(getApplicationContext(),"Searching for Nearby Places", Toast.LENGTH_LONG).show();
-//
-//        Database db = new Database();
-//
-//        db.nearbyPlacesLatitude(new firebaseDataListener() {
-//                @Override
-//                public void onStart() {
-//
-//                }
-//
-//                @Override
-//                public void onSuccess(DataSnapshot dataSnapshot) {
-//                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-//                    PlaceObject object = new PlaceObject(postSnapshot);
-//                    Log.d(TAG, object.getBookTitle() + " " + object.getLongitude());
-//                    nearbyLong.add(object);
-//                }
-//                    Log.d(TAG,"Longitude set = " + nearbyLong.toString());
-//            }
-//
-//                @Override
-//                public void onFailed(DatabaseError databaseError) {
-//
-//                }
-//
-//            });
-//
-//            db.nearbyPlacesLongitude(new firebaseDataListener() {
-//                @Override
-//                public void onStart() {
-//
-//                }
-//
-//                @Override
-//                public void onSuccess(DataSnapshot dataSnapshot) {
-//                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-//                        PlaceObject object = new PlaceObject(postSnapshot);
-//                        nearbyLat.add(object);
-//                        Log.d(TAG, object.getBookTitle() + "latitude = " + object.getLatitude());
-//                    }
-//                    Log.d(TAG,"Latitude set = " + nearbyLat.toString());
-//                }
-//
-//                @Override
-//                public void onFailed(DatabaseError databaseError) {
-//
-//                }
-//            });
-//
-//
-//    }
 
-
-
-
-//    //TEST
-//    private void saveAsJson(){
-//        Gson gson = new Gson();
-//        String jsonHashMap =  gson.toJson(constants.places);
-//        String jsonTreeSet = gson.toJson(constants.placeObjects);
-//
-//        Log.d(TAG, "Saved as json" + jsonHashMap);
-//
-//        SharedPreferences sharedPref = getSharedPreferences(String.valueOf(R.string.shared_pref_file), Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor= sharedPref.edit();
-//        editor.putString(String.valueOf(R.string.placesHashMap),jsonHashMap);
-//        editor.putString(String.valueOf(R.string.placesTreeSet),jsonTreeSet);
-//
-//        editor.commit();
-//        //Log.d(TAG, "Shared pref get all result" + sharedPref.getAll());
-//    }
-//
-//    private void loadFromJson(){
-//        Gson gson = new Gson();
-//        SharedPreferences sharedPref = getSharedPreferences(String.valueOf(R.string.shared_pref_file), Context.MODE_PRIVATE);
-//
-//        String jsonHashMap =  sharedPref.getString(String.valueOf(R.string.placesHashMap), "");
-//        String jsonTreeSet = sharedPref.getString(String.valueOf(R.string.placesTreeSet), "");
-//
-//
-//        Map<String, PlaceObject> mapJson = gson.fromJson(jsonHashMap, new TypeToken<HashMap<String ,PlaceObject>>() {}.getType());
-//        Log.d(TAG, "Loaded from shared pref " + mapJson.toString());
-//
-//        Set<PlaceObject> set = gson.fromJson(jsonTreeSet, new TypeToken<TreeSet<PlaceObject>>() {}.getType());
-//
-//    }
-
-
-
-//    //TODO is this used now we have AysnTask
-//    private void loadPlaces(String booktitle) {
-//        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-//
-//        final DatabaseReference myRef = database.getReference("places/");
-//
-//
-//        Query recentQuery =myRef.orderByChild("title").equalTo(booktitle);
-//        recentQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for(DataSnapshot postSnapshot: dataSnapshot.getChildren()){
-//                        PlaceObject object = new PlaceObject(postSnapshot);
-//                    Log.d(TAG, object.getDb_key());
-//                    constants.placeObjects.add(object);
-//                    //populate HashMap
-//                    constants.places.put(object.getDb_key(),object);
-//
-//                }
-//
-//                Log.d(TAG, "Size of array : " + constants.placeObjects.size());
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//
-//        });
-
-        //String placesJson = this.assestJsonFile();
-//        constants.placeObjects = new PlacesListCreator(placesJson)
-//                .getPointOfInterestObjects();
-//    }
-
-//
-
-//    private void addNearByPlaces(){
-//        nearbyObject = nearbyLat;
-//        nearbyObject.retainAll(nearbyLong);
-//        Toast.makeText(getApplicationContext(),"Found " + nearbyObject.size() + " places nearby", Toast.LENGTH_LONG).show();
-//
-//        Log.d(TAG, "Nearby places" + nearbyObject.toString());
-//        constants.placeObjects.addAll(nearbyObject);
-//
-//        for(PlaceObject object:constants.placeObjects) {
-//            constants.places.put(object.getDb_key(),object);
-//        }
-//        Log.d(TAG,constants.places.toString());
-//    }
-
+    /**Method to return the locations from the databases assocaited with a particular title
+     *
+     * @param title
+     */
     private void findBookPlaces(String title){
           Database db = new Database();
         db.getBookPlaces(title, new firebaseDataListener() {
@@ -321,8 +187,8 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
                 }
                 infoText.setText("Number of Results : " + constants.placeObjects.size());
-                createFenceButton.setEnabled(true);
-                showList.setEnabled(true);
+                if(!constants.placeObjects.isEmpty())
+                    createFenceButton.setEnabled(true);
             }
 
             @Override
@@ -395,8 +261,10 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 break;
 
             case R.id.ViewList:
-                Intent list = new Intent(this, ListOfPlaces.class);
-                startActivity(list);
+               // TODO temp Intent list = new Intent(this, ListOfPlaces.class);
+
+                Intent save = new Intent(this, UserFiles.class);
+                startActivity(save);
                 break;
         }
 

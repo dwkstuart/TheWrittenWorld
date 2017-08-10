@@ -34,7 +34,7 @@ public class ProcessSharedPref extends Application {
         String jsonHashMap =  gson.toJson(constants.places);
         String jsonTreeSet = gson.toJson(constants.placeObjects);
 
-        Log.d(TAG, "Saved as json" + jsonHashMap);
+
 
         SharedPreferences sharedPref = context.getSharedPreferences(String.valueOf(R.string.shared_pref_file), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor= sharedPref.edit();

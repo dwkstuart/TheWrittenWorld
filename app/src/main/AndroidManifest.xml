@@ -42,7 +42,8 @@
 
         <activity android:name=".PlaceDetailScreen" />
         <activity android:name=".ListOfPlaces" />
-        <activity android:name=".FindNearby"></activity>
+        <activity android:name=".FindNearby" />
+        <activity android:name=".UserFiles"></activity>
     </application>
 
 </manifest>
