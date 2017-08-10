@@ -16,6 +16,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -30,8 +31,8 @@ import java.util.TreeSet;
 public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         GoogleMap.OnMapClickListener,
         GoogleMap.OnMarkerClickListener,
-        View.OnClickListener
-{
+        GoogleMap.OnInfoWindowClickListener,
+        View.OnClickListener {
 
 
     private static final String TAG = MapDisplay.class.getSimpleName();
@@ -53,23 +54,29 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
         Log.d(TAG, "onCreate()");
 
-
+        locateNearby();
         setAlerts = (FloatingActionButton) findViewById(R.id.setAlerts);
         setAlerts.setOnClickListener(this);
         //TODO see if we can change this when setting alerts elsewhere, using intents
-        if(!constants.geofenceArrayList.isEmpty() || constants.placeObjects.isEmpty())
+        if (!constants.geofenceArrayList.isEmpty() || constants.placeObjects.isEmpty())
             setAlerts.setVisibility(View.INVISIBLE);
         //if no alerts are set up and there are selected places
-        if(constants.geofenceArrayList.isEmpty() && !constants.placeObjects.isEmpty())
+        if (constants.geofenceArrayList.isEmpty() && !constants.placeObjects.isEmpty())
             setAlerts.setVisibility(View.VISIBLE);
 
     }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-
-    }
+//
+//    @Override
+//    protected void onResume(){
+//        super.onResume();
+//        Log.d(TAG, markersCollection.toString());
+//        //update markers on resume
+//        for(Map.Entry<Marker, PlaceObject> entry: markersCollection.entrySet()){
+//            if (entry.getValue().isVisited()){
+//                entry.getKey().setIcon((BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+//            }
+//        }
+//}
 
     private void setupBottomNavBar(){
         final Intent lookup = new Intent(this, ChooseAndLoad.class);
@@ -82,8 +89,18 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.displayNearby:
-                        locateNearby();
+                        if(constants.lastLocation == null){
+                            Toast.makeText(getApplicationContext(), "Location not available", Toast.LENGTH_SHORT).show();
+                            break;
+                        }
+
                         addNearByPlaces();
+                        if (!nearbyObject.isEmpty()){
+
+                            final Intent returnToMap = new Intent (getApplicationContext(), MapDisplay.class);
+                            startActivity(returnToMap);
+
+                        }
                         break;
                     case R.id.findPlaces:
                         startActivity(lookup);
@@ -126,19 +143,20 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     }
 
 
+
     @Override
     public boolean onMarkerClick(Marker marker) {
 
-        Log.d(TAG, "Marker clicked = " + marker.getId());
-        Log.d(TAG, "On marker click, collection empty? " + markersCollection.isEmpty());
-        Log.d(TAG, "Marker collection to string" + markersCollection.toString());
-        PlaceObject pickedPlace = markersCollection.get(marker);
-        String id = pickedPlace.getDb_key();
-
-        //open details page
-        Intent i = new Intent(this, PlaceDetailScreen.class);
-        i.putExtra("ID", id);
-        startActivity(i);
+//        Log.d(TAG, "Marker clicked = " + marker.getId());
+//        Log.d(TAG, "On marker click, collection empty? " + markersCollection.isEmpty());
+//        Log.d(TAG, "Marker collection to string" + markersCollection.toString());
+//        PlaceObject pickedPlace = markersCollection.get(marker);
+//        String id = pickedPlace.getDb_key();
+//
+//        //open details page
+//        Intent i = new Intent(this, PlaceDetailScreen.class);
+//        i.putExtra("ID", id);
+//        startActivity(i);
         return false;
     }
 
@@ -146,6 +164,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         map.setOnMarkerClickListener(this);
+        map.setOnInfoWindowClickListener(this);
         map.setBuildingsEnabled(true);
         //noinspection MissingPermission
         map.setMyLocationEnabled(true);
@@ -172,6 +191,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
             if (!placeObject.isVisited()) {
                 markerOptions = new MarkerOptions().
                         position(placeObject.getLatLng())
+                        .snippet("You've not visted here")
                         .title(placeObject.getBookTitle());
                 Marker marker = map.addMarker(markerOptions);
                 marker.setTag(placeObject);
@@ -182,7 +202,9 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                 markerOptions = new MarkerOptions().
                         position(placeObject.getLatLng())
                         .title(placeObject.getBookTitle())
-                        .rotation(90);
+                        .snippet("You've been here")
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+
                 Marker marker = map.addMarker(markerOptions);
                 marker.setTag(placeObject);
                 markersCollection.put(marker, placeObject);
@@ -190,6 +212,10 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
         }
     }
+
+
+
+
 
     @Override
     public void onClick(View view) {
@@ -211,7 +237,6 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     private void addNearByPlaces(){
         nearbyObject = nearbyLat;
         nearbyObject.retainAll(nearbyLong);
-        Toast.makeText(getApplicationContext(),"Found " + nearbyObject.size() + "  places nearby", Toast.LENGTH_LONG).show();
 
         Log.d(TAG, "Nearby places" + nearbyObject.toString());
         constants.placeObjects.addAll(nearbyObject);
@@ -219,18 +244,21 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         for(PlaceObject object:constants.placeObjects) {
             constants.places.put(object.getDb_key(),object);
         }
+        Toast.makeText(getApplicationContext(),"Found " + nearbyObject.size() + "  places nearby", Toast.LENGTH_LONG).show();
+
         Log.d(TAG,constants.places.toString());
     }
 
     private void locateNearby(){
 
-        Toast.makeText(getApplicationContext(),"Searching for Nearby Places", Toast.LENGTH_LONG).show();
+       // Toast.makeText(getApplicationContext(),"Searching for Nearby Places", Toast.LENGTH_LONG).show();
 
         Database db = new Database();
 
         db.nearbyPlacesLatitude(new firebaseDataListener() {
             @Override
             public void onStart() {
+                Toast.makeText(getApplicationContext(),"Checking Database, Please Wait", Toast.LENGTH_LONG).show();
 
             }
 
@@ -242,6 +270,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                     nearbyLong.add(object);
                 }
                 Log.d(TAG,"Longitude set = " + nearbyLong.toString());
+
             }
 
             @Override
@@ -277,4 +306,19 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     }
 
 
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Log.d(TAG, "Marker clicked = " + marker.getId());
+        Log.d(TAG, "On marker click, collection empty? " + markersCollection.isEmpty());
+        Log.d(TAG, "Marker collection to string" + markersCollection.toString());
+        PlaceObject pickedPlace = markersCollection.get(marker);
+        String id = pickedPlace.getDb_key();
+
+        //open details page
+        Intent i = new Intent(this, PlaceDetailScreen.class);
+        i.putExtra("ID", id);
+        startActivity(i);
+
+    }
 }

@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         });
         loadScreen = (Button) findViewById(R.id.setup);
         if (currentUser != null){
-            loadScreen.setText("START EXPLORING");
+            loadScreen.setText("Start Exploring");
         }
 
        //TODO handle case where location is not found
@@ -359,13 +359,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
             Button launch = (Button) findViewById(R.id.setup);
-            launch.setText("Start Exloring");
+            launch.setText("Start Exploring");
 
         } else {
            // mStatusTextView.setText(R.string.signed_out);
 
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_out_button).setVisibility(View.GONE);
+            Button launch = (Button) findViewById(R.id.setup);
+            launch.setText("Skip Login");
         }
     }
 

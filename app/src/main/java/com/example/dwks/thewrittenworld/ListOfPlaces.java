@@ -3,6 +3,7 @@ package com.example.dwks.thewrittenworld;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -21,11 +22,14 @@ public class ListOfPlaces extends AppCompatActivity implements PlaceDetailFragme
 
     @Override
     public void onListFragmentInteraction(PlaceObject item) {
-        Toast.makeText(this, String.valueOf(item.getLongitude()), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Item is visited? " + String.valueOf(item.isVisited()), Toast.LENGTH_LONG).show();
         String id = item.getDb_key();
 
+        Constants.getInstance().places.put(id,item);
+        Log.d("List from constants", Constants.getInstance().places.get(id).toString());
         Intent placeDetails = new Intent(this,PlaceDetailScreen.class);
         placeDetails.putExtra("ID", id);
+        Log.d("List from passed", item.toString());
         this.startActivity(placeDetails);
 
     }

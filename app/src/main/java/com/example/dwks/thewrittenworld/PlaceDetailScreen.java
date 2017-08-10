@@ -58,7 +58,11 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
 
 
             placeObject = constants.places.get(id);
+            Log.d("before if", String.valueOf(placeObject.isVisited()));
+
             if (placeObject != null) {
+                Log.d("TEST!!!!", placeObject.toString());
+
                 String title = placeObject.getBookTitle();
                 titleText = (TextView) findViewById(R.id.place_title);
                 titleText.setText(title);
@@ -68,6 +72,7 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
                 author.setText("Written by " + placeObject.getAuthorFirstName() + " " + placeObject.getAuthorSecondName());
                 checkBox.setChecked(placeObject.isVisited());
                 Log.d(TAG, "Place visited = " + placeObject.isVisited());
+                Toast.makeText(this, "Detail screen is visited" + placeObject.isVisited(), Toast.LENGTH_SHORT);
 
             }
             checkBox.setOnClickListener(new View.OnClickListener() {

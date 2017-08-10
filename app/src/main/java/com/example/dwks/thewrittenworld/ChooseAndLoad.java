@@ -25,6 +25,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.GeofencingApi;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
@@ -49,6 +50,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     private TextView infoText;
     private Spinner titleDrop;
 
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private String selectedTitle ="";
    // private ArrayList<PlaceObject> placeObjects;
 
@@ -78,7 +80,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         getTitles();
 //        pendingIntent = null;
           geofencingApi = LocationServices.GeofencingApi;
-        infoText.setText("Number of markers set : " + constants.placeObjects.size());
+        infoText.setText("\n Number of markers set : " + constants.placeObjects.size());
         //if(constants.lastLocation != null)
         //findNearby();
 
@@ -95,7 +97,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         db.getUniqueTitles(new firebaseDataListener() {
                 @Override
                 public void onStart() {
-                    Toast.makeText(getApplicationContext(),"Searching Database", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Searching Database", Toast.LENGTH_SHORT).show();
 
                 }
 
@@ -147,11 +149,13 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         loadMap.setOnClickListener(this);
         showList.setOnClickListener(this);
         deleteFences.setOnClickListener(this);
-        if (FirebaseAuth.getInstance().getCurrentUser() == null)
-        showList.setEnabled(false);
+        if (user == null){
+            showList.setEnabled(false);
+        }
         if(constants.placeObjects.isEmpty())
         createFenceButton.setEnabled(false);
-        infoText.setText("Places Selected : " + constants.placeObjects.size());
+        infoText.setText("\n Places Selected : " + constants.placeObjects.size());
+
 
 
 
@@ -188,7 +192,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                     constants.places.put(object.getDb_key(), object);
 
                 }
-                infoText.setText("Number of Results : " + constants.placeObjects.size());
+                infoText.setText("\n Number of Results : " + constants.placeObjects.size());
                 if(!constants.placeObjects.isEmpty())
                     createFenceButton.setEnabled(true);
             }
@@ -288,142 +292,6 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
 
 
-//
-//    private void createGoogleApi() {
-//        Log.d(TAG, "create API");
-//        if (googleApiClient == null) {
-//            googleApiClient = new GoogleApiClient.Builder(this)
-//                    .addConnectionCallbacks(this)
-//                    .addOnConnectionFailedListener(this)
-//                    .addApi(LocationServices.API)
-//                    .build();
-//        }
-//    }
-//
-//
-//    /**Creates the geofencing requests
-//     * modified from Google GeoLocation sample code
-//     * avaialable at https://github.com/googlesamples/android-play-location/tree/master/Geofencing
-//     *
-//     * @return
-//     */
-//    private GeofencingRequest getGeofencingRequest() {
-//        GeofencingRequest builder = new GeofencingRequest.Builder()
-//                .addGeofences(constants.geofenceArrayList)
-//                .setInitialTrigger(Geofence.GEOFENCE_TRANSITION_ENTER)
-//                .setInitialTrigger(Geofence.GEOFENCE_TRANSITION_DWELL)
-//                .build();
-//        return builder;
-//    }
-//
-//    /**Populates the constant geofence list with the places that have not yet been marked as visited
-//     *
-//     */
-//    private void populateGeofenceList() {
-//
-//
-//
-//        for (PlaceObject place : constants.placeObjects) {
-//            //Create a geofence object for each place not ticked off as visited
-//            if (!place.isVisited()) {
-//                Geofence geofence = (new Geofence.Builder()
-//                        .setRequestId(place.getDb_key())
-//                        .setCircularRegion(place.getLatitude(), place.getLongitude(), 800)
-//                        .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
-//                        .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
-//                        .setLoiteringDelay(5000)
-//                        .setExpirationDuration(Geofence.NEVER_EXPIRE)
-//                        .build());
-//
-//                //TODO check if this arraylist needs to be constant
-//                constants.geofenceArrayList.add(geofence);
-//                //Need to be able to link a geofence to an object to remove geofences individual from Pending Monitoring list
-//                constants.placeObjectGeofenceHashMap.put(place,geofence);
-//            }
-//
-//        }
-//        int arraylength = constants.geofenceArrayList.size();
-//
-//    }
-//
-//
-//
-//     private PendingIntent getGeofenceIntent(){
-//         if (pendingIntent != null)
-//             return pendingIntent;
-//
-//         Intent intent = new Intent(this, GeofenceIntentService.class);
-//         PendingIntent pendingIntent = PendingIntent.getService(this,123,intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//         return pendingIntent;
-//     }
-//    //add a request to the monitoring list
-//    private void addGeofences(GeofencingRequest request) {
-//
-//        pendingIntent = getGeofenceIntent();
-//
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            // TODO: Consider calling
-//            //    ActivityCompat#requestPermissions
-//            // here to request the missing permissions, and then overriding
-//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//            //                                          int[] grantResults)
-//            // to handle the case where the user grants the permission. See the documentation
-//            // for ActivityCompat#requestPermissions for more details.
-//            return;
-//        }
-//        //TODO add pending intent creator, add transition class
-//        geofencingApi.addGeofences(
-//                googleApiClient,
-//                request,
-//                pendingIntent).setResultCallback(this);
-//
-//        Log.d(TAG,"geofence added" + request.toString());
-//
-//    }
-//
-//    private  void removeAllGeofence(){
-//        if(googleApiClient != null) {
-//            Log.d(TAG, "Remove fences");
-//            List<String> removeAll = new ArrayList<String>();
-//            for (Geofence fence : constants.geofenceArrayList) {
-//                removeAll.add(fence.getRequestId());
-//            }
-//            Log.d(TAG, "Size of list" + constants.geofenceArrayList.size());
-//            constants.geofenceArrayList.clear();
-//            geofencingApi.removeGeofences(googleApiClient, removeAll);
-//            Log.d(TAG, "Should be 0 " + constants.geofenceArrayList.size());
-//        }
-//
-//    }
-//
-//
-//
-//
-//    @Override
-//    public void onConnected(@Nullable Bundle bundle) {
-//        addGeofences(getGeofencingRequest());
-//
-//    }
-//
-//    @Override
-//    public void onConnectionSuspended(int i) {
-//
-//    }
-//
-//    @Override
-//    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-//            Toast.makeText(this, "Google API Connection Failed", Toast.LENGTH_LONG).show();
-//    }
-//
-//    @Override
-//    public void onResult(@NonNull Status status) {
-//
-//    }
-//
-//    @Override
-//    public void onLocationChanged(Location location) {
-//
-//    }
 
 
     private class onItemSelectedListener implements android.widget.AdapterView.OnItemSelectedListener {
@@ -441,29 +309,5 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    //TODO remove if not using assest load
-//    public void populateHashMap() {
-//            Log.d(TAG, "HashMap populated");
-//        for (PlaceObject placeObject : constants.placeObjects) {
-//                    constants.places.put(placeObject.getDb_key(),placeObject);
-//            Log.d(TAG, "HashMap populated for loop");
-//        }
-//    }
 
-    //LOAD FROM ASSEST WILL BE REPLACED WITH SOME METHOD FOR DATABASE LOADING////
-//    private String assestJsonFile() {
-//        String json = null;
-//        try {
-//            InputStream is = getAssets().open("dickensJSON");
-//            int size = is.available();
-//            byte[] buffer = new byte[size];
-//            is.read(buffer);
-//            is.close();
-//            json = new String(buffer, "UTF-8");
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//        return json;
-//    }
 }

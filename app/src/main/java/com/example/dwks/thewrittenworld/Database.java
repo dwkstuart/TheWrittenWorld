@@ -92,6 +92,7 @@ public class Database {
         final Query longitudeQuery = myRef.orderByChild("longitude").startAt(minLong).endAt(maxLong);
 
         longitudeQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 listener.onSuccess(dataSnapshot);
