@@ -7,6 +7,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -64,6 +65,11 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
     }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+
+    }
 
     private void setupBottomNavBar(){
         final Intent lookup = new Intent(this, ChooseAndLoad.class);
@@ -99,6 +105,19 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     private void initializeGoogleMap() {
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_display);
         mapFragment.getMapAsync(this);
+    }
+
+
+    private ToolBarMenuHandler toolBarMenuHandler = new ToolBarMenuHandler(this);
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return toolBarMenuHandler.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        return toolBarMenuHandler.onOptionsItemSelected(item);
     }
 
     @Override
@@ -182,17 +201,6 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         }
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-    }
 
     ////////////////////Find Nearby places code /////////////////////
     private TreeSet<PlaceObject> nearbyLong = new TreeSet<PlaceObject>();

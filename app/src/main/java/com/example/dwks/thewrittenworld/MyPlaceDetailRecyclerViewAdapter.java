@@ -66,11 +66,6 @@ public class MyPlaceDetailRecyclerViewAdapter extends RecyclerView.Adapter<MyPla
                 if (null != mListener) {
                     mListener.onListFragmentInteraction(holder.mItem);
                     PlaceObject object = holder.mItem;
-//                    String id = object.getDb_key();
-//
-//                    Intent placeDetails = new Intent(context,PlaceDetailScreen.class);
-//                    placeDetails.putExtra("ID", id);
-//                    context.startActivity(placeDetails);
 
                 }
             }

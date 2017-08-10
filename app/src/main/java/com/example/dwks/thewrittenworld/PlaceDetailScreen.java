@@ -2,12 +2,17 @@ package com.example.dwks.thewrittenworld;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -17,6 +22,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -29,6 +35,7 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
     private TextView author;
     private CheckBox checkBox;
     private ImageView imageView;
+    private BottomNavigationView bottomNavMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +91,18 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
 
     }
 
+    private ToolBarMenuHandler toolBarMenuHandler = new ToolBarMenuHandler(this);
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return toolBarMenuHandler.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        return toolBarMenuHandler.onOptionsItemSelected(item);
+    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -91,6 +110,7 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
 
         //noinspection MissingPermission, asked for on starting app
         map.setMyLocationEnabled(true);
+        setupBottomNavBar();
         //place marker of point of interest and zoom camera
         if(placeObject != null){
             LatLng placeLocation = new LatLng(placeObject.getLatitude(),placeObject.getLongitude());
@@ -99,5 +119,36 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
             map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));}
     }
 
+
+    private void setupBottomNavBar(){
+        final Intent lookup = new Intent(this, ChooseAndLoad.class);
+        final Intent save = new Intent(this, UserFiles.class);
+        final Intent returnToMap = new Intent (this, MapDisplay.class);
+        bottomNavMenu =(BottomNavigationView) findViewById(R.id.mapBottomNavBar);
+        bottomNavMenu.inflateMenu(R.menu.map_bottom_navigation);
+
+        bottomNavMenu.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.displayNearby:
+                        startActivity(returnToMap);
+                        break;
+                    case R.id.findPlaces:
+                        startActivity(lookup);
+                        break;
+                    case R.id.save_menu:
+                        if (FirebaseAuth.getInstance().getCurrentUser()==null){
+                            Toast.makeText(getApplicationContext(),"Log in to save or load", Toast.LENGTH_SHORT).show();
+                            break;
+                        }
+                        startActivity(save);
+                        break;
+
+                }
+                return false;
+            }
+        });
+    }
 
 }

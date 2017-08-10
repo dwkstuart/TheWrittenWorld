@@ -21,6 +21,7 @@ public class MySavedCollectionRecyclerViewAdapter extends RecyclerView.Adapter<M
     private final OnListFragmentInteractionListener mListener;
 
     public MySavedCollectionRecyclerViewAdapter(List<SavedCollection> items, OnListFragmentInteractionListener listener) {
+
         mValues = items;
         mListener = listener;
     }

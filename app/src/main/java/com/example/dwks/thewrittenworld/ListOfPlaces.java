@@ -3,6 +3,8 @@ package com.example.dwks.thewrittenworld;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 public class ListOfPlaces extends AppCompatActivity implements PlaceDetailFragment.OnListFragmentInteractionListener{
@@ -12,6 +14,7 @@ public class ListOfPlaces extends AppCompatActivity implements PlaceDetailFragme
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_of_places);
+
 
 
     }
@@ -26,4 +29,17 @@ public class ListOfPlaces extends AppCompatActivity implements PlaceDetailFragme
         this.startActivity(placeDetails);
 
     }
+
+    private ToolBarMenuHandler toolBarMenuHandler = new ToolBarMenuHandler(this);
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return toolBarMenuHandler.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        return toolBarMenuHandler.onOptionsItemSelected(item);
+    }
+
 }
