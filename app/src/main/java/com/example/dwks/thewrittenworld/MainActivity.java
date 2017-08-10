@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         setContentView(R.layout.activity_main);
         requestPermissions();
         firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        final FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
         Intent service = new Intent(this, GeofenceIntentService.class);
 
@@ -72,15 +73,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
         });
         loadScreen = (Button) findViewById(R.id.setup);
-//        final Intent i = new Intent(this, ChooseAndLoad.class);
+        if (currentUser != null){
+            loadScreen.setText("START EXPLORING");
+        }
+
        //TODO handle case where location is not found
-        final Intent i = new Intent(this, FindNearby.class);
+        final Intent launchMainApp = new Intent(this, MapDisplay.class);
 
         loadScreen.setOnClickListener(new View.OnClickListener() {
             @Override
 
             public void onClick(View view) {
-                startActivity(i);
+                if (currentUser == null){
+                    Toast.makeText(getApplicationContext(),"Users Not Signed In Cannot Save", Toast.LENGTH_LONG).show();
+                }
+                startActivity(launchMainApp);
             }
         });
 
@@ -282,6 +289,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     // [START signOut]
     private void signOut() {
+        //clear shared prefeneces
+        Constants.placeObjects.clear();
+        Constants.places.clear();
+        new ProcessSharedPref(getApplicationContext()).saveAsJson();
+
         Auth.GoogleSignInApi.signOut(mGooogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
@@ -293,13 +305,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                         // [END_EXCLUDE]
                     }
                 });
-        //Constants constants = Constants.getInstance();
-        //constants.currentUser = null;
     }
     // [END signOut]
 
     // [START revokeAccess]
     private void revokeAccess() {
+        firebaseAuth.signOut();
         Auth.GoogleSignInApi.revokeAccess(mGooogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
@@ -347,6 +358,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         if (signedIn) {
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
+            Button launch = (Button) findViewById(R.id.setup);
+            launch.setText("Start Exloring");
+
         } else {
            // mStatusTextView.setText(R.string.signed_out);
 

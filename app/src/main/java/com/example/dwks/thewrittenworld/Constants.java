@@ -7,6 +7,7 @@ import com.google.android.gms.location.Geofence;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.TreeSet;
 
 /**
@@ -33,5 +34,6 @@ class Constants {
     public  static  HashMap<PlaceObject, Geofence> placeObjectGeofenceHashMap = new HashMap<>();
 
     public Location lastLocation;
+    public List<SavedCollection> files = new ArrayList<SavedCollection>();
 
 }

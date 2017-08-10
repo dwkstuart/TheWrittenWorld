@@ -150,6 +150,7 @@ public class FindNearby extends AppCompatActivity implements View.OnClickListene
                 this.addNearByPlaces();
                 numNearby.setText("There are " + nearbyObject.size() + "places nearby");
                 break;
+
             case R.id.seeMap:
 
                 Intent intent = new Intent(this, MapDisplay.class);

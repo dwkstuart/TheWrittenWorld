@@ -1,8 +1,10 @@
 package com.example.dwks.thewrittenworld;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,12 +22,13 @@ import java.util.TreeSet;
 
 public class UserFiles extends AppCompatActivity implements View.OnClickListener{
 
-    Constants constants= Constants.getInstance();
-    Button save;
-    Button displayFiles;
-    TextView userFiles;
-    EditText fileName;
-    Database dbInstance;
+    private Constants constants= Constants.getInstance();
+    private Button save;
+    private Button test;
+    private Button displayFiles;
+    private TextView userFiles;
+    private EditText fileName;
+    private Database dbInstance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,21 +43,42 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
         userFiles =(TextView) findViewById(R.id.usersFiles);
         fileName = (EditText) findViewById(R.id.enterFileName);
         displayFiles = (Button) findViewById(R.id.displayFileList);
+        test = (Button) findViewById(R.id.listTest);
 
+        test.setOnClickListener(this);
         save.setOnClickListener(this);
         displayFiles.setOnClickListener(this);
 
+
+        }
+
+
+    private ToolBarMenuHandler toolBarMenuHandler = new ToolBarMenuHandler(this);
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return toolBarMenuHandler.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+       return toolBarMenuHandler.onOptionsItemSelected(item);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case (R.id.saveButton):
-                Log.d("DB SAVE","Save button pressed");
+
                 dbInstance.uploadSaveSelection(fileName.getText().toString(), this.gsonParsingSave());
                 break;
             case (R.id.displayFileList):
                 populateListsField();
+
+                break;
+            case (R.id.listTest):
+                Intent intent = new Intent(this, ListOfPlaces.class);
+                startActivity(intent);
                 break;
 
         }
@@ -77,14 +101,17 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
                 Gson gson = new Gson();
-                List<String> savedTours = new ArrayList<String>();
+               ArrayList<SavedCollection> files = new ArrayList<SavedCollection>();
 
+                List<String> savedTours = new ArrayList<String>();
                 for (DataSnapshot list : dataSnapshot.getChildren()) {
-                    Set<PlaceObject> set = gson.fromJson(list.getValue().toString(), new TypeToken<TreeSet<PlaceObject>>() {}.getType());
-                    Log.d("List", list.getKey() + "number of places = " +set.size());
-                    userFiles.append(list.getKey() + " has " + set.size() + " places in it \n");
-                    savedTours.add(list.getKey());
+                    SavedCollection file = new SavedCollection(list.getKey(),list.getValue().toString());
+                    files.add(file);
+;
                 }
+                constants.files = files;
+                Intent fileListView = new Intent(getApplicationContext(), SavedCollections.class);
+                startActivity(fileListView);
             }
             @Override
             public void onFailed(DatabaseError databaseError) {

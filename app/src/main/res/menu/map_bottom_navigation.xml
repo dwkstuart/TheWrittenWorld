@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/save_menu"
+        android:title="Load/Save"
+        app:showAsAction="ifRoom"
+        android:enabled="true"
+        android:icon="@drawable/ticked_list"
+        />
+
+    <item
+        android:title="Find Nearby"
+        android:id="@+id/displayNearby"
+        app:showAsAction="ifRoom"
+        android:enabled="true"
+        android:icon="@drawable/ticked_list"
+        />
+
+    <item
+        android:id="@+id/findPlaces"
+        android:title="Get Locations"
+        app:showAsAction="ifRoom"
+        android:enabled="true"
+        android:icon="@drawable/book"
+        />
+
+
+</menu>

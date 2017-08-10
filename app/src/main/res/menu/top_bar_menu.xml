@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/main_map_menu"
+        android:title="View Map"
+        android:enabled="true"
+        />
+
+    <item
+        android:title="Location List"
+        android:id="@+id/location_menu_item"
+        android:enabled="true"
+        />
+
+    <item
+        android:id="@+id/alerts_menu"
+        android:title="Set Notifications"
+        android:enabled="true"
+        />
+
+
+</menu>
