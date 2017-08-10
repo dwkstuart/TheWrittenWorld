@@ -43,6 +43,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     private GoogleMap map;
     private BottomNavigationView bottomNavMenu;
     private FloatingActionButton setAlerts;
+    private Toast mToast;
 
 
     @Override
@@ -53,7 +54,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         initializeGoogleMap();
 
         Log.d(TAG, "onCreate()");
-
+        mToast = Toast.makeText(this,"",Toast.LENGTH_SHORT);
         locateNearby();
         setAlerts = (FloatingActionButton) findViewById(R.id.setAlerts);
         setAlerts.setOnClickListener(this);
@@ -66,17 +67,21 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
     }
 //
-//    @Override
-//    protected void onResume(){
-//        super.onResume();
-//        Log.d(TAG, markersCollection.toString());
-//        //update markers on resume
-//        for(Map.Entry<Marker, PlaceObject> entry: markersCollection.entrySet()){
-//            if (entry.getValue().isVisited()){
-//                entry.getKey().setIcon((BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-//            }
-//        }
-//}
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        new ProcessSharedPref(this).saveAsJson();
+        mapFragment.onPause();
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        initializeGoogleMap();
+
+}
 
     private void setupBottomNavBar(){
         final Intent lookup = new Intent(this, ChooseAndLoad.class);
@@ -90,15 +95,17 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                 switch (item.getItemId()){
                     case R.id.displayNearby:
                         if(constants.lastLocation == null){
-                            Toast.makeText(getApplicationContext(), "Location not available", Toast.LENGTH_SHORT).show();
+                            if(mToast!=null)
+                                mToast.cancel();
+                            mToast.makeText(getApplicationContext(), "Location not available", Toast.LENGTH_SHORT).show();
                             break;
                         }
 
                         addNearByPlaces();
                         if (!nearbyObject.isEmpty()){
 
-                            final Intent returnToMap = new Intent (getApplicationContext(), MapDisplay.class);
-                            startActivity(returnToMap);
+//                            final Intent returnToMap = new Intent (getApplicationContext(), MapDisplay.class);
+//                            startActivity(returnToMap);
 
                         }
                         break;
@@ -107,7 +114,9 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                         break;
                     case R.id.save_menu:
                         if (FirebaseAuth.getInstance().getCurrentUser()==null){
-                            Toast.makeText(getApplicationContext(),"Log in to save or load", Toast.LENGTH_SHORT).show();
+                            if(mToast!=null)
+                                mToast.cancel();
+                            mToast.makeText(getApplicationContext(),"Log in to save or load", Toast.LENGTH_SHORT).show();
                             break;
                         }
                         startActivity(save);
@@ -183,7 +192,8 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     }
 
     private void addMarkers() {
-        markersCollection.clear();
+        map.clear();
+        //markersCollection.clear();
         MarkerOptions markerOptions;
         Log.d(TAG, "add markers");
 
@@ -195,7 +205,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                         .title(placeObject.getBookTitle());
                 Marker marker = map.addMarker(markerOptions);
                 marker.setTag(placeObject);
-                markersCollection.put(marker, placeObject);
+             //   markersCollection.put(marker, placeObject);
             }
             else if (placeObject.isVisited()) {
                 Log.d(TAG, "Place is visited add marker loop" + placeObject.getBookTitle());
@@ -207,7 +217,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
                 Marker marker = map.addMarker(markerOptions);
                 marker.setTag(placeObject);
-                markersCollection.put(marker, placeObject);
+              //  markersCollection.put(marker, placeObject);
             }
 
         }
@@ -222,7 +232,9 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         if (view.getId() == R.id.setAlerts){
         CreateGeofence geofence = new CreateGeofence(this, "ADD", null);
         geofence.startGeofence();
-            Toast.makeText(this, "Location Alerts Activated", Toast.LENGTH_LONG).show();
+            if(mToast!=null)
+                mToast.cancel();
+            mToast.makeText(this, "Location Alerts Activated", Toast.LENGTH_LONG).show();
         setAlerts.setVisibility(View.INVISIBLE);
         }
     }
@@ -244,8 +256,10 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         for(PlaceObject object:constants.placeObjects) {
             constants.places.put(object.getDb_key(),object);
         }
-        Toast.makeText(getApplicationContext(),"Found " + nearbyObject.size() + "  places nearby", Toast.LENGTH_LONG).show();
-
+        if(mToast!=null)
+            mToast.cancel();
+        mToast.makeText(getApplicationContext(),"Found " + nearbyObject.size() + "  places nearby", Toast.LENGTH_LONG).show();
+        addMarkers();
         Log.d(TAG,constants.places.toString());
     }
 
@@ -258,7 +272,9 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         db.nearbyPlacesLatitude(new firebaseDataListener() {
             @Override
             public void onStart() {
-                Toast.makeText(getApplicationContext(),"Checking Database, Please Wait", Toast.LENGTH_LONG).show();
+                if(mToast!=null)
+                    mToast.cancel();
+                mToast.makeText(getApplicationContext(),"Checking Database, Please Wait", Toast.LENGTH_LONG).show();
 
             }
 
@@ -309,10 +325,11 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Log.d(TAG, "Marker clicked = " + marker.getId());
-        Log.d(TAG, "On marker click, collection empty? " + markersCollection.isEmpty());
-        Log.d(TAG, "Marker collection to string" + markersCollection.toString());
-        PlaceObject pickedPlace = markersCollection.get(marker);
+//        Log.d(TAG, "Marker clicked = " + marker.getId());
+//        Log.d(TAG, "On marker click, collection empty? " + markersCollection.isEmpty());
+//        Log.d(TAG, "Marker collection to string" + markersCollection.toString());
+       PlaceObject pickedPlace = (PlaceObject) marker.getTag();
+       // PlaceObject pickedPlace = markersCollection.get(marker);
         String id = pickedPlace.getDb_key();
 
         //open details page
