@@ -42,11 +42,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     private final static String TAG = ChooseAndLoad.class.getSimpleName();
     //Buttons and text fields
 
-    private Button deleteFences;
-    private Button loadPlacesButton;
     private Button createFenceButton;
-    private Button loadMap;
-    private Button showList;
     private TextView infoText;
     private Spinner titleDrop;
 
@@ -54,15 +50,13 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     private String selectedTitle ="";
    // private ArrayList<PlaceObject> placeObjects;
 
-    //Geofencing
-    private GeofencingApi geofencingApi;
     private PendingIntent pendingIntent;
     private GoogleApiClient googleApiClient;
     //get instance of Firebase database to use for queries
     //private FirebaseDatabase database = FirebaseDatabase.getInstance();
 
 
-    private ArrayList<String> spinnerData = new ArrayList<String>();
+    private ArrayList<String> spinnerData = new ArrayList<>();
 
 //    private TreeSet<PlaceObject> nearbyLong = new TreeSet<PlaceObject>();
 //    private TreeSet<PlaceObject> nearbyLat = new TreeSet<PlaceObject>();
@@ -79,8 +73,8 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         setUpButtons();
         getTitles();
 //        pendingIntent = null;
-          geofencingApi = LocationServices.GeofencingApi;
-        infoText.setText("\n Number of markers set : " + constants.placeObjects.size());
+        GeofencingApi geofencingApi = LocationServices.GeofencingApi;
+        infoText.setText("\n Number of markers set : " + Constants.placeObjects.size());
         //if(constants.lastLocation != null)
         //findNearby();
 
@@ -103,7 +97,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
                 @Override
                 public void onSuccess(DataSnapshot dataSnapshot) {
-                    TreeSet<String> titles = new TreeSet<String>();
+                    TreeSet<String> titles = new TreeSet<>();
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                         PlaceObject object = new PlaceObject(postSnapshot);
                         titles.add(object.getBookTitle());
@@ -123,7 +117,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         });
 
         //Set the contents of the drop down
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerData);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerData);
         titleDrop.setAdapter(adapter);
         titleDrop.setOnItemSelectedListener(new onItemSelectedListener());
 
@@ -134,11 +128,11 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
      */
     private void setUpButtons() {
 
-        loadPlacesButton = (Button) findViewById(R.id.loadPlaces);
+        Button loadPlacesButton = (Button) findViewById(R.id.loadPlaces);
         createFenceButton = (Button) findViewById(R.id.createGeofences);
-        deleteFences =(Button) findViewById(R.id.removeGeofences);
-        loadMap = (Button) findViewById(R.id.ViewMap);
-        showList = (Button) findViewById(R.id.ViewList);
+        Button deleteFences = (Button) findViewById(R.id.removeGeofences);
+        Button loadMap = (Button) findViewById(R.id.ViewMap);
+        Button showList = (Button) findViewById(R.id.ViewList);
         infoText = (TextView) findViewById(R.id.InfoBox);
         titleDrop= (Spinner) findViewById(R.id.titleSpinner);
         spinnerData.add("Choose a Book");
@@ -152,9 +146,9 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         if (user == null){
             showList.setEnabled(false);
         }
-        if(constants.placeObjects.isEmpty())
+        if(Constants.placeObjects.isEmpty())
         createFenceButton.setEnabled(false);
-        infoText.setText("\n Places Selected : " + constants.placeObjects.size());
+        infoText.setText("\n Places Selected : " + Constants.placeObjects.size());
 
 
 
@@ -187,13 +181,13 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     PlaceObject object = new PlaceObject(postSnapshot);
-                    constants.placeObjects.add(object);
+                    Constants.placeObjects.add(object);
                     //populate HashMap
-                    constants.places.put(object.getDb_key(), object);
+                    Constants.places.put(object.getDb_key(), object);
 
                 }
-                infoText.setText("\n Number of Results : " + constants.placeObjects.size());
-                if(!constants.placeObjects.isEmpty())
+                infoText.setText("\n Number of Results : " + Constants.placeObjects.size());
+                if(!Constants.placeObjects.isEmpty())
                     createFenceButton.setEnabled(true);
             }
 

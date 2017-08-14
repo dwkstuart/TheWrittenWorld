@@ -27,25 +27,18 @@ import com.google.firebase.auth.FirebaseAuth;
 public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final String TAG = PlaceDetailScreen.class.getSimpleName();
-    private MapFragment mapFragment;
-    private GoogleMap map;
     private PlaceObject placeObject;
-    private TextView titleText;
-    private TextView locationName;
-    private TextView author;
     private CheckBox checkBox;
-    private ImageView imageView;
-    private BottomNavigationView bottomNavMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_detail_screen);
 
-        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.small_map);
+        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.small_map);
         mapFragment.getMapAsync(this);
 
-        imageView =(ImageView) findViewById(R.id.detailImage);
+        ImageView imageView = (ImageView) findViewById(R.id.detailImage);
         checkBox = (CheckBox) findViewById(R.id.visitedCheckBox);
 
 
@@ -57,22 +50,20 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
             final Constants constants = Constants.getInstance();
 
 
-            placeObject = constants.places.get(id);
+            placeObject = Constants.places.get(id);
             Log.d("before if", String.valueOf(placeObject.isVisited()));
 
             if (placeObject != null) {
                 Log.d("TEST!!!!", placeObject.toString());
 
                 String title = placeObject.getBookTitle();
-                titleText = (TextView) findViewById(R.id.place_title);
+                TextView titleText = (TextView) findViewById(R.id.place_title);
                 titleText.setText(title);
-                locationName = (TextView) findViewById(R.id.details);
+                TextView locationName = (TextView) findViewById(R.id.details);
                 locationName.setText(placeObject.getLocation());
-                author = (TextView) findViewById(R.id.author);
+                TextView author = (TextView) findViewById(R.id.author);
                 author.setText("Written by " + placeObject.getAuthorFirstName() + " " + placeObject.getAuthorSecondName());
                 checkBox.setChecked(placeObject.isVisited());
-                Log.d(TAG, "Place visited = " + placeObject.isVisited());
-                Toast.makeText(this, "Detail screen is visited" + placeObject.isVisited(), Toast.LENGTH_SHORT);
 
             }
             checkBox.setOnClickListener(new View.OnClickListener() {
@@ -81,7 +72,7 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
                     if (checkBox.isChecked()){
                         placeObject.setVisited(true);
                     }
-                    else if(checkBox.isChecked()== false)
+                    else if(!checkBox.isChecked())
                         placeObject.setVisited(false);
 
                 }
@@ -111,7 +102,7 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        map = googleMap;
+        GoogleMap map = googleMap;
 
         //noinspection MissingPermission, asked for on starting app
         map.setMyLocationEnabled(true);
@@ -129,7 +120,7 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
         final Intent lookup = new Intent(this, ChooseAndLoad.class);
         final Intent save = new Intent(this, UserFiles.class);
         final Intent returnToMap = new Intent (this, MapDisplay.class);
-        bottomNavMenu =(BottomNavigationView) findViewById(R.id.mapBottomNavBar);
+        BottomNavigationView bottomNavMenu = (BottomNavigationView) findViewById(R.id.mapBottomNavBar);
         bottomNavMenu.inflateMenu(R.menu.map_bottom_navigation);
 
         bottomNavMenu.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {

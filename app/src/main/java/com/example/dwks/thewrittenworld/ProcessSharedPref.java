@@ -31,8 +31,8 @@ public class ProcessSharedPref extends Application {
 
     public void saveAsJson(){
         Gson gson = new Gson();
-        String jsonHashMap =  gson.toJson(constants.places);
-        String jsonTreeSet = gson.toJson(constants.placeObjects);
+        String jsonHashMap =  gson.toJson(Constants.places);
+        String jsonTreeSet = gson.toJson(Constants.placeObjects);
 
 
 
@@ -41,7 +41,7 @@ public class ProcessSharedPref extends Application {
         editor.putString(String.valueOf(R.string.placesHashMap),jsonHashMap);
         editor.putString(String.valueOf(R.string.placesTreeSet),jsonTreeSet);
 
-        editor.commit();
+        editor.apply();
         //Log.d(TAG, "Shared pref get all result" + sharedPref.getAll());
     }
 
@@ -57,8 +57,8 @@ public class ProcessSharedPref extends Application {
 
         Set<PlaceObject> set = gson.fromJson(jsonTreeSet, new TypeToken<TreeSet<PlaceObject>>() {}.getType());
 
-        constants.places = (HashMap) mapJson;
-        constants.placeObjects = (TreeSet) set;
+        Constants.places = (HashMap) mapJson;
+        Constants.placeObjects = (TreeSet) set;
 
     }
 

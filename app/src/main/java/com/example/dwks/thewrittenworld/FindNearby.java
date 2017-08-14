@@ -20,16 +20,13 @@ public class FindNearby extends AppCompatActivity implements View.OnClickListene
     private final static String TAG = FindNearby.class.getSimpleName();
     Constants constants = Constants.getInstance();
 
-    private TreeSet<PlaceObject> nearbyLong = new TreeSet<PlaceObject>();
-    private TreeSet<PlaceObject> nearbyLat = new TreeSet<PlaceObject>();
+    private TreeSet<PlaceObject> nearbyLong = new TreeSet<>();
+    private TreeSet<PlaceObject> nearbyLat = new TreeSet<>();
     private TreeSet<PlaceObject> nearbyObject;
 
     private Button findNearby;
     private TextView numNearby;
     private TextView userName;
-    private Button viewMap;
-    private Button pickBooks;
-    private Button clearSelection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +54,10 @@ public class FindNearby extends AppCompatActivity implements View.OnClickListene
 
         findNearby = (Button) findViewById(R.id.findNearbyButton);
         numNearby = (TextView) findViewById(R.id.numPlacesNearby);
-        viewMap = (Button) findViewById(R.id.seeMap);
-        pickBooks = (Button) findViewById(R.id.findBook);
+        Button viewMap = (Button) findViewById(R.id.seeMap);
+        Button pickBooks = (Button) findViewById(R.id.findBook);
         userName = (TextView) findViewById(R.id.userName);
-        clearSelection = (Button) findViewById(R.id.clearSelection);
+        Button clearSelection = (Button) findViewById(R.id.clearSelection);
 
         clearSelection.setOnClickListener(this);
         findNearby.setOnClickListener(this);
@@ -78,12 +75,12 @@ public class FindNearby extends AppCompatActivity implements View.OnClickListene
         Toast.makeText(getApplicationContext(),"Found " + nearbyObject.size() + "  places nearby", Toast.LENGTH_LONG).show();
 
         Log.d(TAG, "Nearby places" + nearbyObject.toString());
-        constants.placeObjects.addAll(nearbyObject);
+        Constants.placeObjects.addAll(nearbyObject);
 
-        for(PlaceObject object:constants.placeObjects) {
-            constants.places.put(object.getDb_key(),object);
+        for(PlaceObject object: Constants.placeObjects) {
+            Constants.places.put(object.getDb_key(),object);
         }
-        Log.d(TAG,constants.places.toString());
+        Log.d(TAG, Constants.places.toString());
     }
 
     private void locateNearby(){
@@ -164,10 +161,10 @@ public class FindNearby extends AppCompatActivity implements View.OnClickListene
             case R.id.clearSelection:
                 new CreateGeofence(this.getApplicationContext(),"",null)
                         .removeAllGeofence();
-                constants.geofenceArrayList.clear();
-                constants.placeObjectGeofenceHashMap.clear();
-                constants.placeObjects.clear();
-                constants.places.clear();
+                Constants.geofenceArrayList.clear();
+                Constants.placeObjectGeofenceHashMap.clear();
+                Constants.placeObjects.clear();
+                Constants.places.clear();
               break;
         }
 

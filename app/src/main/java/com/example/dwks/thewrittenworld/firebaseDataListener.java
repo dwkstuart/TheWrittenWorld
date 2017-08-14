@@ -10,7 +10,7 @@ import com.google.firebase.database.DatabaseError;
 
 public interface firebaseDataListener {
 
-    public void onStart();
-    public void onSuccess(DataSnapshot dataSnapshot);
-    public void onFailed(DatabaseError databaseError);
+    void onStart();
+    void onSuccess(DataSnapshot dataSnapshot);
+    void onFailed(DatabaseError databaseError);
 }

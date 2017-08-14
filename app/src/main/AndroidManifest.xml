@@ -26,12 +26,14 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAp7yU76GsAxQzYoDyX2GxgKKMIlY9qmaA" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
         <activity android:name=".ChooseAndLoad" />
         <activity android:name=".MapDisplay"
@@ -46,7 +48,7 @@
         <activity android:name=".ListOfPlaces" />
         <activity android:name=".FindNearby" />
         <activity android:name=".UserFiles" />
-        <activity android:name=".SavedCollections"></activity>
+        <activity android:name=".SavedCollections" />
     </application>
 
 </manifest>

@@ -25,5 +25,13 @@
         android:icon="@drawable/book"
         />
 
-
+    <item
+    android:id="@+id/current_place_list"
+    android:title="Current List"
+    app:showAsAction="ifRoom"
+    android:enabled="true"
+    />
 </menu>
+
+
+

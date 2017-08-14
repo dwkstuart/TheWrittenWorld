@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/main_map_menu"
@@ -18,6 +17,11 @@
         android:id="@+id/alerts_menu"
         android:title="Set Notifications"
         android:enabled="true"
+        />
+    <item
+        android:id="@+id/clear_places"
+        android:enabled="true"
+        android:title="Clear Current List"
         />
 
 

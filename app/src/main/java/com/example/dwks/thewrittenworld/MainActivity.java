@@ -33,9 +33,6 @@ import com.google.firebase.auth.GoogleAuthProvider;
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener
 {
     private static final String TAG = MainActivity.class.getSimpleName();
-    private Button loadScreen;
-    private SignInButton signIn;
-    private Button signOut;
     private GoogleApiClient mGooogleApiClient;
     private FirebaseAuth firebaseAuth;
 
@@ -57,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         startService(service);
 
-        signIn = (SignInButton) findViewById(R.id.sign_in_button);
+        SignInButton signIn = (SignInButton) findViewById(R.id.sign_in_button);
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,14 +62,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
         });
 
-        signOut = (Button) findViewById(R.id.sign_out_button);
+        Button signOut = (Button) findViewById(R.id.sign_out_button);
                 signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 signOut();
             }
         });
-        loadScreen = (Button) findViewById(R.id.setup);
+        Button loadScreen = (Button) findViewById(R.id.setup);
         if (currentUser != null){
             loadScreen.setText("Start Exploring");
         }

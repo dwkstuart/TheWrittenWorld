@@ -25,8 +25,8 @@ public class ListOfPlaces extends AppCompatActivity implements PlaceDetailFragme
         Toast.makeText(this, "Item is visited? " + String.valueOf(item.isVisited()), Toast.LENGTH_LONG).show();
         String id = item.getDb_key();
 
-        Constants.getInstance().places.put(id,item);
-        Log.d("List from constants", Constants.getInstance().places.get(id).toString());
+        Constants.places.put(id,item);
+        Log.d("List from constants", Constants.places.get(id).toString());
         Intent placeDetails = new Intent(this,PlaceDetailScreen.class);
         placeDetails.putExtra("ID", id);
         Log.d("List from passed", item.toString());

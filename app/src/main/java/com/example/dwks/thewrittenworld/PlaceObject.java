@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
+import com.google.maps.android.clustering.ClusterItem;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,7 +13,7 @@ import org.json.JSONObject;
  * Created by User on 22/07/2017.
  */
 
-public class PlaceObject implements Comparable<PlaceObject> {
+public class PlaceObject implements Comparable<PlaceObject>, ClusterItem {
 
     private static final String TAG = PlaceObject.class.getSimpleName();
     //Instance vaiables
@@ -145,5 +146,18 @@ public class PlaceObject implements Comparable<PlaceObject> {
     }
 
 
+    @Override
+    public LatLng getPosition() {
+        return latLng;
+    }
 
+    @Override
+    public String getTitle() {
+        return location;
+    }
+
+    @Override
+    public String getSnippet() {
+        return bookTitle;
+    }
 }

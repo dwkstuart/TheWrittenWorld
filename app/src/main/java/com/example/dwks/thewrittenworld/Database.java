@@ -3,6 +3,7 @@ package com.example.dwks.thewrittenworld;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -18,6 +19,7 @@ public class Database {
 
     private FirebaseDatabase database;
     static boolean peristanceEnabledCalled = false;
+
 
 
     public Database() {
@@ -36,6 +38,7 @@ public class Database {
        // FirebaseDatabase database = FirebaseDatabase.getInstance();
       //database.setPersistenceEnabled(true);
         DatabaseReference myRef = database.getReference("places/");
+        myRef.keepSynced(true);
         final Query titleQuery = myRef.orderByChild("title");
 
         titleQuery.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -144,6 +147,8 @@ public class Database {
         DatabaseReference userID = childRef.child(UID);
         userID.child(name).setValue(jsonfile);
 
+
+
     }
 
     public void getUsersLists(final firebaseDataListener listener){
@@ -152,7 +157,7 @@ public class Database {
         String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getInstance().getReference("user/" + UID);
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("user/" + UID);
 
         final Query usersLists = myRef;
         Log.d("userlist query", myRef.toString());
@@ -171,29 +176,60 @@ public class Database {
         });
     }
 
-    public void getSavedList(String listName, final firebaseDataListener listener){
+    public void uploadLocation (final firebaseDataListener listener){
 
-        Constants constants = Constants.getInstance();
-        String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference mRef = database.getReference();
+        final DatabaseReference childRef = mRef.child("places");
+        //Query to determine the number of items in the array
+        final Query query = mRef.orderByKey().startAt("places").limitToFirst(1);
 
-        //FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getInstance().getReference("user/" + UID +"/" + listName);
-
-        final Query usersLists = myRef;
-
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        final ChildEventListener eventListener;
+        query.addChildEventListener(eventListener =new ChildEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot){
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 listener.onSuccess(dataSnapshot);
+
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                listener.onFailed(databaseError);
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
             }
 
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError){}
         });
+
+       // query.removeEventListener(eventListener);
+
+
     }
 
+    public void loadInfo(PlaceObject placeObject, int arrayPos){
+
+        Log.d("Load", "load info called");
+        DatabaseReference mRef = database.getReference();
+        DatabaseReference childRef = mRef.child("places");
+        DatabaseReference places = childRef.child(String.valueOf(arrayPos));
+        places.child("author").
+                setValue(placeObject.getAuthorFirstName() + " " + placeObject.getAuthorSecondName());
+        places.child("db_key").setValue(places.push().getKey());
+        places.child("location").setValue(placeObject.getLocation());
+        places.child("latitude").setValue(placeObject.getLatitude());
+        places.child("longitude").setValue(placeObject.getLongitude());
+//                places.child("snippet").setValue(placeObject.getSnippet());
+//                places.child("longDescription").setValue(placeObject.getLongDescription());
+        places.child("title").setValue(placeObject.getBookTitle());
+
+    }
 
 }

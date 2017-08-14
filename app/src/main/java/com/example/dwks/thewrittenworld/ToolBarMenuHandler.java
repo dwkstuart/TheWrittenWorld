@@ -30,6 +30,7 @@ public class ToolBarMenuHandler {
         final Intent currentList = new Intent(activity, ListOfPlaces.class);
         final Intent returnToMap = new Intent (activity, MapDisplay.class);
 
+
         switch (item.getItemId()){
             case R.id.main_map_menu:
                 activity.startActivity(returnToMap);
@@ -39,6 +40,16 @@ public class ToolBarMenuHandler {
                 break;
             case R.id.alerts_menu:
                 activity.startActivity(alerts);
+                break;
+            case R.id.clear_places:
+                new CreateGeofence(activity,"",null)
+                        .removeAllGeofence();
+                Constants.geofenceArrayList.clear();
+                Constants.placeObjectGeofenceHashMap.clear();
+                Constants.placeObjects.clear();
+                Constants.places.clear();
+//                if (activity instanceof MapDisplay)
+//                activity.startActivity(returnToMap);
                 break;
         }
         return true;
