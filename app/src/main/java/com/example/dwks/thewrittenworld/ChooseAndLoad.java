@@ -45,9 +45,11 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     private Button createFenceButton;
     private TextView infoText;
     private Spinner titleDrop;
+    private Spinner authorDrop;
 
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private String selectedTitle ="";
+    private String selectedAuthor= "";
    // private ArrayList<PlaceObject> placeObjects;
 
     private PendingIntent pendingIntent;
@@ -56,7 +58,13 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     //private FirebaseDatabase database = FirebaseDatabase.getInstance();
 
 
-    private ArrayList<String> spinnerData = new ArrayList<>();
+    private ArrayList<String> titleDropdownData = new ArrayList<>();
+    private ArrayList<String> authorDropdownData = new ArrayList<>();
+
+    private TreeSet<PlaceObject> foundByAuthor = new TreeSet<>();
+    private TreeSet<PlaceObject> foundByTitle = new TreeSet<>();
+
+
 
 //    private TreeSet<PlaceObject> nearbyLong = new TreeSet<PlaceObject>();
 //    private TreeSet<PlaceObject> nearbyLat = new TreeSet<PlaceObject>();
@@ -72,6 +80,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
         setUpButtons();
         getTitles();
+        getAuthors();
 //        pendingIntent = null;
         GeofencingApi geofencingApi = LocationServices.GeofencingApi;
         infoText.setText("\n Number of markers set : " + Constants.placeObjects.size());
@@ -101,10 +110,11 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                         PlaceObject object = new PlaceObject(postSnapshot);
                         titles.add(object.getBookTitle());
+                        foundByTitle.add(object);
 
                     }
                     for (String title:titles){
-                        spinnerData.add(title);
+                        titleDropdownData.add(title);
                     }
 
                 }
@@ -116,12 +126,72 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
         });
 
-        //Set the contents of the drop down
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerData);
+
+        //Set the contents of the title drop down
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, titleDropdownData);
         titleDrop.setAdapter(adapter);
         titleDrop.setOnItemSelectedListener(new onItemSelectedListener());
 
+        }
+
+    private void filterByAuthor(){
+            titleDropdownData.clear();
+            titleDropdownData.add("Books by " + selectedAuthor);
+        TreeSet<PlaceObject> filteredList = foundByTitle;
+        TreeSet<String> titles = new TreeSet<>();
+            Log.d(TAG, "FbA" + foundByAuthor.toString());
+          Log.d(TAG, "FbT" + foundByTitle.toString());
+
+        filteredList.retainAll(foundByAuthor);
+            Log.d(TAG,filteredList.toString());
+            for(PlaceObject object: filteredList){
+                titles.add(object.getBookTitle());
+            }
+            for(String title: titles ) {
+                titleDropdownData.add(title);
+            }
+
     }
+
+        private void getAuthors(){
+            Database db =   new Database();
+            db.getAuthors(new firebaseDataListener() {
+                @Override
+                public void onStart() {
+                    Toast.makeText(getApplicationContext(),"Searching Database", Toast.LENGTH_SHORT).show();
+
+                }
+
+                @Override
+                public void onSuccess(DataSnapshot dataSnapshot) {
+                    TreeSet<String> authors = new TreeSet<>();
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        PlaceObject object = new PlaceObject(postSnapshot);
+                        String name = object.getAuthorFirstName() + " " + object.getAuthorSecondName();
+                        authors.add(name);
+
+
+                    }
+                    for (String author:authors){
+                        authorDropdownData.add(author);
+                    }
+
+                }
+
+                @Override
+                public void onFailed(DatabaseError databaseError) {
+
+                }
+
+            });
+
+            //Set the contents of the title drop down
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, authorDropdownData);
+            authorDrop.setAdapter(adapter);
+            authorDrop.setOnItemSelectedListener(new onItemSelectedListener());
+
+
+        }
 
     /**
      * Helper Method to initialise buttons and set listeners
@@ -133,13 +203,17 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         Button deleteFences = (Button) findViewById(R.id.removeGeofences);
         Button loadMap = (Button) findViewById(R.id.ViewMap);
         Button showList = (Button) findViewById(R.id.ViewList);
+        Button filterByAuthor = (Button) findViewById(R.id.filter_author);
         infoText = (TextView) findViewById(R.id.InfoBox);
         titleDrop= (Spinner) findViewById(R.id.titleSpinner);
-        spinnerData.add("Choose a Book");
+        titleDropdownData.add("Choose a Book");
 
+        authorDrop =(Spinner) findViewById(R.id.author_dropdown);
+        authorDropdownData.add("Choose by Author");
 
         loadPlacesButton.setOnClickListener(this);
         createFenceButton.setOnClickListener(this);
+        filterByAuthor.setOnClickListener(this);
         loadMap.setOnClickListener(this);
         showList.setOnClickListener(this);
         deleteFences.setOnClickListener(this);
@@ -196,11 +270,49 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
             }
         });
-
-
     }
 
-    //saves current hasmmap and treeset if app is destroyed
+    /**Method to return the locations from the databases assocaited with a particular title
+     *
+     * @param selectedAuthor
+     */
+    private void findBookByAuthor(final String selectedAuthor){
+        Database db = new Database();
+        titleDropdownData.clear();
+        titleDropdownData.add("Books by " + selectedAuthor );
+        foundByTitle.clear();
+        this.getTitles();
+
+        db.getBooksByAuthor(selectedAuthor, new firebaseDataListener() {
+
+            @Override
+            public void onStart() {
+                Toast.makeText(getApplicationContext(),"Loading Selection", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                foundByAuthor.clear();
+
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    PlaceObject object = new PlaceObject(postSnapshot);
+                    foundByAuthor.add(object);
+
+                }
+                infoText.setText("\n Number of Results : " + Constants.placeObjects.size());
+                if(!Constants.placeObjects.isEmpty())
+                    createFenceButton.setEnabled(true);
+
+                if(!selectedAuthor.equals("Choose by Author"))
+                filterByAuthor();
+            }
+
+            @Override
+            public void onFailed(DatabaseError databaseError) {
+
+            }
+        });
+    }
 
 
     //Saves data when pause is called in case app is killed in background
@@ -227,7 +339,6 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
             case R.id.loadPlaces:
 
-                //this.addNearByPlaces();
                 String title = String.valueOf(selectedTitle);
                 this.findBookPlaces(title);
 
@@ -256,6 +367,8 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
             case R.id.ViewMap:
                 Intent map = new Intent(this, MapDisplay.class);
+                map.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); //Uses previous version of activity, maintains users position and zoom
+
                 startActivity(map);
 
                 break;
@@ -266,6 +379,13 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 Intent save = new Intent(this, UserFiles.class);
                 startActivity(save);
                 break;
+            case R.id.filter_author:
+                String authorname = String.valueOf(selectedAuthor);
+                this.findBookByAuthor(authorname);
+
+//                filterByAuthor();
+                break;
+
         }
 
 
@@ -291,8 +411,15 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     private class onItemSelectedListener implements android.widget.AdapterView.OnItemSelectedListener {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            Log.d(TAG, "onSpinnerSelected");
-            selectedTitle = adapterView.getSelectedItem().toString();
+            switch (adapterView.getId()){
+                case R.id.author_dropdown:
+                    selectedAuthor = adapterView.getSelectedItem().toString();
+                    break;
+                case R.id.titleSpinner:
+                    selectedTitle = adapterView.getSelectedItem().toString();
+                    break;
+
+            }
 
 
         }

@@ -29,12 +29,12 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
     private static final String TAG = PlaceDetailScreen.class.getSimpleName();
     private PlaceObject placeObject;
     private CheckBox checkBox;
+   // private String ClassFrom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_detail_screen);
-
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.small_map);
         mapFragment.getMapAsync(this);
 
@@ -43,13 +43,11 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
 
 
         Intent input = getIntent();
+        Log.d(TAG,input.toString());
         if (input.hasExtra("ID")) {
             Log.d(TAG, "Has extra ID is true");
-
             String id = input.getStringExtra("ID");
             final Constants constants = Constants.getInstance();
-
-
             placeObject = Constants.places.get(id);
             Log.d("before if", String.valueOf(placeObject.isVisited()));
 
@@ -78,7 +76,9 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
                 }
 
             });
-
+//            if (input.hasExtra("ClassFrom")){
+//                ClassFrom = input.getStringExtra("ClassFrom");
+//            }
             //Used for default if DB does not contain any preset image
             String googleStreetViewImage = "https://maps.googleapis.com/maps/api/streetview?size=600x300&location="+ placeObject.getLatitude()+"," +placeObject.getLongitude()+"&heading=151.78&pitch=-0.76&key=" + getString(R.string.GOOGLE_API_KEY);
 
@@ -106,12 +106,14 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
 
         //noinspection MissingPermission, asked for on starting app
         map.setMyLocationEnabled(true);
+        map.setBuildingsEnabled(true);
+        map.setMapType(2);
         setupBottomNavBar();
         //place marker of point of interest and zoom camera
         if(placeObject != null){
             LatLng placeLocation = new LatLng(placeObject.getLatitude(),placeObject.getLongitude());
             map.addMarker(new MarkerOptions().position(placeLocation));
-            CameraPosition cameraPosition = new CameraPosition.Builder().target(placeLocation).zoom(10).build();
+            CameraPosition cameraPosition = new CameraPosition.Builder().target(placeLocation).zoom(18).tilt(35).build();
             map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));}
     }
 
@@ -147,4 +149,13 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
         });
     }
 
+//    @Override
+//    public void onBackPressed() {
+//        if (ClassFrom != null){
+//            Intent back = new Intent(this, MapDisplay.class);
+//            startActivity(back);
+//        }
+//        super.onBackPressed();
+//
+//    }
 }

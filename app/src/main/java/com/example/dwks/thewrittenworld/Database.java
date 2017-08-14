@@ -19,6 +19,7 @@ public class Database {
 
     private FirebaseDatabase database;
     static boolean peristanceEnabledCalled = false;
+    private static final String TAG = Database.class.getSimpleName();
 
 
 
@@ -53,10 +54,33 @@ public class Database {
                listener.onFailed(databaseError);
             }
         });
-
-
-
     }
+
+    //Find list of authors titles
+    public void getAuthors(final firebaseDataListener listener){
+        listener.onStart();
+
+        // FirebaseDatabase database = FirebaseDatabase.getInstance();
+        //database.setPersistenceEnabled(true);
+        DatabaseReference myRef = database.getReference("places/");
+        myRef.keepSynced(true);
+        final Query titleQuery = myRef.orderByChild("author");
+
+        titleQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                listener.onSuccess(dataSnapshot);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                listener.onFailed(databaseError);
+            }
+        });
+    }
+
+
 
     public void getBookPlaces(String title, final firebaseDataListener listener) {
         listener.onStart();
@@ -78,6 +102,29 @@ public class Database {
             }
         });
     }
+
+    public void getBooksByAuthor(String author, final firebaseDataListener listener) {
+        listener.onStart();
+        Log.d(TAG,author);
+        //  FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("places/");
+
+        final Query recentQuery = myRef.orderByChild("author").equalTo(author);
+
+        recentQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+               // Log.d(TAG, "Books by author data snapshot?" +dataSnapshot.toString());
+                listener.onSuccess(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                listener.onFailed(databaseError);
+            }
+        });
+    }
+
 
     //Cannot search by two where clauses in Firebase, create set of objects with near longitude and latitude and then find where they intersect
 

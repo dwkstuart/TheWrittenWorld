@@ -22,7 +22,7 @@
         android:title="Get Locations"
         app:showAsAction="ifRoom"
         android:enabled="true"
-        android:icon="@drawable/book"
+        android:icon="@drawable/quill_outline"
         />
 
     <item

@@ -33,6 +33,7 @@ public class ToolBarMenuHandler {
 
         switch (item.getItemId()){
             case R.id.main_map_menu:
+                returnToMap.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); //Uses previous version of activity, maintains users position and zoom
                 activity.startActivity(returnToMap);
                 break;
             case R.id.location_menu_item:

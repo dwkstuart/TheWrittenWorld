@@ -16,7 +16,12 @@ public class ListOfPlaces extends AppCompatActivity implements PlaceDetailFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_of_places);
 
-
+//        if(findViewById(R.id.placeList) !=null){
+//
+//            PlaceDetailFragment placeDetailFragment = new PlaceDetailFragment();
+//
+//            getSupportFragmentManager().beginTransaction().add(R.id.placeList,placeDetailFragment).commit();
+//        }
 
     }
 

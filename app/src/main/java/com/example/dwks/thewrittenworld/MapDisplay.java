@@ -2,9 +2,8 @@ package com.example.dwks.thewrittenworld;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,8 +19,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.maps.android.clustering.Cluster;
@@ -45,43 +44,80 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     private Toast mToast;
     private ClusterManager<PlaceObject> clusterManager = null;
     private CameraPosition cameraPosition;
+    private int ZOOM = 15; //inital zoom
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_display);
        // mToast = Toast.makeText(this,"",Toast.LENGTH_SHORT);
-        setupBottomNavBar();
-        initializeGoogleMap();
+       // setupBottomNavBar();
+        Log.d(TAG, "onCreate()");
+        if(savedInstanceState == null)
+            Log.d(TAG, "Saved instance state null");
+
         if (savedInstanceState !=null) {
             cameraPosition = (CameraPosition)
                     savedInstanceState.get("MAP_STATE");
-        }
+            Log.d(TAG, "Create instance state" + cameraPosition.toString());
 
-        Log.d(TAG, "onCreate()");
+        }
+        initializeGoogleMap();
+        if(Constants.getInstance().lastLocation !=null)
         locateNearby();
         setAlerts = (FloatingActionButton) findViewById(R.id.setAlerts);
         setAlerts.setOnClickListener(this);
         this.checkAlertButton();
 
     }
+    private void setStyle() {
+        try {
+            // Customise the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            boolean success = map.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, R.raw.retro_style_overlay));
+
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e(TAG, "Can't find style. Error: ", e);
+        }
+    }
 
 
-//
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.d(TAG,"Restore instance state");
+        if (savedInstanceState == null)
+            Log.d(TAG, "saved instance null restore instance");
+        if (savedInstanceState !=null) {
+            cameraPosition = (CameraPosition)
+                    savedInstanceState.get("MAP_STATE");
+            Log.d(TAG, "Restore instance state" + cameraPosition.toString());
+
+        }
+    }
+
+    //
     private void setInitalZoom(){
         LatLng currentspot = null;
         Log.d(TAG, "setInitalZoom");
 
             if (constants.lastLocation != null) {
-                Log.d(TAG, "Map display user location is not null" + constants.lastLocation.getLatitude());
+               // Log.d(TAG, "Map display user location is not null" + constants.lastLocation.getLatitude());
 
                 currentspot = new LatLng(constants.lastLocation.getLatitude(), constants.lastLocation.getLongitude());
-                Log.d(TAG, currentspot.toString());
+             //   Log.d(TAG, currentspot.toString());
 
             }
-            if (cameraPosition == null && currentspot!=null) {
-                cameraPosition = new CameraPosition.Builder().target(currentspot).zoom(9).build();
+            if (cameraPosition == null) {
+                Log.d(TAG, "Camera position is null");
 
+                cameraPosition = new CameraPosition.Builder().target(currentspot).zoom(ZOOM).build();
+                Log.d(TAG, cameraPosition.toString());
                 map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
             }
@@ -113,10 +149,12 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        cameraPosition = map.getCameraPosition();
-        outState.putParcelable("MAP STATE",cameraPosition);
-        map.clear();
         super.onSaveInstanceState(outState);
+        cameraPosition = map.getCameraPosition();
+        Log.d(TAG, "On save instance" + cameraPosition.toString());
+        outState.putParcelable("MAP_STATE",map.getCameraPosition());
+        Log.d(TAG, outState.getParcelable("MAP_STATE").toString());
+        map.clear();
     }
 
     @Override
@@ -139,57 +177,57 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
 }
 
-    private void setupBottomNavBar(){
-        final Intent lookup = new Intent(this, ChooseAndLoad.class);
-        final Intent save = new Intent(this, UserFiles.class);
-        BottomNavigationView bottomNavMenu = (BottomNavigationView) findViewById(R.id.mapBottomNavBar);
-        bottomNavMenu.inflateMenu(R.menu.map_bottom_navigation);
-
-        bottomNavMenu.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()){
-                    case R.id.displayNearby:
-                        if(constants.lastLocation == null){
-                            if(mToast!=null)
-                                mToast.cancel();
-                            mToast.makeText(getApplicationContext(), "Location not available", Toast.LENGTH_SHORT).show();
-                            break;
-                        }
-
-                        addNearByPlaces();
-                        if (nearbyObject.isEmpty()){
-                            Log.d(TAG, mToast.toString());
-                            if(mToast!=null)
-                                mToast.cancel();
-                            mToast.makeText(getApplicationContext(), "Nothing nearby sorry...", Toast.LENGTH_SHORT).show();
-                        }
-                        break;
-                    case R.id.findPlaces:
-                        startActivity(lookup);
-                        break;
-                    case R.id.save_menu:
-                        if (FirebaseAuth.getInstance().getCurrentUser()==null){
-                            if(mToast!=null)
-                                mToast.cancel();
-                            mToast = Toast.makeText(getApplicationContext(),"Log in to save or load", Toast.LENGTH_SHORT);
-                            mToast.show();
-                            break;
-                        }
-                        startActivity(save);
-                        break;
-
-                    case R.id.current_place_list:
-                        Intent currentitems = new Intent(getApplicationContext(),ListOfPlaces.class);
-                        startActivity(currentitems);
-                        break;
-
-                }
-                return false;
-            }
-        });
-    }
-
+//    private void setupBottomNavBar(){
+//        final Intent lookup = new Intent(this, ChooseAndLoad.class);
+//        final Intent save = new Intent(this, UserFiles.class);
+//        BottomNavigationView bottomNavMenu = (BottomNavigationView) findViewById(R.id.mapBottomNavBar);
+//        bottomNavMenu.inflateMenu(R.menu.map_bottom_navigation);
+//
+//        bottomNavMenu.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+//            @Override
+//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//                switch (item.getItemId()){
+//                    case R.id.displayNearby:
+//                        if(constants.lastLocation == null){
+//                            if(mToast!=null)
+//                                mToast.cancel();
+//                            mToast.makeText(getApplicationContext(), "Location not available", Toast.LENGTH_SHORT).show();
+//                            break;
+//                        }
+//
+//                        addNearByPlaces();
+//                        if (nearbyObject.isEmpty()){
+//                            Log.d(TAG, mToast.toString());
+//                            if(mToast!=null)
+//                                mToast.cancel();
+//                            mToast.makeText(getApplicationContext(), "Nothing nearby sorry...", Toast.LENGTH_SHORT).show();
+//                        }
+//                        break;
+//                    case R.id.findPlaces:
+//                        startActivity(lookup);
+//                        break;
+//                    case R.id.save_menu:
+//                        if (FirebaseAuth.getInstance().getCurrentUser()==null){
+//                            if(mToast!=null)
+//                                mToast.cancel();
+//                            mToast = Toast.makeText(getApplicationContext(),"Log in to save or load", Toast.LENGTH_SHORT);
+//                            mToast.show();
+//                            break;
+//                        }
+//                        startActivity(save);
+//                        break;
+//
+//                    case R.id.current_place_list:
+//                        Intent currentitems = new Intent(getApplicationContext(),ListOfPlaces.class);
+//                        startActivity(currentitems);
+//                        break;
+//
+//                }
+//                return true;
+//            }
+//        });
+//    }
+//
     private void initializeGoogleMap() {
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_display);
         mapFragment.getMapAsync(this);
@@ -199,7 +237,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-
+        this.setStyle();
         //only create one instance of cluster manager,
         // if created again in onResume then click listeners don't work on reload and
         //some markers don't disappear correctly on Zoom
@@ -401,23 +439,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
 
     }
-
-
-//    @Override
-//    public void onInfoWindowClick(PlaceObject placeObject) {
-//        Log.d(TAG, "Marker clicked = " + placeObject.getId());
-////        Log.d(TAG, "On marker click, collection empty? " + markersCollection.isEmpty());
-////        Log.d(TAG, "Marker collection to string" + markersCollection.toString());
-////        PlaceObject pickedPlace = (PlaceObject) marker.getTag();
-////        // PlaceObject pickedPlace = markersCollection.get(marker);
-////        String id = pickedPlace.getDb_key();
-//
-//        //open details page
-//        Intent i = new Intent(this, PlaceDetailScreen.class);
-//        i.putExtra("ID", id);
-//        startActivity(i);
-//
-//    }
+    
 
 
     @Override
@@ -430,7 +452,10 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         //open details page
         Intent i = new Intent(this, PlaceDetailScreen.class);
         i.putExtra("ID", id);
+        i.putExtra("ClassFrom",MapDisplay.class.toString());
         startActivity(i);
+        finish(); //destroy map activity so will be redrawn on a back press
+
     }
     //////////////////////////////////////////////////////////////////////////////////////
 
