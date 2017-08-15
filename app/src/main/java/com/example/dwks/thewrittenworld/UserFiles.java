@@ -21,9 +21,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static com.example.dwks.thewrittenworld.Constants.*;
+
 public class UserFiles extends AppCompatActivity implements View.OnClickListener{
 
-    private Constants constants= Constants.getInstance();
+    private Constants constants= getInstance();
     private EditText fileName;
     private Database dbInstance;
 
@@ -68,7 +70,7 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
             case (R.id.saveButton):
 
                 dbInstance.uploadSaveSelection(fileName.getText().toString(), this.gsonParsingSave());
-               // testWrite();
+                //testWrite();
                 break;
             case (R.id.displayFileList):
                 populateListsField();
@@ -83,7 +85,7 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
 
     }
     private void testWrite(){
-
+        final Set<PlaceObject>[] loadedSet = new Set[]{new TreeSet<PlaceObject>(placeObjects)};
         final int[] pos = new int[1];
             dbInstance.uploadLocation(new firebaseDataListener() {
             @Override
@@ -95,7 +97,9 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
             public void onSuccess(DataSnapshot dataSnapshot) {
                 pos[0] = (int) dataSnapshot.getChildrenCount();
                 Log.d("On Success", String.valueOf(pos[0]));
-
+                Gson gson = new Gson();
+                 loadedSet[0] = gson.fromJson(dataSnapshot.getValue()
+                        .toString(), new TypeToken<TreeSet<PlaceObject>>() {}.getType());
             }
 
             @Override
@@ -104,10 +108,11 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
             }
         });
         int value = pos[0];
-        for (final PlaceObject object: Constants.placeObjects){
+        TreeSet<PlaceObject> mock = (TreeSet<PlaceObject>) loadedSet[0];
+        for (final PlaceObject object: mock){
             dbInstance.loadInfo(object,value);
             value++;
-            Log.d("For loop", object.getBookTitle());
+            //Log.d("For loop", object.getBookTitle());
 
 
         }
@@ -115,7 +120,7 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
 
     private String gsonParsingSave(){
         Gson gson = new Gson();
-        String jsonTreeSet = gson.toJson(Constants.placeObjects);
+        String jsonTreeSet = gson.toJson(placeObjects);
         return jsonTreeSet;
     }
 
@@ -162,11 +167,12 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
                 Gson gson = new Gson();
-                Set<PlaceObject> loadedSet = gson.fromJson(dataSnapshot.getValue().toString(), new TypeToken<TreeSet<PlaceObject>>() {}.getType());
-                Constants.placeObjects = (TreeSet) loadedSet;
-                Constants.places.clear();
-                for(PlaceObject place: Constants.placeObjects){
-                    Constants.places.put(place.getDb_key(),place);
+                Set<PlaceObject> loadedSet = gson.fromJson(dataSnapshot.getValue()
+                        .toString(), new TypeToken<TreeSet<PlaceObject>>() {}.getType());
+                placeObjects = (TreeSet) loadedSet;
+                places.clear();
+                for(PlaceObject place: placeObjects){
+                    places.put(place.getDb_key(),place);
                 }
 
             }

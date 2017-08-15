@@ -1,7 +1,6 @@
 package com.example.dwks.thewrittenworld;
 //Class to confirm data to use, calls methods to make geofences and has buttons to launch Map and List View
 
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,7 +18,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.GeofencingApi;
@@ -52,8 +50,8 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     private String selectedAuthor= "";
    // private ArrayList<PlaceObject> placeObjects;
 
-    private PendingIntent pendingIntent;
-    private GoogleApiClient googleApiClient;
+//    private PendingIntent pendingIntent;
+//    private GoogleApiClient googleApiClient;
     //get instance of Firebase database to use for queries
     //private FirebaseDatabase database = FirebaseDatabase.getInstance();
 
@@ -111,6 +109,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                         PlaceObject object = new PlaceObject(postSnapshot);
                         titles.add(object.getBookTitle());
                         foundByTitle.add(object);
+
 
                     }
                     for (String title:titles){
@@ -267,7 +266,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
             @Override
             public void onFailed(DatabaseError databaseError) {
-
+                Toast.makeText(getApplicationContext(),"Databse search failed", Toast.LENGTH_SHORT).show();
             }
         });
     }

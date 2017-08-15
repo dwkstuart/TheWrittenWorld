@@ -60,8 +60,7 @@ public class Database {
     public void getAuthors(final firebaseDataListener listener){
         listener.onStart();
 
-        // FirebaseDatabase database = FirebaseDatabase.getInstance();
-        //database.setPersistenceEnabled(true);
+
         DatabaseReference myRef = database.getReference("places/");
         myRef.keepSynced(true);
         final Query titleQuery = myRef.orderByChild("author");

@@ -1,6 +1,7 @@
 package com.example.dwks.thewrittenworld;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
@@ -18,13 +19,14 @@ public class PlaceObject implements Comparable<PlaceObject>, ClusterItem {
     private static final String TAG = PlaceObject.class.getSimpleName();
     //Instance vaiables
     private int id; //Database unique ID
-    private String header, location, authorFirstName, authorSecondName, longDescription, associatedQuote, imageURI;
+    private String header, location, authorFirstName, authorSecondName, longDescription, imageURI;
+    private String associatedQuote = "test quote";
     private String bookTitle = "default";
     private double latitude, longitude;
     private boolean visited = false; //mark if have visited or not
     private JSONObject jsonObject;
     private LatLng latLng;
-    private String db_key;
+    private String db_key ="test";
 
 
     public PlaceObject(JSONObject input){
@@ -47,7 +49,11 @@ public class PlaceObject implements Comparable<PlaceObject>, ClusterItem {
         db_key = dataSnapshot.child("db_key").getValue().toString();
         latLng = new LatLng(latitude, longitude);
         location = dataSnapshot.child("location").getValue().toString();
-
+        if (dataSnapshot.child("quote").exists()) {
+            Log.d(TAG, "quote exists");
+            associatedQuote = dataSnapshot.child("quote").getValue().toString();
+            Log.d(TAG, associatedQuote);
+        }
 
     }
 

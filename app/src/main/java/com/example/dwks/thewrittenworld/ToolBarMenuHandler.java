@@ -49,8 +49,6 @@ public class ToolBarMenuHandler {
                 Constants.placeObjectGeofenceHashMap.clear();
                 Constants.placeObjects.clear();
                 Constants.places.clear();
-//                if (activity instanceof MapDisplay)
-//                activity.startActivity(returnToMap);
                 break;
         }
         return true;

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -21,6 +22,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.maps.android.clustering.Cluster;
@@ -40,11 +42,18 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
    // private HashMap<Marker, PlaceObject> markersCollection = new HashMap<>();
     private MapFragment mapFragment;
     private GoogleMap map;
-    private FloatingActionButton setAlerts;
+    private FloatingActionButton findLocal;
     private Toast mToast;
     private ClusterManager<PlaceObject> clusterManager = null;
     private CameraPosition cameraPosition;
-    private int ZOOM = 15; //inital zoom
+    private int ZOOM = 14; //inital zoom
+
+    ///Buttons
+    ImageButton save;
+    ImageButton search;
+    ImageButton alerts;
+    ImageButton seeList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +71,12 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
             Log.d(TAG, "Create instance state" + cameraPosition.toString());
 
         }
+        configueButtons();
         initializeGoogleMap();
         if(Constants.getInstance().lastLocation !=null)
         locateNearby();
-        setAlerts = (FloatingActionButton) findViewById(R.id.setAlerts);
-        setAlerts.setOnClickListener(this);
+        findLocal = (FloatingActionButton) findViewById(R.id.findLocal);
+        findLocal.setOnClickListener(this);
         this.checkAlertButton();
 
     }
@@ -85,6 +95,17 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
             Log.e(TAG, "Can't find style. Error: ", e);
         }
     }
+
+    private void configueButtons(){
+        save = (ImageButton) findViewById(R.id.save_files);
+        save.setOnClickListener(this);
+        alerts =(ImageButton) findViewById(R.id.set_alerts);
+        alerts.setOnClickListener(this);
+        search= (ImageButton) findViewById(R.id.search_locations);
+        search.setOnClickListener(this);
+        seeList =(ImageButton) findViewById(R.id.location_list);
+        seeList.setOnClickListener(this);
+        }
 
 
     @Override
@@ -123,14 +144,15 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
             }
     }
 
+
     private void checkAlertButton(){
         //TODO see if we can change this when setting alerts elsewhere, using intents
         if (!Constants.geofenceArrayList.isEmpty() || Constants.placeObjects.isEmpty())
-            setAlerts.setVisibility(View.INVISIBLE);
+            alerts.setEnabled(false);
         //if the number of alerts set up is lower than the number of items in list then make it possible to set up alerts
         //TODO this will reset all alerts! can we just add new objects
         if (Constants.geofenceArrayList.size() < Constants.placeObjects.size())
-            setAlerts.setVisibility(View.VISIBLE);
+            alerts.setEnabled(true);
     }
 
 
@@ -177,57 +199,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
 }
 
-//    private void setupBottomNavBar(){
-//        final Intent lookup = new Intent(this, ChooseAndLoad.class);
-//        final Intent save = new Intent(this, UserFiles.class);
-//        BottomNavigationView bottomNavMenu = (BottomNavigationView) findViewById(R.id.mapBottomNavBar);
-//        bottomNavMenu.inflateMenu(R.menu.map_bottom_navigation);
-//
-//        bottomNavMenu.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-//            @Override
-//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//                switch (item.getItemId()){
-//                    case R.id.displayNearby:
-//                        if(constants.lastLocation == null){
-//                            if(mToast!=null)
-//                                mToast.cancel();
-//                            mToast.makeText(getApplicationContext(), "Location not available", Toast.LENGTH_SHORT).show();
-//                            break;
-//                        }
-//
-//                        addNearByPlaces();
-//                        if (nearbyObject.isEmpty()){
-//                            Log.d(TAG, mToast.toString());
-//                            if(mToast!=null)
-//                                mToast.cancel();
-//                            mToast.makeText(getApplicationContext(), "Nothing nearby sorry...", Toast.LENGTH_SHORT).show();
-//                        }
-//                        break;
-//                    case R.id.findPlaces:
-//                        startActivity(lookup);
-//                        break;
-//                    case R.id.save_menu:
-//                        if (FirebaseAuth.getInstance().getCurrentUser()==null){
-//                            if(mToast!=null)
-//                                mToast.cancel();
-//                            mToast = Toast.makeText(getApplicationContext(),"Log in to save or load", Toast.LENGTH_SHORT);
-//                            mToast.show();
-//                            break;
-//                        }
-//                        startActivity(save);
-//                        break;
-//
-//                    case R.id.current_place_list:
-//                        Intent currentitems = new Intent(getApplicationContext(),ListOfPlaces.class);
-//                        startActivity(currentitems);
-//                        break;
-//
-//                }
-//                return true;
-//            }
-//        });
-//    }
-//
+
     private void initializeGoogleMap() {
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_display);
         mapFragment.getMapAsync(this);
@@ -285,9 +257,6 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
     private void addMarkers() {
         map.clear();
-        //markersCollection.clear();
-        //MarkerOptions markerOptions;
-       // Log.d(TAG, "add markers");
         SetIcon setIcon = new SetIcon(this, map, clusterManager);
         setIcon.setMinClusterSize(5);
         clusterManager.setRenderer(setIcon);
@@ -295,43 +264,12 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
         for (PlaceObject placeObject : Constants.placeObjects) {
 
-//            markerOptions = new MarkerOptions().
-//                    position(placeObject.getLatLng())
-//                    .title(placeObject.getBookTitle())
-//                    .snippet("You've been here")
-//                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-// ;           setIcon.onBeforeClusterItemRendered(placeObject,markerOptions);
-//
             clusterManager.addItem(placeObject);
-
-
-
-//            if (!placeObject.isVisited()) {
-//                markerOptions = new MarkerOptions().
-//                        position(placeObject.getLatLng())
-//                        .snippet("You've not visted here")
-//                        .title(placeObject.getBookTitle());
-//               // Marker marker = map.addMarker(markerOptions);
-//               // marker.setTag(placeObject);
-//             //   markersCollection.put(marker, placeObject);
-//            }
-//            else if (placeObject.isVisited()) {
-//                Log.d(TAG, "Place is visited add marker loop" + placeObject.getBookTitle());
-//                markerOptions = new MarkerOptions().
-//                        position(placeObject.getLatLng())
-//                        .title(placeObject.getBookTitle())
-//                        .snippet("You've been here")
-//                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-
-                //Marker marker = map.addMarker(markerOptions);
-                //marker.setTag(placeObject);
-              //  markersCollection.put(marker, placeObject);
-   //         }
 
         }
         clusterManager.cluster();
         if(Constants.geofenceArrayList.size() < Constants.placeObjects.size()){
-            setAlerts.setVisibility(View.VISIBLE);
+            alerts.setEnabled(true);
         }
     }
 
@@ -342,14 +280,60 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.setAlerts){
-        CreateGeofence geofence = new CreateGeofence(this, "ADD", null);
-        geofence.startGeofence();
-            if(mToast!=null)
-                mToast.cancel();
-            mToast = Toast.makeText(this, "Location Alerts Activated", Toast.LENGTH_LONG);
-            mToast.show();
-        setAlerts.setVisibility(View.INVISIBLE);
+        switch (view.getId()) {
+            case (R.id.set_alerts):
+                {
+                CreateGeofence geofence = new CreateGeofence(this, "ADD", null);
+                geofence.startGeofence();
+                if (mToast != null)
+                    mToast.cancel();
+                mToast = Toast.makeText(this, "Location Alerts Activated", Toast.LENGTH_LONG);
+                mToast.show();
+                alerts.setEnabled(false);
+            }
+            break;
+
+            case (R.id.location_list):
+
+                Intent currentitems = new Intent(getApplicationContext(),ListOfPlaces.class);
+                        startActivity(currentitems);
+
+                break;
+
+            case (R.id.findLocal):
+                if(constants.lastLocation == null){
+                            if(mToast!=null)
+                                mToast.cancel();
+                            mToast.makeText(getApplicationContext(), "Location not available", Toast.LENGTH_SHORT);
+                            mToast.show();
+                            break;
+                        }
+
+                        addNearByPlaces();
+                        if (nearbyObject.isEmpty()){
+                            Log.d(TAG, mToast.toString());
+                            //if(mToast!=null)
+                            //    mToast.cancel();
+                            Toast.makeText(getApplicationContext(), "Nothing nearby sorry...", Toast.LENGTH_SHORT).show();
+                        }
+                break;
+
+            case (R.id.save_files):
+                Intent save = new Intent(this, UserFiles.class);
+                if (FirebaseAuth.getInstance().getCurrentUser()==null){
+                    if(mToast!=null)
+                        mToast.cancel();
+                    mToast = Toast.makeText(getApplicationContext(),"Log in to save or load", Toast.LENGTH_SHORT);
+                    mToast.show();
+                    break;
+                }
+                startActivity(save);
+                break;
+
+            case (R.id.search_locations):
+                Intent search = new Intent(this, ChooseAndLoad.class);
+                startActivity(search);
+                break;
         }
     }
 
@@ -364,7 +348,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         nearbyObject = nearbyLat;
         nearbyObject.retainAll(nearbyLong);
 
-        //Log.d(TAG, "Nearby places" + nearbyObject.toString());
+        Log.d(TAG, "Nearby places" + nearbyObject.toString());
         Constants.placeObjects.addAll(nearbyObject);
 
         for(PlaceObject object: Constants.placeObjects) {
@@ -377,69 +361,69 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         mToast.show();
 
         addMarkers();
-        //Log.d(TAG, Constants.places.toString());
     }
 
     private void locateNearby(){
+        Log.d(TAG, "Locate nearby method called");
 
-       // Toast.makeText(getApplicationContext(),"Searching for Nearby Places", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(),"Searching for Nearby Places", Toast.LENGTH_LONG).show();
 
         Database db = new Database();
 
-        if (Constants.getInstance().lastLocation !=null)
-        db.nearbyPlacesLatitude(new firebaseDataListener() {
-            @Override
-            public void onStart() {
-                if(mToast!=null)
-                    mToast.cancel();
-                mToast.makeText(getApplicationContext(),"Checking Database, Please Wait", Toast.LENGTH_LONG).show();
+        if (Constants.getInstance().lastLocation !=null) {
+            db.nearbyPlacesLatitude(new firebaseDataListener() {
+                @Override
+                public void onStart() {
+                    if (mToast != null)
+                        mToast.cancel();
+                    mToast.makeText(getApplicationContext(), "Checking Database, Please Wait", Toast.LENGTH_LONG).show();
 
-            }
-
-            @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    PlaceObject object = new PlaceObject(postSnapshot);
-                    //Log.d(TAG, object.getBookTitle() + " " + object.getLongitude());
-                    nearbyLong.add(object);
                 }
-                //Log.d(TAG,"Longitude set = " + nearbyLong.toString());
 
-            }
+                @Override
+                public void onSuccess(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        PlaceObject object = new PlaceObject(postSnapshot);
+                        Log.d(TAG, object.getBookTitle() + " " + object.getLongitude());
+                        nearbyLong.add(object);
+                    }
+                    //Log.d(TAG,"Longitude set = " + nearbyLong.toString());
 
-            @Override
-            public void onFailed(DatabaseError databaseError) {
-
-            }
-
-        });
-
-        db.nearbyPlacesLongitude(new firebaseDataListener() {
-            @Override
-            public void onStart() {
-
-            }
-
-            @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    PlaceObject object = new PlaceObject(postSnapshot);
-                    nearbyLat.add(object);
-                    //Log.d(TAG, object.getBookTitle() + "latitude = " + object.getLatitude());
                 }
-               // Log.d(TAG,"Latitude set = " + nearbyLat.toString());
-            }
 
-            @Override
-            public void onFailed(DatabaseError databaseError) {
+                @Override
+                public void onFailed(DatabaseError databaseError) {
+                    Log.d(TAG, "Database query failed");
+                }
 
-            }
-        });
+            });
 
+            db.nearbyPlacesLongitude(new firebaseDataListener() {
+                @Override
+                public void onStart() {
+                    Log.d(TAG, "long search start");
+                }
+
+                @Override
+                public void onSuccess(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        PlaceObject object = new PlaceObject(postSnapshot);
+                        nearbyLat.add(object);
+                        //Log.d(TAG, object.getBookTitle() + "latitude = " + object.getLatitude());
+                    }
+                    // Log.d(TAG,"Latitude set = " + nearbyLat.toString());
+                }
+
+                @Override
+                public void onFailed(DatabaseError databaseError) {
+
+                }
+            });
+        }
 
 
     }
-    
+
 
 
     @Override
