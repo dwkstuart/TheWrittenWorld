@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class PlacesListCreator {
 
 
-    private ArrayList<PlaceObject> placeObjectArrayList = new ArrayList<PlaceObject>();
+    private ArrayList<PlaceObject> placeObjectArrayList = new ArrayList<>();
     private String inputString;
 
     public PlacesListCreator(String jsonInput){

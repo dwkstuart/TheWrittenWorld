@@ -21,7 +21,6 @@ public class MyPlaceDetailRecyclerViewAdapter extends RecyclerView.Adapter<MyPla
 
     private final List<PlaceObject> mValues;
     private final OnListFragmentInteractionListener mListener;
-    private Context context;
 
     public MyPlaceDetailRecyclerViewAdapter(List<PlaceObject> items, OnListFragmentInteractionListener listener) {
         mValues = items;
@@ -31,7 +30,7 @@ public class MyPlaceDetailRecyclerViewAdapter extends RecyclerView.Adapter<MyPla
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        context =parent.getContext();
+        Context context = parent.getContext();
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_placedetail, parent, false);
         return new ViewHolder(view);
@@ -41,7 +40,7 @@ public class MyPlaceDetailRecyclerViewAdapter extends RecyclerView.Adapter<MyPla
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-        holder.mItem = mValues.get(position);
+        holder.mItem = mValues.get(holder.getAdapterPosition());
         holder.mAuthorName.setText(mValues.get(position).getAuthorFirstName() + " " +mValues.get(position).getAuthorSecondName());
         holder.mContentView.setText(mValues.get(position).getLocation());
         holder.visited.setChecked(mValues.get(position).isVisited());
@@ -53,7 +52,7 @@ public class MyPlaceDetailRecyclerViewAdapter extends RecyclerView.Adapter<MyPla
                                             if (holder.visited.isChecked()){
                                                 mValues.get(position).setVisited(true);
                                             }
-                                            else if(holder.visited.isChecked()== false)
+                                            else if(!holder.visited.isChecked())
                                                 mValues.get(position).setVisited(false);
 
                                         }
@@ -87,9 +86,9 @@ public class MyPlaceDetailRecyclerViewAdapter extends RecyclerView.Adapter<MyPla
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mAuthorName = (TextView) view.findViewById(R.id.name);
-            mContentView = (TextView) view.findViewById(R.id.content);
-            visited = (CheckBox) view.findViewById(R.id.visitedCheckList);
+            mAuthorName = view.findViewById(R.id.name);
+            mContentView = view.findViewById(R.id.content);
+            visited = view.findViewById(R.id.visitedCheckList);
         }
 
         @Override

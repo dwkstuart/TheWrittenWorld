@@ -16,7 +16,12 @@ public class ListOfPlaces extends AppCompatActivity implements PlaceDetailFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_of_places);
 
-
+//        if(findViewById(R.id.placeList) !=null){
+//
+//            PlaceDetailFragment placeDetailFragment = new PlaceDetailFragment();
+//
+//            getSupportFragmentManager().beginTransaction().add(R.id.placeList,placeDetailFragment).commit();
+//        }
 
     }
 
@@ -25,8 +30,8 @@ public class ListOfPlaces extends AppCompatActivity implements PlaceDetailFragme
         Toast.makeText(this, "Item is visited? " + String.valueOf(item.isVisited()), Toast.LENGTH_LONG).show();
         String id = item.getDb_key();
 
-        Constants.getInstance().places.put(id,item);
-        Log.d("List from constants", Constants.getInstance().places.get(id).toString());
+        Constants.places.put(id,item);
+        Log.d("List from constants", Constants.places.get(id).toString());
         Intent placeDetails = new Intent(this,PlaceDetailScreen.class);
         placeDetails.putExtra("ID", id);
         Log.d("List from passed", item.toString());
@@ -36,6 +41,11 @@ public class ListOfPlaces extends AppCompatActivity implements PlaceDetailFragme
 
     private ToolBarMenuHandler toolBarMenuHandler = new ToolBarMenuHandler(this);
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+        return toolBarMenuHandler.onPrepareOptionsMenu(menu);
+
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return toolBarMenuHandler.onCreateOptionsMenu(menu);

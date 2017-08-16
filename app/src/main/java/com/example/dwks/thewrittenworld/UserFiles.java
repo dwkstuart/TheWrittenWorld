@@ -3,6 +3,7 @@ package com.example.dwks.thewrittenworld;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,13 +21,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static com.example.dwks.thewrittenworld.Constants.*;
+
 public class UserFiles extends AppCompatActivity implements View.OnClickListener{
 
-    private Constants constants= Constants.getInstance();
-    private Button save;
-    private Button test;
-    private Button displayFiles;
-    private TextView userFiles;
+    private Constants constants= getInstance();
     private EditText fileName;
     private Database dbInstance;
 
@@ -39,11 +38,11 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
     }
 
     private void setFields(){
-        save = (Button) findViewById(R.id.saveButton);
-        userFiles =(TextView) findViewById(R.id.usersFiles);
+        Button save = (Button) findViewById(R.id.saveButton);
+        TextView userFiles = (TextView) findViewById(R.id.usersFiles);
         fileName = (EditText) findViewById(R.id.enterFileName);
-        displayFiles = (Button) findViewById(R.id.displayFileList);
-        test = (Button) findViewById(R.id.listTest);
+        Button displayFiles = (Button) findViewById(R.id.displayFileList);
+        Button test = (Button) findViewById(R.id.listTest);
 
         test.setOnClickListener(this);
         save.setOnClickListener(this);
@@ -71,6 +70,7 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
             case (R.id.saveButton):
 
                 dbInstance.uploadSaveSelection(fileName.getText().toString(), this.gsonParsingSave());
+                //testWrite();
                 break;
             case (R.id.displayFileList):
                 populateListsField();
@@ -84,10 +84,43 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
         }
 
     }
+    private void testWrite(){
+        final Set<PlaceObject>[] loadedSet = new Set[]{new TreeSet<PlaceObject>(placeObjects)};
+        final int[] pos = new int[1];
+            dbInstance.uploadLocation(new firebaseDataListener() {
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                pos[0] = (int) dataSnapshot.getChildrenCount();
+                Log.d("On Success", String.valueOf(pos[0]));
+                Gson gson = new Gson();
+                 loadedSet[0] = gson.fromJson(dataSnapshot.getValue()
+                        .toString(), new TypeToken<TreeSet<PlaceObject>>() {}.getType());
+            }
+
+            @Override
+            public void onFailed(DatabaseError databaseError) {
+
+            }
+        });
+        int value = pos[0];
+        TreeSet<PlaceObject> mock = (TreeSet<PlaceObject>) loadedSet[0];
+        for (final PlaceObject object: mock){
+            dbInstance.loadInfo(object,value);
+            value++;
+            //Log.d("For loop", object.getBookTitle());
+
+
+        }
+    }
 
     private String gsonParsingSave(){
         Gson gson = new Gson();
-        String jsonTreeSet = gson.toJson(constants.placeObjects);
+        String jsonTreeSet = gson.toJson(placeObjects);
         return jsonTreeSet;
     }
 
@@ -101,13 +134,12 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
                 Gson gson = new Gson();
-               ArrayList<SavedCollection> files = new ArrayList<SavedCollection>();
+               ArrayList<SavedCollection> files = new ArrayList<>();
 
-                List<String> savedTours = new ArrayList<String>();
+                List<String> savedTours = new ArrayList<>();
                 for (DataSnapshot list : dataSnapshot.getChildren()) {
                     SavedCollection file = new SavedCollection(list.getKey(),list.getValue().toString());
                     files.add(file);
-;
                 }
                 constants.files = files;
                 Intent fileListView = new Intent(getApplicationContext(), SavedCollections.class);
@@ -135,11 +167,12 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
                 Gson gson = new Gson();
-                Set<PlaceObject> loadedSet = gson.fromJson(dataSnapshot.getValue().toString(), new TypeToken<TreeSet<PlaceObject>>() {}.getType());
-                constants.placeObjects = (TreeSet) loadedSet;
-                constants.places.clear();
-                for(PlaceObject place: constants.placeObjects){
-                    constants.places.put(place.getDb_key(),place);
+                Set<PlaceObject> loadedSet = gson.fromJson(dataSnapshot.getValue()
+                        .toString(), new TypeToken<TreeSet<PlaceObject>>() {}.getType());
+                placeObjects = (TreeSet) loadedSet;
+                places.clear();
+                for(PlaceObject place: placeObjects){
+                    places.put(place.getDb_key(),place);
                 }
 
             }

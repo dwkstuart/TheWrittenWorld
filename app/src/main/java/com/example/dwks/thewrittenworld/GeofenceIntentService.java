@@ -38,7 +38,6 @@ public class GeofenceIntentService extends IntentService implements
         GoogleApiClient.OnConnectionFailedListener {
 
     private Constants constants = Constants.getInstance();
-    private Context context;
     private static final String TAG = "GeofenceTransitionsIS";
     public static final String ADD = "ADD";
     public static final String REMOVE = "REMOVE";
@@ -66,7 +65,7 @@ public class GeofenceIntentService extends IntentService implements
         Log.d(TAG,"Service started");
         createGoogleApi();
         googleApiClient.connect();
-        context = this.getApplicationContext();
+        Context context = this.getApplicationContext();
     }
 
 
@@ -96,10 +95,10 @@ public class GeofenceIntentService extends IntentService implements
             for(Geofence event : triggeringGeofence){
                String triggeredID = event.getRequestId();
                 Log.d(TAG,"ID of triggeded event" + triggeredID);
-                Log.d(TAG, "Is trigging id in places has map?" + constants.places.containsKey(triggeredID));
-                Log.d(TAG, "size of HashMap = " + constants.places.size());
+                Log.d(TAG, "Is trigging id in places has map?" + Constants.places.containsKey(triggeredID));
+                Log.d(TAG, "size of HashMap = " + Constants.places.size());
                 //ID matches DB Key
-                PlaceObject placeTriggered = constants.places.get(triggeredID);
+                PlaceObject placeTriggered = Constants.places.get(triggeredID);
                 if (placeTriggered != null)
                 Log.d(TAG, "Place Object = " + placeTriggered.toString());
                 if (placeTriggered != null){
@@ -110,7 +109,7 @@ public class GeofenceIntentService extends IntentService implements
 //                    Log.d(TAG, "geofence to remove = " + remove.toString());
                     CreateGeofence geohandler = new CreateGeofence(this.getApplicationContext(),REMOVE, triggeredID);
                     //geohandler.removeGeofence(triggeredID);
-                    Log.d(TAG,constants.geofenceArrayList.toString());
+                    Log.d(TAG, Constants.geofenceArrayList.toString());
 
                 this.sendNotification(placeTriggered.getBookTitle(), placeTriggered.getDb_key());
 
@@ -134,7 +133,7 @@ public class GeofenceIntentService extends IntentService implements
         // Create an explicit content Intent that starts the main Activity.
         Intent notificationIntent = new Intent(getApplicationContext(), PlaceDetailScreen.class);
         notificationIntent.putExtra("ID", ID);
-        PlaceObject placeTriggered = constants.places.get(ID);
+        PlaceObject placeTriggered = Constants.places.get(ID);
 
 
         // Construct a task stack.
@@ -174,16 +173,13 @@ public class GeofenceIntentService extends IntentService implements
     }
 
 
-    /////////// //////////////////////////////
-    // instance variables for fetching location
-    private LocationRequest locationRequest;
     private static final int UPDATEINTERVAL = 20000;
     private static final int FASTESTINTERVAL = 15000;
 
     private static final int REQ_PERMISSION = 999;
 
     private void startLocationUpdates() {
-        locationRequest = LocationRequest.create()
+        LocationRequest locationRequest = LocationRequest.create()
                 .setFastestInterval(FASTESTINTERVAL)
                 .setInterval(UPDATEINTERVAL)
                 .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);

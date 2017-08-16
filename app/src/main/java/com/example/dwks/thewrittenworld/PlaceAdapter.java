@@ -45,7 +45,7 @@ private int mNumberOfItems;
 
     @Override
     public int getItemCount() {
-        return constants.placeObjects.size();
+        return Constants.placeObjects.size();
     }
 
     //View holder for the Place Item
@@ -55,7 +55,7 @@ private int mNumberOfItems;
         public PlaceItemViewHolder(View itemView){
             super(itemView);
 
-            placeTitle = (TextView) itemView.findViewById(R.id.place_view_item);
+            placeTitle = itemView.findViewById(R.id.place_view_item);
         }
 
     }

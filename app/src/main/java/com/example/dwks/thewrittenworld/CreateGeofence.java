@@ -1,7 +1,7 @@
 package com.example.dwks.thewrittenworld;
-/**Class to handle the setting up off the Geofencing and Google API
- * abstract away from main
- *
+/*Class to handle the setting up off the Geofencing and Google API
+  abstract away from main
+
  */
 
 import android.app.Application;
@@ -58,7 +58,8 @@ public class CreateGeofence extends Application implements  GoogleApiClient.Conn
 
         geofencingApi = LocationServices.GeofencingApi;
         if(request_type.equals(REMOVE)){
-            Log.d(TAG, "Remove request typr if called");
+            Log.d(TAG, "Remove request type if called");
+
             googleApiClient.connect();
         }
 
@@ -69,9 +70,10 @@ public class CreateGeofence extends Application implements  GoogleApiClient.Conn
         this.populateGeofenceList();
         Log.d(TAG, "Start geofence");
         this.createGoogleApi();
-            if (constants.geofenceArrayList.size()>0){
-
-                googleApiClient.connect();}
+            if (Constants.geofenceArrayList.size()>0){
+                googleApiClient.connect();
+            }
+            Constants.notificationsOn=true;
 
         }
 
@@ -96,7 +98,7 @@ public class CreateGeofence extends Application implements  GoogleApiClient.Conn
      */
     private GeofencingRequest getGeofencingRequest() {
         GeofencingRequest builder = new GeofencingRequest.Builder()
-                .addGeofences(constants.geofenceArrayList)
+                .addGeofences(Constants.geofenceArrayList)
                 .setInitialTrigger(Geofence.GEOFENCE_TRANSITION_ENTER)
                 .setInitialTrigger(Geofence.GEOFENCE_TRANSITION_DWELL)
                 .build();
@@ -110,7 +112,7 @@ public class CreateGeofence extends Application implements  GoogleApiClient.Conn
 
 
 
-        for (PlaceObject place : constants.placeObjects) {
+        for (PlaceObject place : Constants.placeObjects) {
             //Create a geofence object for each place not ticked off as visited
             if (!place.isVisited()) {
                 Geofence geofence = (new Geofence.Builder()
@@ -121,15 +123,15 @@ public class CreateGeofence extends Application implements  GoogleApiClient.Conn
                         .setLoiteringDelay(5000)
                         .setExpirationDuration(Geofence.NEVER_EXPIRE)
                         .build());
-
+              //  Log.d(TAG,"added geofence" + geofence.toString());
                 //TODO check if this arraylist needs to be constant
-                constants.geofenceArrayList.add(geofence);
+                Constants.geofenceArrayList.add(geofence);
                 //Need to be able to link a geofence to an object to remove geofences individual from Pending Monitoring list
-                constants.placeObjectGeofenceHashMap.put(place,geofence);
+                Constants.placeObjectGeofenceHashMap.put(place,geofence);
             }
 
         }
-        int arraylength = constants.geofenceArrayList.size();
+        int arraylength = Constants.geofenceArrayList.size();
 
     }
 
@@ -173,17 +175,18 @@ public class CreateGeofence extends Application implements  GoogleApiClient.Conn
 
         if(googleApiClient != null) {
             Log.d(TAG, "Remove fences");
-            List<String> removeAll = new ArrayList<String>();
-            for (Geofence fence : constants.geofenceArrayList) {
+            List<String> removeAll = new ArrayList<>();
+            for (Geofence fence : Constants.geofenceArrayList) {
                 removeAll.add(fence.getRequestId());
             }
-            Log.d(TAG, "Size of list" + constants.geofenceArrayList.size());
-            constants.geofenceArrayList.clear();
-            if(!removeAll.isEmpty()) {
+            Log.d(TAG, "Size of list" + Constants.geofenceArrayList.size());
+            Constants.geofenceArrayList.clear();
+            if(!removeAll.isEmpty() && googleApiClient.isConnected()) {
                 geofencingApi.removeGeofences(googleApiClient, removeAll);
             }
-            Log.d(TAG, "Should be 0 " + constants.geofenceArrayList.size());
+            Log.d(TAG, "Should be 0 " + Constants.geofenceArrayList.size());
         }
+        Constants.notificationsOn = false;
     }
 
      public  void removeGeofence(String toBeRemovedFence){

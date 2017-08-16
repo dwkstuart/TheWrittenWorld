@@ -26,14 +26,15 @@ class Constants {
     public GoogleSignInAccount currentUser;
     //Globals, not good practice
     //Map with IDs from DB linked to objects, used to retrieve places when intents are fired
-    public static HashMap<String,PlaceObject> places = new HashMap<String ,PlaceObject>();
+    public static HashMap<String,PlaceObject> places = new HashMap<>();
 
-    public static TreeSet<PlaceObject> placeObjects = new TreeSet<PlaceObject>();
-    public static ArrayList<Geofence> geofenceArrayList = new ArrayList<Geofence>();
+    public static TreeSet<PlaceObject> placeObjects = new TreeSet<>();
+    public static ArrayList<Geofence> geofenceArrayList = new ArrayList<>();
 
     public  static  HashMap<PlaceObject, Geofence> placeObjectGeofenceHashMap = new HashMap<>();
 
     public Location lastLocation;
-    public List<SavedCollection> files = new ArrayList<SavedCollection>();
+    public List<SavedCollection> files = new ArrayList<>();
+    public static boolean notificationsOn;
 
 }

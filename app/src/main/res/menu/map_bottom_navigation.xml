@@ -22,8 +22,16 @@
         android:title="Get Locations"
         app:showAsAction="ifRoom"
         android:enabled="true"
-        android:icon="@drawable/book"
+        android:icon="@drawable/quill_outline"
         />
 
-
+    <item
+    android:id="@+id/current_place_list"
+    android:title="Current List"
+    app:showAsAction="ifRoom"
+    android:enabled="true"
+    />
 </menu>
+
+
+

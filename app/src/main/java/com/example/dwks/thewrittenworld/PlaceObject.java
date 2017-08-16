@@ -1,9 +1,12 @@
 package com.example.dwks.thewrittenworld;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
+import com.google.maps.android.clustering.ClusterItem;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,18 +15,19 @@ import org.json.JSONObject;
  * Created by User on 22/07/2017.
  */
 
-public class PlaceObject implements Comparable<PlaceObject> {
+public class PlaceObject implements Parcelable, Comparable<PlaceObject>, ClusterItem {
 
     private static final String TAG = PlaceObject.class.getSimpleName();
     //Instance vaiables
-    private int id; //Database unique ID
-    private String header, location, authorFirstName, authorSecondName, longDescription, associatedQuote, imageURI;
+    private String location, authorFirstName, authorSecondName, imageURI;
+    private String longDescription = "description";
+    private String associatedQuote = "test quote";
     private String bookTitle = "default";
     private double latitude, longitude;
     private boolean visited = false; //mark if have visited or not
-    private JSONObject jsonObject;
+    private JSONObject jsonObject = null;
     private LatLng latLng;
-    private String db_key;
+    private String db_key ="test";
 
 
     public PlaceObject(JSONObject input){
@@ -46,7 +50,27 @@ public class PlaceObject implements Comparable<PlaceObject> {
         db_key = dataSnapshot.child("db_key").getValue().toString();
         latLng = new LatLng(latitude, longitude);
         location = dataSnapshot.child("location").getValue().toString();
+        if (dataSnapshot.child("quote").exists()) {
+            associatedQuote = dataSnapshot.child("quote").getValue().toString();
+        }
 
+    }
+
+    public PlaceObject(Parcel parcel) {
+        db_key = parcel.readString();
+        bookTitle = parcel.readString();
+        authorFirstName = parcel.readString();
+        authorSecondName = parcel.readString();
+        location = parcel.readString();
+        longDescription = parcel.readString();
+        associatedQuote = parcel.readString();
+        longitude = parcel.readDouble();
+        latitude = parcel.readDouble();
+        String visitCheck = parcel.readString();
+        if (visitCheck.equals("true")){
+            visited = true;
+        }
+        else visited = false;
 
     }
 
@@ -79,18 +103,9 @@ public class PlaceObject implements Comparable<PlaceObject> {
     }
 
 
-    public int getId() {
-        return id;
-    }
-
-    public String getHeader() {
-        return header;
-    }
-
     public String getBookTitle() {
         return bookTitle;
     }
-
 
 
     public String getAuthorFirstName() {
@@ -145,5 +160,53 @@ public class PlaceObject implements Comparable<PlaceObject> {
     }
 
 
+    @Override
+    public LatLng getPosition() {
+        return latLng;
+    }
 
+    @Override
+    public String getTitle() {
+        return location;
+    }
+
+    @Override
+    public String getSnippet() {
+        return bookTitle;
+    }
+
+    ///////////////////////////////////////////////////////////////
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(db_key);
+        parcel.writeString(bookTitle);
+        parcel.writeString(authorFirstName);
+        parcel.writeString(authorSecondName);
+        parcel.writeString(location);
+        parcel.writeString(longDescription);
+        parcel.writeString(associatedQuote);
+        parcel.writeDouble(longitude);
+        parcel.writeDouble(latitude);
+        parcel.writeString((String.valueOf(visited)));
+
+
+    }
+
+    public static final Parcelable.Creator<PlaceObject> CREATOR = new Parcelable.Creator<PlaceObject>() {
+
+        @Override
+        public PlaceObject createFromParcel(Parcel parcel) {
+            return new PlaceObject(parcel);
+        }
+
+        @Override
+        public PlaceObject[] newArray(int i) {
+            return new PlaceObject[i];
+        }
+    };
 }
