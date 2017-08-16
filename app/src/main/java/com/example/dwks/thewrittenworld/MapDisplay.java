@@ -78,6 +78,20 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         findLocal = (FloatingActionButton) findViewById(R.id.findLocal);
         findLocal.setOnClickListener(this);
         this.checkAlertButton();
+        Log.d(TAG, "Notify Button State  " + alerts.isEnabled());
+        checkAlertButton();
+        switchAlertButton();
+
+    }
+
+    private void switchAlertButton(){
+        if(Constants.notificationsOn){
+            Log.d(TAG, "ALerts is enable, should change icon");
+            alerts.setImageResource(R.drawable.alert_bell);
+        }
+        else if (!Constants.notificationsOn){
+            alerts.setImageResource(R.drawable.checked_circle);
+        }
 
     }
     private void setStyle() {
@@ -127,6 +141,9 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         LatLng currentspot = null;
         Log.d(TAG, "setInitalZoom");
 
+
+
+
             if (constants.lastLocation != null) {
                // Log.d(TAG, "Map display user location is not null" + constants.lastLocation.getLatitude());
 
@@ -136,6 +153,12 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
             }
             if (cameraPosition == null) {
                 Log.d(TAG, "Camera position is null");
+
+                //for case when user first starts app and currentspot and location service are both null
+                if(currentspot ==null){
+                currentspot = new LatLng(0, 0);
+                ZOOM = 1;}
+
 
                 cameraPosition = new CameraPosition.Builder().target(currentspot).zoom(ZOOM).build();
                 Log.d(TAG, cameraPosition.toString());
@@ -148,15 +171,22 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     private void checkAlertButton(){
         //TODO see if we can change this when setting alerts elsewhere, using intents
         if (!Constants.geofenceArrayList.isEmpty() || Constants.placeObjects.isEmpty())
-            alerts.setEnabled(false);
+        Constants.notificationsOn = false;
         //if the number of alerts set up is lower than the number of items in list then make it possible to set up alerts
         //TODO this will reset all alerts! can we just add new objects
         if (Constants.geofenceArrayList.size() < Constants.placeObjects.size())
-            alerts.setEnabled(true);
+            Constants.notificationsOn = true;
     }
 
 
     private ToolBarMenuHandler toolBarMenuHandler = new ToolBarMenuHandler(this);
+
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+    return toolBarMenuHandler.onPrepareOptionsMenu(menu);
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -165,6 +195,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
+        invalidateOptionsMenu();
         return toolBarMenuHandler.onOptionsItemSelected(item);
     }
 
@@ -175,8 +206,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         cameraPosition = map.getCameraPosition();
         Log.d(TAG, "On save instance" + cameraPosition.toString());
         outState.putParcelable("MAP_STATE",map.getCameraPosition());
-        Log.d(TAG, outState.getParcelable("MAP_STATE").toString());
-        map.clear();
+
     }
 
     @Override
@@ -184,8 +214,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         super.onPause();
         new ProcessSharedPref(this).saveAsJson();
         mapFragment.onPause();
-        map.clear();
-
+        clusterManager.clearItems();
 
 
     }
@@ -194,7 +223,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     protected void onResume(){
         super.onResume();
         initializeGoogleMap();
-        this.checkAlertButton();
+        switchAlertButton();
 
 
 }
@@ -234,19 +263,6 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                     }
                 });
 
-
-
-//        if(constants.lastLocation != null){
-//            Log.d(TAG, "Map display user location is not null" + constants.lastLocation.getLatitude());
-//
-//            LatLng currentspot = new LatLng(constants.lastLocation.getLatitude(),constants.lastLocation.getLongitude());
-//            Log.d(TAG,currentspot.toString());
-//            CameraPosition cameraPosition = new CameraPosition.Builder().target(currentspot).zoom(7).build();
-//
-//            map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-//
-//        }
-
         setInitalZoom();
         if (cameraPosition != null){
             Log.d(TAG, "cam pos not null" + cameraPosition.toString());
@@ -257,13 +273,15 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
     private void addMarkers() {
         map.clear();
+        clusterManager.clearItems();
         SetIcon setIcon = new SetIcon(this, map, clusterManager);
         setIcon.setMinClusterSize(5);
         clusterManager.setRenderer(setIcon);
 
+        Log.d(TAG, String.valueOf(Constants.placeObjects.size()));
 
         for (PlaceObject placeObject : Constants.placeObjects) {
-
+            Log.d(TAG, "MARKER ADDED" + placeObject.getBookTitle());
             clusterManager.addItem(placeObject);
 
         }
@@ -280,6 +298,8 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
     @Override
     public void onClick(View view) {
+
+
         switch (view.getId()) {
             case (R.id.set_alerts):
                 {
@@ -335,6 +355,9 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                 startActivity(search);
                 break;
         }
+        checkAlertButton();
+        switchAlertButton();
+
     }
 
 

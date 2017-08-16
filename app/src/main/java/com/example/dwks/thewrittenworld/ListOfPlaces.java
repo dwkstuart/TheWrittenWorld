@@ -42,6 +42,11 @@ public class ListOfPlaces extends AppCompatActivity implements PlaceDetailFragme
     private ToolBarMenuHandler toolBarMenuHandler = new ToolBarMenuHandler(this);
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+        return toolBarMenuHandler.onPrepareOptionsMenu(menu);
+
+    }
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         return toolBarMenuHandler.onCreateOptionsMenu(menu);
     }

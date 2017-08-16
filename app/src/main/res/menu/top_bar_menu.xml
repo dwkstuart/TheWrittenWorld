@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/main_map_menu"
@@ -15,14 +16,22 @@
 
     <item
         android:id="@+id/alerts_menu"
-        android:title="Set Notifications"
         android:enabled="true"
-        />
+        android:title="Search" />
     <item
         android:id="@+id/clear_places"
         android:enabled="true"
         android:title="Clear Current List"
         />
+    <item
+        android:id="@+id/turn_on_notifications"
+        android:enabled="true"
+        android:title="Turn on Notifications"
+        android:visible="false"/>
+    <item
+        android:id="@+id/turn_off_notifications"
+        android:title="Turn Off Notifications"
+        android:visible="true" />
 
 
 </menu>

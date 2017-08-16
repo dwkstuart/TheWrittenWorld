@@ -71,8 +71,9 @@ public class CreateGeofence extends Application implements  GoogleApiClient.Conn
         Log.d(TAG, "Start geofence");
         this.createGoogleApi();
             if (Constants.geofenceArrayList.size()>0){
-
-                googleApiClient.connect();}
+                googleApiClient.connect();
+            }
+            Constants.notificationsOn=true;
 
         }
 
@@ -185,6 +186,7 @@ public class CreateGeofence extends Application implements  GoogleApiClient.Conn
             }
             Log.d(TAG, "Should be 0 " + Constants.geofenceArrayList.size());
         }
+        Constants.notificationsOn = false;
     }
 
      public  void removeGeofence(String toBeRemovedFence){

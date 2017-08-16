@@ -1,7 +1,6 @@
 package com.example.dwks.thewrittenworld;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
@@ -50,9 +49,7 @@ public class PlaceObject implements Comparable<PlaceObject>, ClusterItem {
         latLng = new LatLng(latitude, longitude);
         location = dataSnapshot.child("location").getValue().toString();
         if (dataSnapshot.child("quote").exists()) {
-            Log.d(TAG, "quote exists");
             associatedQuote = dataSnapshot.child("quote").getValue().toString();
-            Log.d(TAG, associatedQuote);
         }
 
     }

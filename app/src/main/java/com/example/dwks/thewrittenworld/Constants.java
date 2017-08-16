@@ -35,5 +35,6 @@ class Constants {
 
     public Location lastLocation;
     public List<SavedCollection> files = new ArrayList<>();
+    public static boolean notificationsOn;
 
 }

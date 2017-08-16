@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="text"
-        android:text="Enter Name For Selection"
+        android:hint="Enter Name For Selection"
         tools:layout_editor_absoluteX="61dp"
         tools:layout_editor_absoluteY="108dp" />
 
