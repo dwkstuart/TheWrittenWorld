@@ -29,7 +29,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.TreeSet;
 
 //TODO Decide whether to update to just use GeofencingApiClient
@@ -58,6 +57,9 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     //get instance of Firebase database to use for queries
     //private FirebaseDatabase database = FirebaseDatabase.getInstance();
 
+    //Saved instance text keys
+    private final String  SELECTED_TITLES = "SELECLTED_TITLES";
+    private final String  INFO_TEXT = "Info text";
 
     private ArrayList<String> titleDropdownData = new ArrayList<>();
     private ArrayList<String> authorDropdownData = new ArrayList<>();
@@ -65,7 +67,8 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     private TreeSet<PlaceObject> foundByAuthor = new TreeSet<>();
     private TreeSet<PlaceObject> foundByTitle = new TreeSet<>();
 
-    private Set<PlaceObject> addedToList = new TreeSet<>();
+    private TreeSet<PlaceObject> addedToList = new TreeSet<>();
+    private ArrayList<PlaceObject> parcelList = new ArrayList<>();
 
 
 
@@ -82,16 +85,42 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_choose_and_load);
 
         setUpButtons();
-        getTitles();
-        getAuthors();
+
 //        pendingIntent = null;
         GeofencingApi geofencingApi = LocationServices.GeofencingApi;
        // infoText.setText("\n Number of markers set : " + Constants.placeObjects.size());
         //if(constants.lastLocation != null)
         //findNearby();
+        ProcessSharedPref processSharedPref = new ProcessSharedPref(this);
+        Log.d(TAG, String.valueOf(processSharedPref.savedListExists()));
+        if (savedInstanceState == null && processSharedPref.savedListExists() ){
+            Log.d(TAG, "Into if statement");
+            ArrayList<PlaceObject> temp = new ArrayList<>();
+            temp = processSharedPref.loadAddedTitles();
+            Log.d(TAG, String.valueOf(temp.size()));
+            addedToList.addAll(temp);
+        }
+        if (Constants.placeObjects.isEmpty()){
+            addedToList.clear();
+            showPicked();
+        }
+        getTitles();
+        getAuthors();
 
 
+    }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        Log.d(TAG, "onRestoreInstanceState Called");
+        super.onRestoreInstanceState(savedInstanceState);
+        infoText.setText(savedInstanceState.getString(INFO_TEXT));
+        parcelList = savedInstanceState.getParcelableArrayList(SELECTED_TITLES);
+        addedToList.addAll(parcelList);
+        if (Constants.placeObjects.isEmpty()){
+            addedToList.clear();
+        }
+        showPicked();
     }
 
     /**Gets the distinct book titles on
@@ -148,7 +177,10 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         searchTitles.setAdapter(adapter);
         searchTitles.setOnClickListener(this);
 
-        }
+        showPicked();
+
+
+    }
 
     private void filterByAuthor(){
             titleDropdownData.clear();
@@ -300,7 +332,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 if(!Constants.placeObjects.isEmpty())
                     createFenceButton.setEnabled(true);
                 getTitles();
-                showPicked();
+//                showPicked();
             }
 
             @Override
@@ -352,27 +384,33 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     }
 
 
+
     //Saves data when pause is called in case app is killed in background
     @Override
     protected void onPause() {
         super.onPause();
-        ProcessSharedPref processSharedPref = new ProcessSharedPref(this);
-        processSharedPref.saveAsJson();
+        handleSaving();
+
     }
 
     //saves current hasmmap and treeset if app is destroyed
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        handleSaving();
+    }
+
+    private void handleSaving(){
         ProcessSharedPref processSharedPref = new ProcessSharedPref(this);
         processSharedPref.saveAsJson();
+        ArrayList<PlaceObject> temp = new ArrayList<>();
+        temp.addAll(addedToList);
+        processSharedPref.saveAddedTitles(temp);
     }
 
     @Override
     public void onClick(View v) {
-       Log.d(TAG, "On cluck");
-//        selectedTitle = searchTitles.getText().toString();
-        Log.d(TAG, "Title chosen" + selectedTitle);
+
         switch (v.getId()) {
 
             case R.id.loadPlaces:
@@ -419,8 +457,10 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 break;
 
             case R.id.search_title_box:
-//                selectedTitle = searchTitles.getText().toString();
-//                Log.d(TAG, "Title chosen" + selectedTitle);
+                title = searchTitles.getText().toString();
+                this.findBookPlaces(title);
+                searchTitles.clearListSelection();
+                Log.d(TAG, "Title chosen" + selectedTitle);
                 break;
 
         }
@@ -480,6 +520,12 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
+        parcelList.addAll(addedToList);
+        outState.putParcelableArrayList(SELECTED_TITLES, parcelList);
+        outState.putString(INFO_TEXT, infoText.getText().toString());
+        Log.d(TAG, "On save instance state");
+        handleSaving();
     }
+
+
 }

@@ -8,6 +8,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -61,6 +62,15 @@ public class ProcessSharedPref extends Application {
         Constants.placeObjects = (TreeSet) set;
 
     }
+    public boolean savedListExists(){
+        SharedPreferences sharedPref = context.getSharedPreferences(String.valueOf(R.string.shared_pref_file), Context.MODE_PRIVATE);
+
+        if(sharedPref.contains("TEST")){
+            return true;
+        }
+        return false;
+
+    }
 
     public boolean savedDataExists(){
         SharedPreferences sharedPref = context.getSharedPreferences(String.valueOf(R.string.shared_pref_file), Context.MODE_PRIVATE);
@@ -69,5 +79,33 @@ public class ProcessSharedPref extends Application {
             return true;
             }
         return false;
+    }
+
+    public void saveAddedTitles(ArrayList<PlaceObject> addedTitles){
+       Log.d(TAG,"Saved added titles");
+        Gson gson = new Gson();
+        String jsonArrayList = gson.toJson(addedTitles);
+        Log.d(TAG,jsonArrayList);
+        SharedPreferences sharedPref = context.getSharedPreferences(String.valueOf(R.string.shared_pref_file), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor= sharedPref.edit();
+        editor.putString("TEST",jsonArrayList);
+        editor.commit();
+        boolean check = this.savedListExists();
+        Log.d(TAG, "Saved List data exist" + check);
+    }
+
+    public ArrayList<PlaceObject> loadAddedTitles(){
+        Log.d(TAG, "Load added titles called!!");
+        SharedPreferences sharedPref = context.getSharedPreferences(String.valueOf(R.string.shared_pref_file), Context.MODE_PRIVATE);
+        String jsonArrayList =  sharedPref.getString("TEST", "");
+        Log.d(TAG, "JSON" + jsonArrayList);
+        ArrayList<PlaceObject> temp = new ArrayList<PlaceObject>();
+        Gson gson = new Gson();
+        temp = gson.fromJson(jsonArrayList, new TypeToken<ArrayList<PlaceObject>>() {}.getType());
+        Log.d(TAG,temp.toString());
+
+
+        return temp;
+
     }
 }
