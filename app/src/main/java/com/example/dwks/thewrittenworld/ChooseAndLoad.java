@@ -523,7 +523,6 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         parcelList.addAll(addedToList);
         outState.putParcelableArrayList(SELECTED_TITLES, parcelList);
         outState.putString(INFO_TEXT, infoText.getText().toString());
-        Log.d(TAG, "On save instance state");
         handleSaving();
     }
 

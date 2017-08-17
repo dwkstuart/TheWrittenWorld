@@ -54,34 +54,21 @@
         android:layout_width="0dp"
         android:layout_height="65dp"
         android:orientation="horizontal"
+        android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        tools:background="@color/colorPrimary"
-        tools:backgroundTintMode="screen"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1">
 
         <ImageButton
-            android:id="@+id/location_list"
+            android:id="@+id/save_files"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_weight="0.01"
-            android:background="@null"
+            android:background="@color/transparent"
             android:scaleType="fitCenter"
-
-            app:srcCompat="@drawable/ticked_list"
-            tools:scaleType="fitCenter" />
-
-        <ImageButton
-            android:id="@+id/search_locations"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:layout_weight="0.01"
-            android:background="@null"
-            android:scaleType="fitCenter"
-
-            app:srcCompat="@drawable/binoculars" />
+            app:srcCompat="@android:drawable/ic_menu_save" />
 
         <ImageButton
             android:id="@+id/set_alerts"
@@ -96,35 +83,26 @@
             app:srcCompat="@drawable/alert_bell" />
 
         <ImageButton
-            android:id="@+id/save_files"
+            android:id="@+id/search_locations"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_weight="0.01"
-            android:background="@null"
-
-
+            android:background="@color/transparent"
             android:scaleType="fitCenter"
-            app:srcCompat="@android:drawable/ic_menu_save" />
 
-        <Button
-            android:id="@+id/button2"
+            app:srcCompat="@drawable/binoculars" />
+
+        <ImageButton
+            android:id="@+id/location_list"
             android:layout_width="64dp"
-            android:layout_height="wrap_content"
+            android:layout_height="64dp"
             android:layout_weight="0.01"
-            android:text="Button" />
+            android:scaleType="fitCenter"
+            android:background="@color/transparent"
+            app:srcCompat="@drawable/ticked_list"
+        />
+
     </LinearLayout>
-
-    <!--<android.support.design.widget.BottomNavigationView-->
-    <!--android:id="@+id/mapBottomNavBar"-->
-    <!--android:layout_width="0dp"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginBottom="0dp"-->
-    <!--app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--app:layout_constraintHorizontal_bias="0.0"-->
-    <!--app:layout_constraintLeft_toLeftOf="parent"-->
-    <!--app:layout_constraintRight_toRightOf="parent">-->
-
-    <!--</android.support.design.widget.BottomNavigationView>-->
 
 
 </android.support.constraint.ConstraintLayout>
