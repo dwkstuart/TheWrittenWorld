@@ -40,20 +40,24 @@ public class MyPlaceDetailRecyclerViewAdapter extends RecyclerView.Adapter<MyPla
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
+
+
         holder.mItem = mValues.get(holder.getAdapterPosition());
-        holder.mAuthorName.setText(mValues.get(position).getAuthorFirstName() + " " +mValues.get(position).getAuthorSecondName());
-        holder.mContentView.setText(mValues.get(position).getLocation());
-        holder.visited.setChecked(mValues.get(position).isVisited());
+        holder.mAuthorName.setText(mValues.get(holder.getAdapterPosition()).getAuthorFirstName() + " " +mValues.get(position).getAuthorSecondName());
+        holder.mContentView.setText(mValues.get(holder.getAdapterPosition()).getLocation());
+        holder.visited.setChecked(mValues.get(holder.getAdapterPosition()).isVisited());
+        holder.quote.setText(mValues.get(holder.getAdapterPosition()).getAssociatedQuote());
+
 
         //set respond to check box
         holder.visited.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
                                             if (holder.visited.isChecked()){
-                                                mValues.get(position).setVisited(true);
+                                                mValues.get(holder.getAdapterPosition()).setVisited(true);
                                             }
                                             else if(!holder.visited.isChecked())
-                                                mValues.get(position).setVisited(false);
+                                                mValues.get(holder.getAdapterPosition()).setVisited(false);
 
                                         }
 
@@ -82,6 +86,7 @@ public class MyPlaceDetailRecyclerViewAdapter extends RecyclerView.Adapter<MyPla
         public final TextView mContentView;
         public CheckBox visited;
         public PlaceObject mItem;
+        public final TextView quote;
 
         public ViewHolder(View view) {
             super(view);
@@ -89,6 +94,7 @@ public class MyPlaceDetailRecyclerViewAdapter extends RecyclerView.Adapter<MyPla
             mAuthorName = view.findViewById(R.id.name);
             mContentView = view.findViewById(R.id.content);
             visited = view.findViewById(R.id.visitedCheckList);
+            quote = view.findViewById(R.id.list_quote);
         }
 
         @Override

@@ -37,18 +37,13 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
         ImageView imageView = (ImageView) findViewById(R.id.detailImage);
         checkBox = (CheckBox) findViewById(R.id.visitedCheckBox);
 
-
         Intent input = getIntent();
         Log.d(TAG,input.toString());
-        if (input.hasExtra("ID")) {
-            Log.d(TAG, "Has extra ID is true");
-            String id = input.getStringExtra("ID");
-            final Constants constants = Constants.getInstance();
-            placeObject = Constants.places.get(id);
-            Log.d("before if", String.valueOf(placeObject.isVisited()));
+        if (input.hasExtra("Place")) {
 
+            placeObject = input.getParcelableExtra("Place");
+            Log.d(TAG, String.valueOf(Constants.placeObjects.contains(placeObject)));
             if (placeObject != null) {
-                Log.d("TEST!!!!", placeObject.toString());
 
                 String title = placeObject.getBookTitle();
                 TextView titleText = (TextView) findViewById(R.id.place_title);
@@ -65,20 +60,27 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
             checkBox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (checkBox.isChecked()){
-                        placeObject.setVisited(true);
+
+                    placeObject.setVisited(checkBox.isChecked());
+                    //Replace the object passed via intent
+                    Constants.places.remove(placeObject.getDb_key());
+                    Constants.places.put(placeObject.getDb_key(),placeObject);
+
+                    Constants.placeObjects.clear();
+                    for(PlaceObject object : Constants.places.values()) {
+                        Constants.placeObjects.add(object);
                     }
-                    else if(!checkBox.isChecked())
-                        placeObject.setVisited(false);
 
                 }
-
             });
-//            if (input.hasExtra("ClassFrom")){
-//                ClassFrom = input.getStringExtra("ClassFrom");
-//            }
+
+
             //Used for default if DB does not contain any preset image
-            String googleStreetViewImage = "https://maps.googleapis.com/maps/api/streetview?size=600x300&location="+ placeObject.getLatitude()+"," +placeObject.getLongitude()+"&heading=151.78&pitch=-0.76&key=" + getString(R.string.GOOGLE_API_KEY);
+            String googleStreetViewImage = "https://maps.googleapis.com/maps/api/streetview?size=600x300&location="+
+                    placeObject.getLatitude()+ ","
+                    +placeObject.getLongitude()
+                    + "&heading=151.78&pitch=-0.76&key="
+                    + getString(R.string.GOOGLE_API_KEY);
 
             Glide.with(getApplicationContext()).load(googleStreetViewImage).into(imageView);
         }
@@ -115,45 +117,5 @@ public class PlaceDetailScreen extends AppCompatActivity implements OnMapReadyCa
             map.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));}
     }
 
-//
-//    private void setupBottomNavBar(){
-//        final Intent lookup = new Intent(this, ChooseAndLoad.class);
-//        final Intent save = new Intent(this, UserFiles.class);
-//        final Intent returnToMap = new Intent (this, MapDisplay.class);
-//        BottomNavigationView bottomNavMenu = (BottomNavigationView) findViewById(R.id.mapBottomNavBar);
-//        bottomNavMenu.inflateMenu(R.menu.map_bottom_navigation);
-//
-//        bottomNavMenu.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-//            @Override
-//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//                switch (item.getItemId()){
-//                    case R.id.displayNearby:
-//                        startActivity(returnToMap);
-//                        break;
-//                    case R.id.findPlaces:
-//                        startActivity(lookup);
-//                        break;
-//                    case R.id.save_menu:
-//                        if (FirebaseAuth.getInstance().getCurrentUser()==null){
-//                            Toast.makeText(getApplicationContext(),"Log in to save or load", Toast.LENGTH_SHORT).show();
-//                            break;
-//                        }
-//                        startActivity(save);
-//                        break;
-//
-//                }
-//                return false;
-//            }
-//        });
-//    }
 
-//    @Override
-//    public void onBackPressed() {
-//        if (ClassFrom != null){
-//            Intent back = new Intent(this, MapDisplay.class);
-//            startActivity(back);
-//        }
-//        super.onBackPressed();
-//
-//    }
 }

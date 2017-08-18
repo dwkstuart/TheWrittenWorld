@@ -68,9 +68,9 @@ public class PlaceDetailFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             List<PlaceObject> placeObjectList= new ArrayList<>();
-            for(PlaceObject object : Constants.placeObjects){
-                placeObjectList.add(object);
-            }
+//
+
+            placeObjectList.addAll(Constants.placeObjects);
             recyclerView.setAdapter(new MyPlaceDetailRecyclerViewAdapter(placeObjectList, mListener));
         }
         return view;

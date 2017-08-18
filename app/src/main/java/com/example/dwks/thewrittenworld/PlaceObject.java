@@ -66,6 +66,7 @@ public class PlaceObject implements Parcelable, Comparable<PlaceObject>, Cluster
         associatedQuote = parcel.readString();
         longitude = parcel.readDouble();
         latitude = parcel.readDouble();
+        latLng = new LatLng(latitude,longitude);
         String visitCheck = parcel.readString();
         if (visitCheck.equals("true")){
             visited = true;

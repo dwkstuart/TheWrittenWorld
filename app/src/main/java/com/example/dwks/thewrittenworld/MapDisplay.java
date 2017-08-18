@@ -281,7 +281,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         Log.d(TAG, String.valueOf(Constants.placeObjects.size()));
 
         for (PlaceObject placeObject : Constants.placeObjects) {
-            Log.d(TAG, "MARKER ADDED" + placeObject.getBookTitle());
+
             clusterManager.addItem(placeObject);
 
         }
@@ -452,14 +452,11 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     @Override
     public void onClusterItemInfoWindowClick(PlaceObject placeObject) {
 
-        Log.d(TAG, "Info window clicked, object details : " + placeObject.toString());
-        String id = placeObject.getDb_key();
-
 
         //open details page
         Intent i = new Intent(this, PlaceDetailScreen.class);
-        i.putExtra("ID", id);
         i.putExtra("ClassFrom",MapDisplay.class.toString());
+        i.putExtra("Place",placeObject);
         startActivity(i);
         finish(); //destroy map activity so will be redrawn on a back press
 

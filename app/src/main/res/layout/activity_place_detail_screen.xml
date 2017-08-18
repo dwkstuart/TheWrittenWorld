@@ -37,11 +37,6 @@
             android:layout_height="179dp"
             android:background="@color/colorPrimary"
             android:scaleType="centerCrop" />
-        <!--<fragment-->
-        <!--android:name="com.google.android.gms.maps.StreetViewPanoramaFragment"-->
-        <!--android:id="@+id/streetviewpanorama"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"/>-->
 
 
         <TextView
@@ -66,23 +61,12 @@
 
 
     </LinearLayout>
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/mapBottomNavBar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:backgroundTint="@color/colorAccent"
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
 
         <TextView
             android:id="@+id/detail_quote"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="testquote" />
-    </android.support.design.widget.BottomNavigationView>
 
-</LinearLayout>
+        </LinearLayout>
     </ScrollView>
