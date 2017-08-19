@@ -46,7 +46,7 @@
 
         <activity
             android:name=".PlaceDetailScreen"
-            android:launchMode="standard" />
+             />
         <activity
             android:name=".ListOfPlaces"
             android:launchMode="singleTop" />

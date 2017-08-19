@@ -43,7 +43,14 @@ dependencies {
 }
 
 
-
+repositories {
+    maven{
+        url 'http://sdk.uxcam.com/android/'
+    }
+}
+dependencies {
+    compile 'com.uxcam:uxcam:2.5.10@aar'
+}
 
 
 

@@ -68,7 +68,7 @@
             android:layout_weight="0.01"
             android:background="@color/transparent"
             android:scaleType="fitCenter"
-            app:srcCompat="@android:drawable/ic_menu_save" />
+            app:srcCompat="@drawable/floppy_save" />
 
         <ImageButton
             android:id="@+id/set_alerts"
@@ -77,10 +77,19 @@
             android:layout_weight="0.01"
             android:background="@null"
             android:scaleType="fitCenter"
-
-
             android:tooltipText="Turn On Notifications"
             app:srcCompat="@drawable/alert_bell" />
+
+        <ImageButton
+            android:id="@+id/stop_alerts"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_weight="0.01"
+            android:background="@null"
+            android:scaleType="fitCenter"
+            android:visibility="gone"
+            android:tooltipText="Turn Off Notifications"
+            app:srcCompat="@drawable/notify_off" />
 
         <ImageButton
             android:id="@+id/search_locations"

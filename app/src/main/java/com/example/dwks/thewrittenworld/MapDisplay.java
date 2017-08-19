@@ -28,7 +28,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
+import com.uxcam.UXCam;
 
+import java.util.ArrayList;
 import java.util.TreeSet;
 
 public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
@@ -49,15 +51,17 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     private int ZOOM = 14; //inital zoom
 
     ///Buttons
-    ImageButton save;
-    ImageButton search;
-    ImageButton alerts;
-    ImageButton seeList;
+    private ImageButton save;
+    private ImageButton search;
+    private ImageButton alertOn;
+    private ImageButton alertOff;
+    private ImageButton seeList;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UXCam.startWithKey("c89be14f3e7ec09");
         setContentView(R.layout.activity_map_display);
        // mToast = Toast.makeText(this,"",Toast.LENGTH_SHORT);
        // setupBottomNavBar();
@@ -78,19 +82,21 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         findLocal = (FloatingActionButton) findViewById(R.id.findLocal);
         findLocal.setOnClickListener(this);
         this.checkAlertButton();
-        Log.d(TAG, "Notify Button State  " + alerts.isEnabled());
+        Log.d(TAG, "Notify Button State  " + alertOn.isEnabled());
         checkAlertButton();
-        switchAlertButton();
+//        switchAlertButton();
 
     }
 
     private void switchAlertButton(){
-        if(Constants.notificationsOn){
-            Log.d(TAG, "ALerts is enable, should change icon");
-            alerts.setImageResource(R.drawable.alert_bell);
+        Log.d(TAG, "Switch Alert , notify on?" + Constants.notificationsOn );
+        if(Constants.notificationsOn == false){
+            Log.d(TAG, "Notifications off set icon to on bell");
+
         }
-        else if (!Constants.notificationsOn){
-            alerts.setImageResource(R.drawable.checked_circle);
+         if (Constants.notificationsOn){
+
+
         }
 
     }
@@ -113,8 +119,10 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     private void configueButtons(){
         save = (ImageButton) findViewById(R.id.save_files);
         save.setOnClickListener(this);
-        alerts =(ImageButton) findViewById(R.id.set_alerts);
-        alerts.setOnClickListener(this);
+        alertOn =(ImageButton) findViewById(R.id.set_alerts);
+        alertOn.setOnClickListener(this);
+        alertOff =(ImageButton) findViewById(R.id.stop_alerts);
+        alertOff.setOnClickListener(this);
         search= (ImageButton) findViewById(R.id.search_locations);
         search.setOnClickListener(this);
         seeList =(ImageButton) findViewById(R.id.location_list);
@@ -169,13 +177,22 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
 
     private void checkAlertButton(){
-        //TODO see if we can change this when setting alerts elsewhere, using intents
-        if (!Constants.geofenceArrayList.isEmpty() || Constants.placeObjects.isEmpty())
-        Constants.notificationsOn = false;
-        //if the number of alerts set up is lower than the number of items in list then make it possible to set up alerts
-        //TODO this will reset all alerts! can we just add new objects
-        if (Constants.geofenceArrayList.size() < Constants.placeObjects.size())
-            Constants.notificationsOn = true;
+        if (Constants.notificationsOn){
+            alertOff.setVisibility(View.VISIBLE);
+            alertOff.setEnabled(true);
+            alertOn.setEnabled(false);
+            alertOn.setVisibility(View.GONE);
+        }
+        if (!Constants.notificationsOn && !Constants.placeObjects.isEmpty()){
+            alertOff.setVisibility(View.GONE);
+            alertOff.setEnabled(false);
+            alertOn.setEnabled(true);
+            alertOn.setVisibility(View.VISIBLE);
+        }
+        if(Constants.placeObjects.isEmpty()) {
+            alertOn.setVisibility(View.GONE);
+            alertOff.setVisibility(View.GONE);
+        }
     }
 
 
@@ -223,7 +240,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     protected void onResume(){
         super.onResume();
         initializeGoogleMap();
-        switchAlertButton();
+       // switchAlertButton();
 
 
 }
@@ -287,7 +304,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         }
         clusterManager.cluster();
         if(Constants.geofenceArrayList.size() < Constants.placeObjects.size()){
-            alerts.setEnabled(true);
+            alertOn.setEnabled(true);
         }
     }
 
@@ -309,14 +326,34 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                     mToast.cancel();
                 mToast = Toast.makeText(this, "Location Alerts Activated", Toast.LENGTH_LONG);
                 mToast.show();
-                alerts.setEnabled(false);
+                alertOn.setVisibility(View.GONE);
+                alertOn.setEnabled(false);
+                    alertOff.setVisibility(View.VISIBLE);
             }
             break;
 
+            case (R.id.stop_alerts):
+            {
+                CreateGeofence geofence = new CreateGeofence(this, "", null);
+                geofence.removeAllGeofence();
+                if (mToast != null)
+                    mToast.cancel();
+                mToast = Toast.makeText(this, "Location Alerts Stopped", Toast.LENGTH_LONG);
+                mToast.show();
+                alertOff.setVisibility(View.GONE);
+                alertOff.setEnabled(false);
+                alertOn.setVisibility(View.VISIBLE);
+                break;
+            }
+
+
             case (R.id.location_list):
 
-                Intent currentitems = new Intent(getApplicationContext(),ListOfPlaces.class);
-                        startActivity(currentitems);
+                Intent currentList = new Intent(getApplicationContext(),ListOfPlaces.class);
+                ArrayList<PlaceObject> loadedPlaceList = new ArrayList<>();
+                loadedPlaceList.addAll(Constants.placeObjects);
+                currentList.putParcelableArrayListExtra("LIST",loadedPlaceList);
+                startActivity(currentList);
 
                 break;
 
@@ -336,6 +373,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                             //    mToast.cancel();
                             Toast.makeText(getApplicationContext(), "Nothing nearby sorry...", Toast.LENGTH_SHORT).show();
                         }
+
                 break;
 
             case (R.id.save_files):
@@ -356,7 +394,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                 break;
         }
         checkAlertButton();
-        switchAlertButton();
+       // switchAlertButton();
 
     }
 
@@ -458,7 +496,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         i.putExtra("ClassFrom",MapDisplay.class.toString());
         i.putExtra("Place",placeObject);
         startActivity(i);
-        finish(); //destroy map activity so will be redrawn on a back press
+
 
     }
     //////////////////////////////////////////////////////////////////////////////////////

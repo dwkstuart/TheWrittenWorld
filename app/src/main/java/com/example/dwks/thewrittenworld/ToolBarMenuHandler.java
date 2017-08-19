@@ -7,6 +7,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
+
 /**
  * Created by User on 10/08/2017.
  */
@@ -33,16 +35,22 @@ public class ToolBarMenuHandler {
         MenuItem notifyon = menu.findItem(R.id.turn_on_notifications);
         MenuItem notifyOff = menu.findItem(R.id.turn_off_notifications);
 
-        if(Constants.notificationsOn){
-            notifyOff.setVisible(true);
-            notifyon.setVisible(false);
-        }
-        else if (!Constants.notificationsOn){
-            notifyOff.setVisible(false);
-            notifyon.setVisible(true);
-        }
+        if (Constants.placeObjects.size()>0) {
 
-        return true;
+            if (Constants.notificationsOn) {
+                notifyOff.setVisible(true);
+                notifyon.setVisible(false);
+            } else if (!Constants.notificationsOn) {
+                notifyOff.setVisible(false);
+                notifyon.setVisible(true);
+            }
+
+        }
+        else {
+            notifyon.setVisible(false);
+            notifyOff.setVisible(false);
+        }
+            return true;
     }
 
 
@@ -59,6 +67,9 @@ public class ToolBarMenuHandler {
                 activity.startActivity(returnToMap);
                 break;
             case R.id.location_menu_item:
+                ArrayList<PlaceObject> loadedPlaceList = new ArrayList<>();
+                loadedPlaceList.addAll(Constants.placeObjects);
+                currentList.putParcelableArrayListExtra("LIST",loadedPlaceList);
                 activity.startActivity(currentList);
                 break;
             case R.id.alerts_menu:
@@ -81,11 +92,13 @@ public class ToolBarMenuHandler {
             case R.id.turn_off_notifications:
                 new CreateGeofence(activity,"",null)
                         .removeAllGeofence();
+                activity.recreate();
               //      Constants.notificationsOn = false;
                 break;
             case R.id.turn_on_notifications:
                 CreateGeofence geofenceaction = new CreateGeofence(activity,"ADD",null);
                 geofenceaction.startGeofence();
+                activity.recreate();
                // Constants.notificationsOn = true;
                 break;
         }

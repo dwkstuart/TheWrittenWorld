@@ -28,6 +28,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.uxcam.UXCam;
 //Homepage
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener
@@ -45,7 +46,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UXCam.startWithKey("c89be14f3e7ec09");
         setContentView(R.layout.activity_main);
+        Constants.notificationsOn=false;
         requestPermissions();
         firebaseAuth = FirebaseAuth.getInstance();
         final FirebaseUser currentUser = firebaseAuth.getCurrentUser();
@@ -105,6 +108,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 .enableAutoManage(this,this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSign)
                 .build();
+
+        if (Constants.geofenceArrayList.size()>0){
+            Constants.notificationsOn = true;
+        }
     }
 
     //    ////////////////////////////////////////////////////////////

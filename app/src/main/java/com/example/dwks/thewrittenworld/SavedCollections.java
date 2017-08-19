@@ -1,12 +1,13 @@
 package com.example.dwks.thewrittenworld;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.TreeSet;
 
 public class SavedCollections extends AppCompatActivity implements SavedFiles.OnListFragmentInteractionListener{
@@ -17,18 +18,19 @@ public class SavedCollections extends AppCompatActivity implements SavedFiles.On
         String name = String.valueOf(getCallingActivity());
         Log.d("Calling activity", name);
         setContentView(R.layout.activity_saved_collections);
-
-
-
-
     }
 
     @Override
     public void onListFragmentInteraction(SavedCollection item) {
         TreeSet<PlaceObject> savedSet = (TreeSet<PlaceObject>) item.getSelection();
-        Constants.placeObjects = (TreeSet) savedSet;
-        Log.d("Size of set", String.valueOf(savedSet.size()));
-        Toast.makeText(this,"Loaded collection " + item.getListName() , Toast.LENGTH_SHORT).show();
+       // Constants.placeObjects = (TreeSet) savedSet;
+        Intent currentList = new Intent(this,ListOfPlaces.class);
+        ArrayList<PlaceObject> loadedPlaceList = new ArrayList<>();
+        loadedPlaceList.addAll(savedSet);
+        currentList.putParcelableArrayListExtra("LIST",loadedPlaceList);
+        currentList.putExtra("FILE_NAME",item.getListName());
+        startActivity(currentList);
+//        Log.d("Size of set", String.valueOf(savedSet.size()));
 
     }
 

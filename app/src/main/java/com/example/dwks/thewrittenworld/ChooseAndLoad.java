@@ -1,7 +1,6 @@
 package com.example.dwks.thewrittenworld;
 //Class to confirm data to use, calls methods to make geofences and has buttons to launch Map and List View
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,12 +33,13 @@ import java.util.TreeSet;
 
 //TODO Decide whether to update to just use GeofencingApiClient
 
-public class ChooseAndLoad extends AppCompatActivity implements View.OnClickListener,
+public class ChooseAndLoad extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener,
         ResultCallback<Status> {
 
 
     private CreateGeofence gfG;
     private final static String TAG = ChooseAndLoad.class.getSimpleName();
+    private Toast mToast;
     //Buttons and text fields
 
     private Button createFenceButton;
@@ -46,10 +47,12 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     private Spinner titleDrop;
     private Spinner authorDrop;
     private AutoCompleteTextView searchTitles;
+    private TextView list;
 
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private String selectedTitle ="";
     private String selectedAuthor= "";
+    private String searchTitle = "";
    // private ArrayList<PlaceObject> placeObjects;
 
 //    private PendingIntent pendingIntent;
@@ -60,6 +63,8 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     //Saved instance text keys
     private final String  SELECTED_TITLES = "SELECLTED_TITLES";
     private final String  INFO_TEXT = "Info text";
+    private final String TITLES = "choosenTitles";
+
 
     private ArrayList<String> titleDropdownData = new ArrayList<>();
     private ArrayList<String> authorDropdownData = new ArrayList<>();
@@ -132,7 +137,10 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         db.getUniqueTitles(new firebaseDataListener() {
                 @Override
                 public void onStart() {
-                    Toast.makeText(getApplicationContext(),"Searching Database", Toast.LENGTH_SHORT).show();
+                    if(mToast != null)
+                        mToast.cancel();
+                    mToast = Toast.makeText(getApplicationContext(),"Searching Database", Toast.LENGTH_SHORT);
+                    mToast.show();
 
                 }
 
@@ -173,8 +181,8 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         titleDrop.setAdapter(adapter);
         titleDrop.setOnItemSelectedListener(new onItemSelectedListener());
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, titleDropdownData);
-        searchTitles.setAdapter(adapter);
+        ArrayAdapter<String> adapterSearch = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, titleDropdownData);
+        searchTitles.setAdapter(adapterSearch);
         searchTitles.setOnClickListener(this);
 
         showPicked();
@@ -206,8 +214,10 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
             db.getAuthors(new firebaseDataListener() {
                 @Override
                 public void onStart() {
-                    Toast.makeText(getApplicationContext(),"Searching Database", Toast.LENGTH_SHORT).show();
-
+                    if(mToast != null)
+                        mToast.cancel();
+                    mToast = Toast.makeText(getApplicationContext(),"Searching Database", Toast.LENGTH_SHORT);
+                    mToast.show();
                 }
 
                 @Override
@@ -247,21 +257,28 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 String name = object.getBookTitle();
                 picked.add(name);
             }
-            infoText.setText("\n Number of Results : " + Constants.placeObjects.size()
-            + "\n" + picked.toString());
+            infoText.setText("\n Number of Results : " + Constants.placeObjects.size());
+            list.setText("");
+            for(String title: picked){
+                list.append(title);
+                list.append("\n");
+            }
+            //list.setText("\n" + picked.toString());
 
         }
+
+
     /**
      * Helper Method to initialise buttons and set listeners
      */
     private void setUpButtons() {
-
-        Button loadPlacesButton = (Button) findViewById(R.id.loadPlaces);
-        createFenceButton = (Button) findViewById(R.id.createGeofences);
-        Button deleteFences = (Button) findViewById(R.id.removeGeofences);
-        Button loadMap = (Button) findViewById(R.id.ViewMap);
-        Button showList = (Button) findViewById(R.id.ViewList);
-        Button filterByAuthor = (Button) findViewById(R.id.filter_author);
+        list = (TextView) findViewById(R.id.selected_titles);
+        ImageButton loadPlacesButton = (ImageButton) findViewById(R.id.loadPlaces);
+//        createFenceButton = (Button) findViewById(R.id.createGeofences);
+//        Button deleteFences = (Button) findViewById(R.id.removeGeofences);
+//        Button loadMap = (Button) findViewById(R.id.ViewMap);
+//        Button showList = (Button) findViewById(R.id.ViewList);
+        ImageButton filterByAuthor = (ImageButton) findViewById(R.id.filter_author);
         infoText = (TextView) findViewById(R.id.InfoBox);
         titleDrop= (Spinner) findViewById(R.id.titleSpinner);
         titleDropdownData.add("Choose a Book");
@@ -271,21 +288,22 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
         searchTitles = (AutoCompleteTextView) findViewById(R.id.search_title_box);
         searchTitles.setThreshold(2);
+        searchTitles.setOnItemClickListener(this);
 
 
         loadPlacesButton.setOnClickListener(this);
-        createFenceButton.setOnClickListener(this);
+//        createFenceButton.setOnClickListener(this);
         filterByAuthor.setOnClickListener(this);
-        loadMap.setOnClickListener(this);
-        showList.setOnClickListener(this);
-        deleteFences.setOnClickListener(this);
-        if (user == null){
-            showList.setEnabled(false);
-        }
-        if(Constants.placeObjects.isEmpty())
-        createFenceButton.setEnabled(false);
+//        loadMap.setOnClickListener(this);
+//        showList.setOnClickListener(this);
+//        deleteFences.setOnClickListener(this);
+//        if (user == null){
+//            showList.setEnabled(false);
+//        }
+//        if(Constants.placeObjects.isEmpty())
+//        createFenceButton.setEnabled(false);
 
-
+            //searchTitles.setOnClickListener(this);
 
 
 
@@ -329,9 +347,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 //infoText.setText("\n Number of Results : " + Constants.placeObjects.size());
 
 
-                if(!Constants.placeObjects.isEmpty())
-                    createFenceButton.setEnabled(true);
-                getTitles();
+                 getTitles();
 //                showPicked();
             }
 
@@ -421,34 +437,34 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
                 break;
 
-            case R.id.createGeofences:
-                Log.d(TAG, "Create geofence button pressed");
-                gfG = new CreateGeofence(this.getApplicationContext(), "ADD", null);
-                Log.d(TAG, gfG.toString());
-
-                break;
-
-            case R.id.removeGeofences:
-                if (gfG != null) {
-                    Log.d(TAG, gfG.toString());
-                    gfG.removeAllGeofence();
-                }
-                break;
-
-            case R.id.ViewMap:
-                Intent map = new Intent(this, MapDisplay.class);
-                map.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); //Uses previous version of activity, maintains users position and zoom
-
-                startActivity(map);
-
-                break;
-
-            case R.id.ViewList:
-               // TODO temp Intent list = new Intent(this, ListOfPlaces.class);
-
-                Intent save = new Intent(this, ListOfPlaces.class);
-                startActivity(save);
-                break;
+//            case R.id.createGeofences:
+//                Log.d(TAG, "Create geofence button pressed");
+//                gfG = new CreateGeofence(this.getApplicationContext(), "ADD", null);
+//                Log.d(TAG, gfG.toString());
+//
+//                break;
+//
+//            case R.id.removeGeofences:
+//                if (gfG != null) {
+//                    Log.d(TAG, gfG.toString());
+//                    gfG.removeAllGeofence();
+//                }
+//                break;
+//
+//            case R.id.ViewMap:
+//                Intent map = new Intent(this, MapDisplay.class);
+//                map.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); //Uses previous version of activity, maintains users position and zoom
+//
+//                startActivity(map);
+//
+//                break;
+//
+//            case R.id.ViewList:
+//               // TODO temp Intent list = new Intent(this, ListOfPlaces.class);
+//
+//                Intent save = new Intent(this, ListOfPlaces.class);
+//                startActivity(save);
+//                break;
             case R.id.filter_author:
                 String authorname = String.valueOf(selectedAuthor);
                 this.findBookByAuthor(authorname);
@@ -457,10 +473,11 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 break;
 
             case R.id.search_title_box:
-                title = searchTitles.getText().toString();
-                this.findBookPlaces(title);
-                searchTitles.clearListSelection();
-                Log.d(TAG, "Title chosen" + selectedTitle);
+               // String autotitle = String.valueOf(searchTitles);
+                this.findBookPlaces(searchTitles.getText().toString());
+                searchTitles.setText("");
+// searchTitles.clearListSelection();
+//                Log.d(TAG, "Title chosen" + selectedTitle);
                 break;
 
         }
@@ -488,8 +505,14 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         return toolBarMenuHandler.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        this.findBookPlaces(searchTitles.getText().toString());
+        searchTitles.clearListSelection();
+        searchTitles.setText("");
 
 
+    }
 
 
     private class onItemSelectedListener implements android.widget.AdapterView.OnItemSelectedListener {
@@ -502,6 +525,10 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 case R.id.titleSpinner:
                     selectedTitle = adapterView.getSelectedItem().toString();
                     break;
+//                case R.id.selected_titles:
+//                    searchTitle = adapterView.getSelectedItem().toString();
+//
+//                    break;
 
 
 
@@ -523,8 +550,8 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
         parcelList.addAll(addedToList);
         outState.putParcelableArrayList(SELECTED_TITLES, parcelList);
         outState.putString(INFO_TEXT, infoText.getText().toString());
+        outState.putString(TITLES,list.getText().toString());
         handleSaving();
     }
-
 
 }

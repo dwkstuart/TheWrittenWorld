@@ -26,6 +26,7 @@ public class PlaceDetailFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private List<PlaceObject> placeObjectList= new ArrayList<>();
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -67,10 +68,10 @@ public class PlaceDetailFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            List<PlaceObject> placeObjectList= new ArrayList<>();
+//            List<PlaceObject> placeObjectList= new ArrayList<>();
 //
 
-            placeObjectList.addAll(Constants.placeObjects);
+            //placeObjectList.addAll(Constants.placeObjects);
             recyclerView.setAdapter(new MyPlaceDetailRecyclerViewAdapter(placeObjectList, mListener));
         }
         return view;
@@ -111,4 +112,8 @@ public class PlaceDetailFragment extends Fragment {
         // TODO: Update argument type and name
         void onListFragmentInteraction(PlaceObject item);
     }
+
+//    public void passList(ArrayList<PlaceObject> list){
+//        placeObjectList = list;
+//    }
 }
