@@ -64,7 +64,6 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         UXCam.startWithKey("c89be14f3e7ec09");
         setContentView(R.layout.activity_map_display);
        // mToast = Toast.makeText(this,"",Toast.LENGTH_SHORT);
-       // setupBottomNavBar();
         Log.d(TAG, "onCreate()");
         if(savedInstanceState == null)
             Log.d(TAG, "Saved instance state null");
@@ -82,7 +81,6 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         findLocal = (FloatingActionButton) findViewById(R.id.findLocal);
         findLocal.setOnClickListener(this);
         this.checkAlertButton();
-        Log.d(TAG, "Notify Button State  " + alertOn.isEnabled());
         checkAlertButton();
 //        switchAlertButton();
 
@@ -127,6 +125,10 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         search.setOnClickListener(this);
         seeList =(ImageButton) findViewById(R.id.location_list);
         seeList.setOnClickListener(this);
+
+        if(FirebaseAuth.getInstance().getCurrentUser()==null){
+            save.setVisibility(View.GONE);
+        }
         }
 
 
@@ -369,9 +371,10 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                         addNearByPlaces();
                         if (nearbyObject.isEmpty()){
                             Log.d(TAG, mToast.toString());
-                            //if(mToast!=null)
-                            //    mToast.cancel();
-                            Toast.makeText(getApplicationContext(), "Nothing nearby sorry...", Toast.LENGTH_SHORT).show();
+                            if(mToast!=null)
+                                mToast.cancel();
+                            mToast = Toast.makeText(getApplicationContext(), "Nothing nearby sorry...", Toast.LENGTH_SHORT);
+                            mToast.show();
                         }
 
                 break;
@@ -409,12 +412,13 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         nearbyObject = nearbyLat;
         nearbyObject.retainAll(nearbyLong);
 
-        Log.d(TAG, "Nearby places" + nearbyObject.toString());
+        //TODO put this in pop up
         Constants.placeObjects.addAll(nearbyObject);
 
         for(PlaceObject object: Constants.placeObjects) {
             Constants.places.put(object.getDb_key(),object);
         }
+
         if(mToast!=null)
             mToast.cancel();
 
@@ -427,7 +431,10 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     private void locateNearby(){
         Log.d(TAG, "Locate nearby method called");
 
-        Toast.makeText(getApplicationContext(),"Searching for Nearby Places", Toast.LENGTH_LONG).show();
+        if(mToast != null)
+            mToast.cancel();
+        mToast = Toast.makeText(getApplicationContext(),"Searching for Nearby Places", Toast.LENGTH_LONG);
+        mToast.show();
 
         Database db = new Database();
 

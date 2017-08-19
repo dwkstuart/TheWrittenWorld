@@ -2,10 +2,11 @@ package com.example.dwks.thewrittenworld;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -28,12 +29,12 @@ public class ToolBarMenuHandler {
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-        Log.d("MENU", "onCreate called");
         MenuInflater inflater = activity.getMenuInflater();
         inflater.inflate(R.menu.top_bar_menu,menu);
 
         MenuItem notifyon = menu.findItem(R.id.turn_on_notifications);
         MenuItem notifyOff = menu.findItem(R.id.turn_off_notifications);
+        MenuItem save = menu.findItem(R.id.save_menu_item);
 
         if (Constants.placeObjects.size()>0) {
 
@@ -50,6 +51,11 @@ public class ToolBarMenuHandler {
             notifyon.setVisible(false);
             notifyOff.setVisible(false);
         }
+
+        if(FirebaseAuth.getInstance().getCurrentUser() == null){
+
+            save.setVisible(false);
+        }
             return true;
     }
 
@@ -58,6 +64,7 @@ public class ToolBarMenuHandler {
         final Intent alerts = new Intent(activity, ChooseAndLoad.class);
         final Intent currentList = new Intent(activity, ListOfPlaces.class);
         final Intent returnToMap = new Intent (activity, MapDisplay.class);
+        final Intent saveList = new Intent(activity, UserFiles.class);
 
 
 
@@ -100,6 +107,9 @@ public class ToolBarMenuHandler {
                 geofenceaction.startGeofence();
                 activity.recreate();
                // Constants.notificationsOn = true;
+                break;
+            case R.id.save_menu_item:
+                activity.startActivity(saveList);
                 break;
         }
 

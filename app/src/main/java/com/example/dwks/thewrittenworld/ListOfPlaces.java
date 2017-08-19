@@ -40,7 +40,7 @@ public class ListOfPlaces extends AppCompatActivity implements PlaceDetailFragme
             Log.d(TAG, open.toString());
             collectionTitle =open.getStringExtra("FILE_NAME");
             filename.setText(collectionTitle);
-        }
+        } else load.setVisibility(View.GONE);
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list);
         LinearLayoutManager layoutManager

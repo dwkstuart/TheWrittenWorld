@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 {
     private static final String TAG = MainActivity.class.getSimpleName();
     private GoogleApiClient mGooogleApiClient;
-    private FirebaseAuth firebaseAuth;
+    public FirebaseAuth firebaseAuth;
 
     private static final int RC_SIGN_IN = 9001;
 
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             @Override
 
             public void onClick(View view) {
-                if (currentUser == null){
+                if (firebaseAuth.getCurrentUser() == null){
                     Toast.makeText(getApplicationContext(),"Users Not Signed In Cannot Save", Toast.LENGTH_LONG).show();
                 }
                 startActivity(launchMainApp);

@@ -177,7 +177,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
 
         //Set the contents of the title drop down
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, titleDropdownData);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_custom_style, titleDropdownData);
         titleDrop.setAdapter(adapter);
         titleDrop.setOnItemSelectedListener(new onItemSelectedListener());
 
@@ -244,7 +244,7 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
             });
 
             //Set the contents of the title drop down
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, authorDropdownData);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_custom_style, authorDropdownData);
             authorDrop.setAdapter(adapter);
             authorDrop.setOnItemSelectedListener(new onItemSelectedListener());
 
@@ -263,8 +263,6 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 list.append(title);
                 list.append("\n");
             }
-            //list.setText("\n" + picked.toString());
-
         }
 
 
@@ -274,10 +272,6 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
     private void setUpButtons() {
         list = (TextView) findViewById(R.id.selected_titles);
         ImageButton loadPlacesButton = (ImageButton) findViewById(R.id.loadPlaces);
-//        createFenceButton = (Button) findViewById(R.id.createGeofences);
-//        Button deleteFences = (Button) findViewById(R.id.removeGeofences);
-//        Button loadMap = (Button) findViewById(R.id.ViewMap);
-//        Button showList = (Button) findViewById(R.id.ViewList);
         ImageButton filterByAuthor = (ImageButton) findViewById(R.id.filter_author);
         infoText = (TextView) findViewById(R.id.InfoBox);
         titleDrop= (Spinner) findViewById(R.id.titleSpinner);
@@ -292,22 +286,8 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
 
 
         loadPlacesButton.setOnClickListener(this);
-//        createFenceButton.setOnClickListener(this);
         filterByAuthor.setOnClickListener(this);
-//        loadMap.setOnClickListener(this);
-//        showList.setOnClickListener(this);
-//        deleteFences.setOnClickListener(this);
-//        if (user == null){
-//            showList.setEnabled(false);
-//        }
-//        if(Constants.placeObjects.isEmpty())
-//        createFenceButton.setEnabled(false);
-
-            //searchTitles.setOnClickListener(this);
-
-
-
-    }
+   }
 
     @Override
     public void onResult(@NonNull Status status) {
@@ -473,11 +453,9 @@ public class ChooseAndLoad extends AppCompatActivity implements View.OnClickList
                 break;
 
             case R.id.search_title_box:
-               // String autotitle = String.valueOf(searchTitles);
                 this.findBookPlaces(searchTitles.getText().toString());
                 searchTitles.setText("");
-// searchTitles.clearListSelection();
-//                Log.d(TAG, "Title chosen" + selectedTitle);
+
                 break;
 
         }
