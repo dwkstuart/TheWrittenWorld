@@ -61,7 +61,7 @@ public class ToolBarMenuHandler {
 
 
     public boolean onOptionsItemSelected(MenuItem item){
-        final Intent alerts = new Intent(activity, ChooseAndLoad.class);
+        final Intent alerts = new Intent(activity, Search.class);
         final Intent currentList = new Intent(activity, ListOfPlaces.class);
         final Intent returnToMap = new Intent (activity, MapDisplay.class);
         final Intent saveList = new Intent(activity, UserFiles.class);
@@ -83,7 +83,7 @@ public class ToolBarMenuHandler {
                 activity.startActivity(alerts);
                 break;
             case R.id.clear_places:
-                new CreateGeofence(activity,"",null)
+                new GeofenceHandler(activity,"",null)
                         .removeAllGeofence();
                 Constants.geofenceArrayList.clear();
                 Constants.placeObjectGeofenceHashMap.clear();
@@ -97,13 +97,13 @@ public class ToolBarMenuHandler {
 //                    }
                 break;
             case R.id.turn_off_notifications:
-                new CreateGeofence(activity,"",null)
+                new GeofenceHandler(activity,"",null)
                         .removeAllGeofence();
                 activity.recreate();
               //      Constants.notificationsOn = false;
                 break;
             case R.id.turn_on_notifications:
-                CreateGeofence geofenceaction = new CreateGeofence(activity,"ADD",null);
+                GeofenceHandler geofenceaction = new GeofenceHandler(activity,"ADD",null);
                 geofenceaction.startGeofence();
                 activity.recreate();
                // Constants.notificationsOn = true;

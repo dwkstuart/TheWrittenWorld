@@ -107,7 +107,7 @@ public class GeofenceIntentService extends IntentService implements
 //                    List<String> remove = new ArrayList<>();
 //                    remove.add(triggeredID);
 //                    Log.d(TAG, "geofence to remove = " + remove.toString());
-                    CreateGeofence geohandler = new CreateGeofence(this.getApplicationContext(),REMOVE, triggeredID);
+                    GeofenceHandler geohandler = new GeofenceHandler(this.getApplicationContext(),REMOVE, triggeredID);
                     //geohandler.removeGeofence(triggeredID);
                     Log.d(TAG, Constants.geofenceArrayList.toString());
 

@@ -42,14 +42,17 @@ public class ListOfPlaces extends AppCompatActivity implements PlaceDetailFragme
             filename.setText(collectionTitle);
         } else load.setVisibility(View.GONE);
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list);
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-        MyPlaceDetailRecyclerViewAdapter adapter = new MyPlaceDetailRecyclerViewAdapter(temp, this);
+
+        PlaceDetailRecyclerViewAdapter adapter = new PlaceDetailRecyclerViewAdapter(temp, this);
         recyclerView.setAdapter(adapter);
+
+
 
         load.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,7 +68,6 @@ public class ListOfPlaces extends AppCompatActivity implements PlaceDetailFragme
     @Override
     public void onListFragmentInteraction(PlaceObject item) {
         Intent placeDetails = new Intent(this,PlaceDetailScreen.class);
-
         placeDetails.putExtra("Place", item);
         this.startActivity(placeDetails);
 

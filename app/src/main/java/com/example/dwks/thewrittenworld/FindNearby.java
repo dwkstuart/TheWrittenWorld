@@ -155,11 +155,11 @@ public class FindNearby extends AppCompatActivity implements View.OnClickListene
                 break;
             case R.id.findBook:
 
-                Intent addbookintent = new Intent(this, ChooseAndLoad.class);
+                Intent addbookintent = new Intent(this, Search.class);
                 startActivity(addbookintent);
                 break;
             case R.id.clearSelection:
-                new CreateGeofence(this.getApplicationContext(),"",null)
+                new GeofenceHandler(this.getApplicationContext(),"",null)
                         .removeAllGeofence();
                 Constants.geofenceArrayList.clear();
                 Constants.placeObjectGeofenceHashMap.clear();

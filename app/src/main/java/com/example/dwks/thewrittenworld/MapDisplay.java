@@ -251,6 +251,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     private void initializeGoogleMap() {
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_display);
         mapFragment.getMapAsync(this);
+
     }
 
 
@@ -322,7 +323,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         switch (view.getId()) {
             case (R.id.set_alerts):
                 {
-                CreateGeofence geofence = new CreateGeofence(this, "ADD", null);
+                GeofenceHandler geofence = new GeofenceHandler(this, "ADD", null);
                 geofence.startGeofence();
                 if (mToast != null)
                     mToast.cancel();
@@ -336,7 +337,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
             case (R.id.stop_alerts):
             {
-                CreateGeofence geofence = new CreateGeofence(this, "", null);
+                GeofenceHandler geofence = new GeofenceHandler(this, "", null);
                 geofence.removeAllGeofence();
                 if (mToast != null)
                     mToast.cancel();
@@ -392,7 +393,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                 break;
 
             case (R.id.search_locations):
-                Intent search = new Intent(this, ChooseAndLoad.class);
+                Intent search = new Intent(this, Search.class);
                 startActivity(search);
                 break;
         }
