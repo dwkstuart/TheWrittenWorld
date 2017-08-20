@@ -2,6 +2,7 @@ package com.example.dwks.thewrittenworld;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -65,6 +66,9 @@ public class ToolBarMenuHandler {
         final Intent currentList = new Intent(activity, ListOfPlaces.class);
         final Intent returnToMap = new Intent (activity, MapDisplay.class);
         final Intent saveList = new Intent(activity, UserFiles.class);
+        final Intent settings = new Intent(activity,Settings.class);
+
+
 
 
 
@@ -110,6 +114,13 @@ public class ToolBarMenuHandler {
                 break;
             case R.id.save_menu_item:
                 activity.startActivity(saveList);
+                break;
+
+            case R.id.settings_menu_item:
+                Log.d("toolbar", "Settings clicked");
+
+                Log.d("Menu", String.valueOf(settings));
+                activity.startActivity(settings);
                 break;
         }
 

@@ -53,8 +53,8 @@
         <activity android:name=".SavedCollections" />
         <activity android:name=".Credits" />
         <activity
-            android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+            android:name=".Settings"
+            />
     </application>
 
 </manifest>

@@ -39,9 +39,11 @@
         android:enabled="true"/>
 
     <item
+        android:id="@+id/settings_menu_item"
         android:title="Settings"
         android:enabled="true"
-        android:id="@+id/settings"/>
+
+        />
 
 
 </menu>

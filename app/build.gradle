@@ -41,6 +41,9 @@ dependencies {
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0'
     compile 'com.google.maps.android:android-maps-utils:0.5'
+    compile 'com.android.support:preference-v7:26.+'
+
+
 }
 
 
