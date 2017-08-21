@@ -80,24 +80,10 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         locateNearby();
         findLocal = (FloatingActionButton) findViewById(R.id.findLocal);
         findLocal.setOnClickListener(this);
-        this.checkAlertButton();
         checkAlertButton();
-//        switchAlertButton();
 
     }
 
-    private void switchAlertButton(){
-        Log.d(TAG, "Switch Alert , notify on?" + Constants.notificationsOn );
-        if(Constants.notificationsOn == false){
-            Log.d(TAG, "Notifications off set icon to on bell");
-
-        }
-         if (Constants.notificationsOn){
-
-
-        }
-
-    }
     private void setStyle() {
         try {
             // Customise the styling of the base map using a JSON object defined
@@ -242,10 +228,9 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     protected void onResume(){
         super.onResume();
         initializeGoogleMap();
-       // switchAlertButton();
+        checkAlertButton();
 
-
-}
+    }
 
 
     private void initializeGoogleMap() {

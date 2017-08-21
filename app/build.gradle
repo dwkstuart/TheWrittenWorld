@@ -42,6 +42,8 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0'
     compile 'com.google.maps.android:android-maps-utils:0.5'
     compile 'com.android.support:preference-v7:26.+'
+    compile 'com.twitter.sdk.android:tweet-composer:3.1.1'
+
 
 
 }
@@ -51,6 +53,7 @@ repositories {
     maven {
         url 'http://sdk.uxcam.com/android/'
     }
+    jcenter()
 }
 dependencies {
     compile 'com.uxcam:uxcam:2.5.10@aar'
@@ -63,5 +66,8 @@ dependencies {
 dependencies {
     compile 'com.android.support:support-v4:26.+'
     compile 'com.android.support:support-vector-drawable:26.+'
+}
+dependencies {
+    compile 'com.android.support.constraint:constraint-layout:+'
 }
 apply plugin: 'com.google.gms.google-services'

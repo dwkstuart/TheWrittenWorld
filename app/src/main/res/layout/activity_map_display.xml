@@ -28,7 +28,7 @@
         app:fabSize="mini"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/globe_markers"
+        app:srcCompat="@drawable/gps_map"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintTop_creator="1" />
 
@@ -99,7 +99,7 @@
             android:background="@color/transparent"
             android:scaleType="fitCenter"
 
-            app:srcCompat="@drawable/binoculars" />
+            app:srcCompat="@drawable/search_magnify" />
 
         <ImageButton
             android:id="@+id/location_list"

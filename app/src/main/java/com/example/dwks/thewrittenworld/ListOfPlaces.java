@@ -59,6 +59,10 @@ public class ListOfPlaces extends AppCompatActivity implements PlaceDetailFragme
             public void onClick(View view) {
                 Constants.placeObjects.clear();
                 Constants.placeObjects.addAll(temp);
+                for (PlaceObject object:temp){
+                    Constants.places.put(object.getDb_key(),object);
+                }
+
                 Toast.makeText(getApplicationContext(),"Loaded collection " + collectionTitle , Toast.LENGTH_SHORT).show();
 
             }

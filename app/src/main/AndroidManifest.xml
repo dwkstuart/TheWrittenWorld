@@ -52,9 +52,8 @@
         <activity android:name=".UserFiles" />
         <activity android:name=".SavedCollections" />
         <activity android:name=".Credits" />
-        <activity
-            android:name=".Settings"
-            />
+        <activity android:name=".Settings" />
+        <activity android:name=".PlaceDetailShare"></activity>
     </application>
 
 </manifest>
