@@ -109,7 +109,7 @@
             android:scaleType="fitCenter"
             android:background="@color/transparent"
             app:srcCompat="@drawable/ticked_list"
-        />
+            />
 
     </LinearLayout>
 
