@@ -43,7 +43,7 @@ public class PlaceDetailRecyclerViewAdapter extends RecyclerView.Adapter<PlaceDe
 
 
         holder.mItem = mValues.get(holder.getAdapterPosition());
-        holder.mAuthorName.setText(mValues.get(holder.getAdapterPosition()).getAuthorFirstName() + " " +mValues.get(position).getAuthorSecondName());
+        holder.mAuthorName.setText(mValues.get(holder.getAdapterPosition()).getAuthorName());
         holder.mContentView.setText(mValues.get(holder.getAdapterPosition()).getLocation());
         holder.visited.setChecked(mValues.get(holder.getAdapterPosition()).isVisited());
         holder.quote.setText(mValues.get(holder.getAdapterPosition()).getAssociatedQuote());

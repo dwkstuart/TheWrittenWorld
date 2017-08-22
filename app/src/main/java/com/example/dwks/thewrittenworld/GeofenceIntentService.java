@@ -8,9 +8,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -32,6 +34,7 @@ import java.util.List;
  * TODO: Customize class - update intent actions, extra parameters and static
  * helper methods.
  */
+@RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
 public class GeofenceIntentService extends IntentService implements
         GoogleApiClient.ConnectionCallbacks,
         com.google.android.gms.location.LocationListener,
@@ -94,9 +97,7 @@ public class GeofenceIntentService extends IntentService implements
             List <Geofence>triggeringGeofence = geofencingEvent.getTriggeringGeofences();
             for(Geofence event : triggeringGeofence){
                String triggeredID = event.getRequestId();
-                Log.d(TAG,"ID of triggeded event" + triggeredID);
-                Log.d(TAG, "Is trigging id in places has map?" + Constants.places.containsKey(triggeredID));
-                Log.d(TAG, "size of HashMap = " + Constants.places.size());
+;
                 //ID matches DB Key
                 PlaceObject placeTriggered = Constants.places.get(triggeredID);
                 if (placeTriggered != null)
@@ -134,6 +135,7 @@ public class GeofenceIntentService extends IntentService implements
         Intent notificationIntent = new Intent(getApplicationContext(), PlaceDetailScreen.class);
         notificationIntent.putExtra("ID", ID);
         PlaceObject placeTriggered = Constants.places.get(ID);
+        notificationIntent.putExtra("Place", placeTriggered);
 
 
         // Construct a task stack.

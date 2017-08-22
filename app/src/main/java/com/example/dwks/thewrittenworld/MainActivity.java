@@ -29,6 +29,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.uxcam.UXCam;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 //Homepage
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener
@@ -48,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         super.onCreate(savedInstanceState);
         UXCam.startWithKey("c89be14f3e7ec09");
         setContentView(R.layout.activity_main);
+       // processAssest();
         Constants.notificationsOn=false;
         requestPermissions();
         firebaseAuth = FirebaseAuth.getInstance();
@@ -375,4 +382,34 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         }
     }
 
+
+    private void processAssest(){
+
+        JSONArray inputJArray = null;
+        String mLine ="";
+        try {
+            inputJArray = new JSONArray(mLine);
+        }
+        catch (JSONException e){
+            Log.d(TAG, "oops");
+        }
+        ArrayList<PlaceObject> placeObjectArrayList = new ArrayList<>();
+        for (int i = 0; i < inputJArray.length()-1; i++){
+            JSONObject initalObject = null;
+            try {
+                initalObject = inputJArray.getJSONObject(i);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            PlaceObject poi = new PlaceObject(initalObject);
+            placeObjectArrayList.add(poi);
+        }
+        Database db = new Database();
+        int i = 145;
+        for(PlaceObject object: placeObjectArrayList){
+            db.loadInfo(object,i);
+            i++;
+        }
+
+    }
 }

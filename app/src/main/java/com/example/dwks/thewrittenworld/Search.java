@@ -224,7 +224,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
                     TreeSet<String> authors = new TreeSet<>();
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                         PlaceObject object = new PlaceObject(postSnapshot);
-                        String name = object.getAuthorFirstName() + " " + object.getAuthorSecondName();
+                        String name = object.getAuthorName();
                         authors.add(name);
 
 

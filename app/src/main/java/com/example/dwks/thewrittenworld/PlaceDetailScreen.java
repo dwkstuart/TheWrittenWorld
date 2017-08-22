@@ -52,7 +52,7 @@ public class PlaceDetailScreen extends AppCompatActivity implements View.OnClick
                 TextView locationName = (TextView) findViewById(R.id.details);
                 locationName.setText(placeObject.getLocation());
                 TextView author = (TextView) findViewById(R.id.author);
-                author.setText("Written by " + placeObject.getAuthorFirstName() + " " + placeObject.getAuthorSecondName());
+                author.setText("Written by " + placeObject.getAuthorName());
                 TextView quote = (TextView) findViewById(R.id.detail_quote);
                 quote.setText(placeObject.getAssociatedQuote());
                 checkBox.setChecked(placeObject.isVisited());

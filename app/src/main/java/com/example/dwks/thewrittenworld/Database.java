@@ -255,7 +255,6 @@ public class Database {
             public void onCancelled(DatabaseError databaseError){}
         });
 
-       // query.removeEventListener(eventListener);
 
 
     }
@@ -267,7 +266,7 @@ public class Database {
         DatabaseReference childRef = mRef.child("places");
         DatabaseReference places = childRef.child(String.valueOf(arrayPos));
         places.child("author").
-                setValue(placeObject.getAuthorFirstName() + " " + placeObject.getAuthorSecondName());
+                setValue(placeObject.getAuthorName());
         places.child("db_key").setValue(places.push().getKey());
         places.child("location").setValue(placeObject.getLocation());
         places.child("latitude").setValue(placeObject.getLatitude());
