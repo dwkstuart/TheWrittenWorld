@@ -76,8 +76,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         }
         configueButtons();
         initializeGoogleMap();
-        if(Constants.getInstance().lastLocation !=null)
-        locateNearby();
+
         findLocal = (FloatingActionButton) findViewById(R.id.findLocal);
         findLocal.setOnClickListener(this);
         checkAlertButton();
@@ -228,6 +227,8 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     protected void onResume(){
         super.onResume();
         initializeGoogleMap();
+        if(Constants.getInstance().lastLocation !=null)
+            locateNearby();
         checkAlertButton();
 
     }
@@ -417,6 +418,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     private void locateNearby(){
         Log.d(TAG, "Locate nearby method called");
 
+
         if(mToast != null)
             mToast.cancel();
         mToast = Toast.makeText(getApplicationContext(),"Searching for Nearby Places", Toast.LENGTH_LONG);
@@ -442,7 +444,8 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                         nearbyLong.add(object);
                     }
                     //Log.d(TAG,"Longitude set = " + nearbyLong.toString());
-
+                    Log.d(TAG, "Nearby long set "
+                            + nearbyLong.toString());
                 }
 
                 @Override
@@ -463,10 +466,9 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                         PlaceObject object = new PlaceObject(postSnapshot);
                         nearbyLat.add(object);
-                        //Log.d(TAG, object.getBookTitle() + "latitude = " + object.getLatitude());
                     }
-                    // Log.d(TAG,"Latitude set = " + nearbyLat.toString());
-                }
+                    Log.d(TAG, "Nearby lat set "
+                            + nearbyLat.toString());                }
 
                 @Override
                 public void onFailed(DatabaseError databaseError) {

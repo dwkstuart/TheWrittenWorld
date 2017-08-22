@@ -117,7 +117,7 @@ public class GeofenceHandler extends Application implements  GoogleApiClient.Con
             if (!place.isVisited()) {
                 Geofence geofence = (new Geofence.Builder()
                         .setRequestId(place.getDb_key())
-                        .setCircularRegion(place.getLatitude(), place.getLongitude(), 800)
+                        .setCircularRegion(place.getLatitude(), place.getLongitude(), Float.parseFloat(String.valueOf(R.integer.GEOFENCE_RADIUS)))
                         .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
                         .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
                         .setLoiteringDelay(5000)

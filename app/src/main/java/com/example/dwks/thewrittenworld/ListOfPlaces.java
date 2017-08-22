@@ -28,6 +28,7 @@ public class ListOfPlaces extends AppCompatActivity implements PlaceDetailFragme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_placedetail_list);
         final TextView filename = (TextView) findViewById(R.id.list_title);
+        final TextView visitedCount = (TextView) findViewById(R.id.visit_count);
         filename.setText(collectionTitle);
         load = (FloatingActionButton) findViewById(R.id.load_list);
 
@@ -42,6 +43,13 @@ public class ListOfPlaces extends AppCompatActivity implements PlaceDetailFragme
             filename.setText(collectionTitle);
         } else load.setVisibility(View.GONE);
 
+        int visited = 0;
+        for (PlaceObject object: temp){
+            if(object.isVisited())
+                visited++;
+        }
+
+        visitedCount.setText("Number Visited on List:" + visited + "/" + temp.size());
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);

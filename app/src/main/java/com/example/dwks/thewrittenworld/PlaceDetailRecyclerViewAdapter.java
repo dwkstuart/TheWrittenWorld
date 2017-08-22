@@ -47,6 +47,7 @@ public class PlaceDetailRecyclerViewAdapter extends RecyclerView.Adapter<PlaceDe
         holder.mContentView.setText(mValues.get(holder.getAdapterPosition()).getLocation());
         holder.visited.setChecked(mValues.get(holder.getAdapterPosition()).isVisited());
         holder.quote.setText(mValues.get(holder.getAdapterPosition()).getAssociatedQuote());
+        holder.title.setText(mValues.get(holder.getAdapterPosition()).getBookTitle());
 
 
         //set respond to check box
@@ -87,6 +88,7 @@ public class PlaceDetailRecyclerViewAdapter extends RecyclerView.Adapter<PlaceDe
         public CheckBox visited;
         public PlaceObject mItem;
         public final TextView quote;
+        public final TextView title;
 
         public ViewHolder(View view) {
             super(view);
@@ -95,6 +97,7 @@ public class PlaceDetailRecyclerViewAdapter extends RecyclerView.Adapter<PlaceDe
             mContentView = view.findViewById(R.id.content);
             visited = view.findViewById(R.id.visitedCheckList);
             quote = view.findViewById(R.id.list_quote);
+            title = view.findViewById(R.id.booktitle);
         }
 
         @Override

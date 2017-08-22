@@ -118,24 +118,6 @@ public class PlaceDetailShare extends AppCompatActivity implements View.OnClickL
 
     private void getImageURL() {
 
-//        final long ONE_MEGABYTE = 1024 * 1024;
-//        imageinstance.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-//            @Override
-//            public void onSuccess(byte[] bytes) {
-//
-//                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-//                imageView.setImageBitmap(bitmap);
-//                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//
-//
-//
-//            }
-//        });
-//        if (!imageinstance.getBytes(ONE_MEGABYTE).isSuccessful()){
-//            displayDefaultImage();
-//        }
-
-
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             imageinstance.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
@@ -174,7 +156,7 @@ public class PlaceDetailShare extends AppCompatActivity implements View.OnClickL
 
             case R.id.take_photo:
                 dispatchTakePictureIntent();
-
+                photoUpload.setEnabled(false);//so taking photo until current is uploaded
                 break;
             case R.id.amazon:
 
@@ -227,11 +209,13 @@ public class PlaceDetailShare extends AppCompatActivity implements View.OnClickL
         upload.addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                photoUpload.setEnabled(true);
+                 
                 //https://stackoverflow.com/questions/41105586/android-firebase-tasksnapshot-method-should-only-be-accessed-within-privat//
-                @SuppressWarnings("VisibleForTests") Uri url = taskSnapshot.getDownloadUrl();
-                String pathURL = url.getPath();
-                imageURL = url.getEncodedPath();
-                Log.d("Share", "Upload" + imageURL + "pathurl = " + pathURL);
+//                @SuppressWarnings("VisibleForTests") Uri url = taskSnapshot.getDownloadUrl();
+//                String pathURL = url.getPath();
+//                imageURL = url.getEncodedPath();
+//                Log.d("Share", "Upload" + imageURL + "pathurl = " + pathURL);
             }
         });
     }

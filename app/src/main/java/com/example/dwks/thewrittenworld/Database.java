@@ -131,8 +131,8 @@ public class Database {
         Constants constants = Constants.getInstance();
         Double userLong = constants.lastLocation.getLongitude();
 
-        Double maxLong = userLong + 1;
-        Double minLong = userLong - 1;
+        Double maxLong = userLong + 0.03;
+        Double minLong = userLong - 0.03;
 
         listener.onStart();
 
@@ -159,8 +159,9 @@ public class Database {
         Constants constants = Constants.getInstance();
         Double userLat = constants.lastLocation.getLatitude();
 
-        Double maxLat = userLat + 1;
-        Double minLat = userLat - 1;
+
+        Double maxLat = userLat + 0.01;
+        Double minLat = userLat - 0.01;
 
         //FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("places/");
@@ -265,15 +266,15 @@ public class Database {
         DatabaseReference mRef = database.getReference();
         DatabaseReference childRef = mRef.child("places");
         DatabaseReference places = childRef.child(String.valueOf(arrayPos));
-        places.child("author").
-                setValue(placeObject.getAuthorName());
+        places.child("author").setValue(placeObject.getAuthorName());
         places.child("db_key").setValue(places.push().getKey());
         places.child("location").setValue(placeObject.getLocation());
         places.child("latitude").setValue(placeObject.getLatitude());
         places.child("longitude").setValue(placeObject.getLongitude());
 //                places.child("snippet").setValue(placeObject.getSnippet());
-//                places.child("longDescription").setValue(placeObject.getLongDescription());
+        places.child("description").setValue(placeObject.getLongDescription());
         places.child("title").setValue(placeObject.getBookTitle());
+        places.child("quote").setValue(placeObject.getAssociatedQuote());
 
     }
 

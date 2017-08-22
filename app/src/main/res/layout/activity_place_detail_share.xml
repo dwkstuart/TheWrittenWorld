@@ -65,7 +65,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="8dp"
-        app:layout_constraintTop_toTopOf="@+id/imageButton2"
+
         android:layout_marginTop="8dp" />
 
     <TextView
@@ -85,7 +85,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginRight="16dp"
         android:layout_marginTop="8dp"
         android:background="@color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -102,7 +102,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="0dp"
-        android:text="Why not take a selfie!"
+        android:text="Why not take a selfie here?"
         android:textColor="@color/primaryLightColor"
         android:textSize="18sp"
         android:textStyle="bold|italic"
@@ -114,20 +114,20 @@
 
     <ImageButton
         android:id="@+id/amazon"
-        android:layout_width="111dp"
-        android:layout_height="68dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="114dp"
+        android:layout_height="52dp"
         android:background="@color/transparent"
         android:scaleType="fitStart"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:srcCompat="@drawable/amazon_white"
+        app:layout_constraintTop_toTopOf="@+id/main_detail"
+        android:layout_marginTop="0dp"
         app:layout_constraintLeft_toRightOf="@+id/main_detail"
+        android:layout_marginLeft="8dp"
         app:layout_constraintRight_toLeftOf="@+id/goodreads_search"
-        app:layout_constraintTop_toBottomOf="@+id/detailImage"
-        app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/amazon_white" />
+        android:layout_marginRight="8dp"
+        app:layout_constraintHorizontal_bias="0.991"
+        app:layout_constraintBottom_toBottomOf="@+id/goodreads_search"
+        android:layout_marginBottom="0dp"
+        app:layout_constraintVertical_bias="0.0" />
 
 </android.support.constraint.ConstraintLayout>

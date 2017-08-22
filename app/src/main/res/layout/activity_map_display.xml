@@ -19,7 +19,7 @@
         android:layout_height="82dp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="38dp"
+        android:layout_marginTop="350dp"
         android:clickable="true"
         android:hapticFeedbackEnabled="true"
         android:tooltipText="Turn on Notifications"
@@ -28,7 +28,7 @@
         app:fabSize="mini"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/gps_map"
+        app:srcCompat="@drawable/binoculars"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintTop_creator="1" />
 

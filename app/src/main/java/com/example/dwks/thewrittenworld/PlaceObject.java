@@ -45,6 +45,9 @@ public class PlaceObject implements Parcelable, Comparable<PlaceObject>, Cluster
         longitude = Double.parseDouble(dataSnapshot.child("longitude").getValue().toString());
         authorName = dataSnapshot.child("author").getValue().toString();
         db_key = dataSnapshot.child("db_key").getValue().toString();
+       if(dataSnapshot.child("description").exists()){
+           longDescription = dataSnapshot.child("description").getValue().toString();
+       }
         latLng = new LatLng(latitude, longitude);
         location = dataSnapshot.child("location").getValue().toString();
         if (dataSnapshot.child("quote").exists()) {
@@ -86,6 +89,8 @@ public class PlaceObject implements Parcelable, Comparable<PlaceObject>, Cluster
             authorName = jsonObject.getString("author");
             latLng = new LatLng(latitude, longitude);
             db_key = jsonObject.getString("db_key");
+            associatedQuote = jsonObject.getString("quote");
+            longDescription = jsonObject.getString("description");
 
         } catch (JSONException e) {
             e.printStackTrace();

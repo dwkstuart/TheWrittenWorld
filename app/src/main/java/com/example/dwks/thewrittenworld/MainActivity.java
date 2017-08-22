@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         super.onCreate(savedInstanceState);
         UXCam.startWithKey("c89be14f3e7ec09");
         setContentView(R.layout.activity_main);
-       // processAssest();
+        //TODO remove on final  processAssest();
         Constants.notificationsOn=false;
         requestPermissions();
         firebaseAuth = FirebaseAuth.getInstance();
@@ -385,6 +385,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     private void processAssest(){
 
+
         JSONArray inputJArray = null;
         String mLine ="";
         try {
@@ -394,7 +395,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             Log.d(TAG, "oops");
         }
         ArrayList<PlaceObject> placeObjectArrayList = new ArrayList<>();
-        for (int i = 0; i < inputJArray.length()-1; i++){
+        for (int i = 0; i < inputJArray.length(); i++){
             JSONObject initalObject = null;
             try {
                 initalObject = inputJArray.getJSONObject(i);
@@ -405,7 +406,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             placeObjectArrayList.add(poi);
         }
         Database db = new Database();
-        int i = 145;
+        int i = 190;
         for(PlaceObject object: placeObjectArrayList){
             db.loadInfo(object,i);
             i++;
