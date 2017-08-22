@@ -10,6 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -34,17 +35,23 @@ dependencies {
     compile 'com.android.support:design:26.0.0-alpha1'
     compile 'com.android.support:recyclerview-v7:26.0.0-alpha1'
     compile 'com.google.firebase:firebase-database:10.0.1'
+    compile 'com.google.firebase:firebase-storage:10.0.1'
+    compile 'com.firebaseui:firebase-ui-storage:0.6.0'
+
+
     compile 'com.google.code.gson:gson:2.6.2'
     compile 'com.github.bumptech.glide:glide:4.0.0'
     compile 'com.android.support:support-v4:26.+'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.0.0'
     compile 'com.google.maps.android:android-maps-utils:0.5'
+    compile 'com.android.support:preference-v7:26.+'
+
 }
 
 
 repositories {
-    maven{
+    maven {
         url 'http://sdk.uxcam.com/android/'
     }
 }
@@ -56,4 +63,11 @@ dependencies {
 
 
 
+dependencies {
+    compile 'com.android.support:support-v4:26.+'
+    compile 'com.android.support:support-vector-drawable:26.+'
+}
+dependencies {
+    compile 'com.android.support.constraint:constraint-layout:+'
+}
 apply plugin: 'com.google.gms.google-services'

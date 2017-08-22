@@ -11,7 +11,7 @@
 
         <TextView
             android:id="@+id/list_title"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
@@ -57,17 +57,36 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/load_list"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:clickable="true"
+        android:hapticFeedbackEnabled="true"
+        app:backgroundTint="@color/transparent"
+        app:elevation="4dp"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:srcCompat="@drawable/gps_map"
+        tools:layout_constraintBottom_creator="1"
+        tools:layout_constraintRight_creator="1" />
+
+    <TextView
+        android:id="@+id/visit_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        app:fabSize="mini"
-        app:srcCompat="@drawable/circle_map"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="16dp"
-        android:layout_marginRight="16dp" />
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="12dp"
+        android:text="Number Visited 00/00"
+        app:layout_constraintBottom_toTopOf="@+id/load_list"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toLeftOf="@+id/list_title"
+        app:layout_constraintRight_toRightOf="@+id/list_title"
+        app:layout_constraintTop_toBottomOf="@+id/list_title"
+        app:layout_constraintVertical_bias="0.0" />
 
 </android.support.constraint.ConstraintLayout>

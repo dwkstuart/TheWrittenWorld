@@ -1,0 +1,46 @@
+[
+  {
+    "db_key": 1,
+    "title": "The Cutting Room",
+    "author": "Louise Welsh",
+    "location": "University Avenue",
+    "latitude": 55.87292,
+    "longitude": -4.29239,
+    "quote": "I pulled up the collar of my raincoat and waled on. Climbing the rise of University Avenue, towards the illuminated towers of the university, their haze clouding any view of the stars.",
+    "describtion": "Rilke, the protagonist of Welsh's crime thriller walks through the West End in the early hours of the morning after a night's drinking. - The novel, set in Glasgow, revolves around the central character, Rilke, an auctioneer who has agreed to quickly process and sell an inventory of largely valuable contents belonging to a recently deceased old man in exchange for a considerable fee.",
+    "isbn": "978-1841954042"
+  },
+  {
+    "db_key": 2,
+    "title": "Garnethill",
+    "author": "Denise Mina",
+    "location": "Glasgow University Library",
+    "latitude": 55.8733,
+    "longitude": -4.2884,
+    "quote": "The walls are floor-to-ceiling smoke-tinted glass, giving the sprawled city below and unreal quality.",
+    "describtion": "Mauren vists the library to consult the university newspaper collection, looking for answers.",
+    "isbn": ""
+  },
+  {
+    "db_key": 3,
+    "title": "Still Dark",
+    "author": "Alex Gray",
+    "location": "University Gardens",
+    "latitude": 55.87277,
+    "longitude": -4.29012,
+    "quote": "A quick glance upwards showed the stained-glass windows of his office that looked out over the crest of the hill and the old university buildings, the place that Solly now whimsically regarded as his second home",
+    "describtion": "Professor Brightman arrives at University for a normal day's worked before a telephone call from Detective Lorimer draws him into the case.",
+    "isbn": ""
+  },
+  {
+    "db_key": 4,
+    "title": "Exodus",
+    "author": "Julie Bertagna",
+    "location": "University Tower",
+    "latitude": 55.87218,
+    "longitude": -4.28919,
+    "quote": "Gorbals looks over to the the university steeple with the same fearful, yet eager expression Mara saw in his face when he took the book from her.",
+    "describtion": "It is 2099 - and the world is gradually drowning, as mighty Arctic ice floes melt, the seas rise and land disappears forever beneath storm-tossed waves. For fifteen-year-old Mara, her family and community, huddled on the fast-disappearing island of Wing, the new century brings flight. Packed into tiny boats, a terrifying journey begins to a bizarre city that rises into the sky, built on the drowned remains of the ancient city of Glasgow.",
+    "isbn": ""
+  }
+]

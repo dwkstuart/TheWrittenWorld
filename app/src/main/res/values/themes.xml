@@ -5,5 +5,7 @@
     <style name="AppTheme.Base" parent="Theme.AppCompat">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
-        </style>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+
+    </style>
 </resources>

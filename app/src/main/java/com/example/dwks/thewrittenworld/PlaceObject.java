@@ -19,7 +19,7 @@ public class PlaceObject implements Parcelable, Comparable<PlaceObject>, Cluster
 
     private static final String TAG = PlaceObject.class.getSimpleName();
     //Instance vaiables
-    private String location, authorFirstName, authorSecondName, imageURI;
+    private String location, authorName, imageURI;
     private String longDescription = "description";
     private String associatedQuote = "test quote";
     private String bookTitle = "default";
@@ -43,11 +43,11 @@ public class PlaceObject implements Parcelable, Comparable<PlaceObject>, Cluster
         bookTitle = dataSnapshot.child("title").getValue().toString();
         latitude = Double.parseDouble(dataSnapshot.child("latitude").getValue().toString());
         longitude = Double.parseDouble(dataSnapshot.child("longitude").getValue().toString());
-        String authorname = dataSnapshot.child("author").getValue().toString();
-        String[] names = authorname.split(" ");
-        authorFirstName = names[0];
-        authorSecondName = names[1];
+        authorName = dataSnapshot.child("author").getValue().toString();
         db_key = dataSnapshot.child("db_key").getValue().toString();
+       if(dataSnapshot.child("description").exists()){
+           longDescription = dataSnapshot.child("description").getValue().toString();
+       }
         latLng = new LatLng(latitude, longitude);
         location = dataSnapshot.child("location").getValue().toString();
         if (dataSnapshot.child("quote").exists()) {
@@ -59,8 +59,7 @@ public class PlaceObject implements Parcelable, Comparable<PlaceObject>, Cluster
     public PlaceObject(Parcel parcel) {
         db_key = parcel.readString();
         bookTitle = parcel.readString();
-        authorFirstName = parcel.readString();
-        authorSecondName = parcel.readString();
+        authorName = parcel.readString();
         location = parcel.readString();
         longDescription = parcel.readString();
         associatedQuote = parcel.readString();
@@ -87,12 +86,11 @@ public class PlaceObject implements Parcelable, Comparable<PlaceObject>, Cluster
             latitude = jsonObject.getDouble("latitude");
             longitude = jsonObject.getDouble("longitude");
             location = jsonObject.getString("location");
-            String authorname = jsonObject.getString("author");
-            String[] names = authorname.split(" ");
-            authorFirstName = names[0];
-            authorSecondName = names[1];
+            authorName = jsonObject.getString("author");
             latLng = new LatLng(latitude, longitude);
             db_key = jsonObject.getString("db_key");
+            associatedQuote = jsonObject.getString("quote");
+            longDescription = jsonObject.getString("description");
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -109,13 +107,10 @@ public class PlaceObject implements Parcelable, Comparable<PlaceObject>, Cluster
     }
 
 
-    public String getAuthorFirstName() {
-        return authorFirstName;
+    public String getAuthorName() {
+        return authorName;
     }
 
-    public String getAuthorSecondName() {
-        return authorSecondName;
-    }
 
     public String getLongDescription() {
         return longDescription;
@@ -186,8 +181,7 @@ public class PlaceObject implements Parcelable, Comparable<PlaceObject>, Cluster
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(db_key);
         parcel.writeString(bookTitle);
-        parcel.writeString(authorFirstName);
-        parcel.writeString(authorSecondName);
+        parcel.writeString(authorName);
         parcel.writeString(location);
         parcel.writeString(longDescription);
         parcel.writeString(associatedQuote);

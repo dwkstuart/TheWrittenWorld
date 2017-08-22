@@ -76,28 +76,13 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         }
         configueButtons();
         initializeGoogleMap();
-        if(Constants.getInstance().lastLocation !=null)
-        locateNearby();
+
         findLocal = (FloatingActionButton) findViewById(R.id.findLocal);
         findLocal.setOnClickListener(this);
-        this.checkAlertButton();
         checkAlertButton();
-//        switchAlertButton();
 
     }
 
-    private void switchAlertButton(){
-        Log.d(TAG, "Switch Alert , notify on?" + Constants.notificationsOn );
-        if(Constants.notificationsOn == false){
-            Log.d(TAG, "Notifications off set icon to on bell");
-
-        }
-         if (Constants.notificationsOn){
-
-
-        }
-
-    }
     private void setStyle() {
         try {
             // Customise the styling of the base map using a JSON object defined
@@ -242,15 +227,17 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     protected void onResume(){
         super.onResume();
         initializeGoogleMap();
-       // switchAlertButton();
+        if(Constants.getInstance().lastLocation !=null)
+            locateNearby();
+        checkAlertButton();
 
-
-}
+    }
 
 
     private void initializeGoogleMap() {
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_display);
         mapFragment.getMapAsync(this);
+
     }
 
 
@@ -322,7 +309,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         switch (view.getId()) {
             case (R.id.set_alerts):
                 {
-                CreateGeofence geofence = new CreateGeofence(this, "ADD", null);
+                GeofenceHandler geofence = new GeofenceHandler(this, "ADD", null);
                 geofence.startGeofence();
                 if (mToast != null)
                     mToast.cancel();
@@ -336,7 +323,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
             case (R.id.stop_alerts):
             {
-                CreateGeofence geofence = new CreateGeofence(this, "", null);
+                GeofenceHandler geofence = new GeofenceHandler(this, "", null);
                 geofence.removeAllGeofence();
                 if (mToast != null)
                     mToast.cancel();
@@ -392,7 +379,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                 break;
 
             case (R.id.search_locations):
-                Intent search = new Intent(this, ChooseAndLoad.class);
+                Intent search = new Intent(this, Search.class);
                 startActivity(search);
                 break;
         }
@@ -431,6 +418,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     private void locateNearby(){
         Log.d(TAG, "Locate nearby method called");
 
+
         if(mToast != null)
             mToast.cancel();
         mToast = Toast.makeText(getApplicationContext(),"Searching for Nearby Places", Toast.LENGTH_LONG);
@@ -456,7 +444,8 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                         nearbyLong.add(object);
                     }
                     //Log.d(TAG,"Longitude set = " + nearbyLong.toString());
-
+                    Log.d(TAG, "Nearby long set "
+                            + nearbyLong.toString());
                 }
 
                 @Override
@@ -477,10 +466,9 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                         PlaceObject object = new PlaceObject(postSnapshot);
                         nearbyLat.add(object);
-                        //Log.d(TAG, object.getBookTitle() + "latitude = " + object.getLatitude());
                     }
-                    // Log.d(TAG,"Latitude set = " + nearbyLat.toString());
-                }
+                    Log.d(TAG, "Nearby lat set "
+                            + nearbyLat.toString());                }
 
                 @Override
                 public void onFailed(DatabaseError databaseError) {

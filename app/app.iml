@@ -103,6 +103,7 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 26 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="palette-v7-23.4.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="runner-0.5" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="espresso-idling-resource-2.2.2" level="project" />
     <orderEntry type="library" exported="" name="support-fragment-26.0.0-alpha1" level="project" />
@@ -120,9 +121,11 @@
     <orderEntry type="library" exported="" name="firebase-common-10.0.1" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-26.0.0-alpha1" level="project" />
     <orderEntry type="library" exported="" name="play-services-basement-10.0.1" level="project" />
+    <orderEntry type="library" exported="" name="preference-v7-26.0.0-alpha1" level="project" />
     <orderEntry type="library" exported="" name="firebase-database-10.0.1" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="javawriter-2.1.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-26.0.0-alpha1" level="project" />
+    <orderEntry type="library" exported="" name="firebase-ui-storage-0.6.0" level="project" />
     <orderEntry type="library" exported="" name="disklrucache-4.0.0" level="project" />
     <orderEntry type="library" exported="" name="firebase-analytics-10.0.1" level="project" />
     <orderEntry type="library" exported="" name="support-core-ui-26.0.0-alpha1" level="project" />
@@ -138,10 +141,12 @@
     <orderEntry type="library" exported="" name="uxcam-2.5.10" level="project" />
     <orderEntry type="library" exported="" name="firebase-database-connection-10.0.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-auth-10.0.1" level="project" />
+    <orderEntry type="library" exported="" name="firebase-storage-common-10.0.1" level="project" />
     <orderEntry type="library" exported="" name="design-26.0.0-alpha1" level="project" />
     <orderEntry type="library" exported="" name="gifdecoder-4.0.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="jsr305-2.0.1" level="project" />
     <orderEntry type="library" exported="" name="firebase-iid-10.0.1" level="project" />
+    <orderEntry type="library" exported="" name="firebase-storage-10.0.1" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="espresso-core-2.2.2" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="rules-0.5" level="project" />
     <orderEntry type="library" exported="" name="constraint-layout-solver-1.0.2" level="project" />

@@ -2,6 +2,7 @@ package com.example.dwks.thewrittenworld;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -61,10 +62,13 @@ public class ToolBarMenuHandler {
 
 
     public boolean onOptionsItemSelected(MenuItem item){
-        final Intent alerts = new Intent(activity, ChooseAndLoad.class);
+        final Intent alerts = new Intent(activity, Search.class);
         final Intent currentList = new Intent(activity, ListOfPlaces.class);
         final Intent returnToMap = new Intent (activity, MapDisplay.class);
         final Intent saveList = new Intent(activity, UserFiles.class);
+        final Intent settings = new Intent(activity,Settings.class);
+
+
 
 
 
@@ -83,7 +87,7 @@ public class ToolBarMenuHandler {
                 activity.startActivity(alerts);
                 break;
             case R.id.clear_places:
-                new CreateGeofence(activity,"",null)
+                new GeofenceHandler(activity,"",null)
                         .removeAllGeofence();
                 Constants.geofenceArrayList.clear();
                 Constants.placeObjectGeofenceHashMap.clear();
@@ -97,19 +101,26 @@ public class ToolBarMenuHandler {
 //                    }
                 break;
             case R.id.turn_off_notifications:
-                new CreateGeofence(activity,"",null)
+                new GeofenceHandler(activity,"",null)
                         .removeAllGeofence();
                 activity.recreate();
               //      Constants.notificationsOn = false;
                 break;
             case R.id.turn_on_notifications:
-                CreateGeofence geofenceaction = new CreateGeofence(activity,"ADD",null);
+                GeofenceHandler geofenceaction = new GeofenceHandler(activity,"ADD",null);
                 geofenceaction.startGeofence();
                 activity.recreate();
                // Constants.notificationsOn = true;
                 break;
             case R.id.save_menu_item:
                 activity.startActivity(saveList);
+                break;
+
+            case R.id.settings_menu_item:
+                Log.d("toolbar", "Settings clicked");
+
+                Log.d("Menu", String.valueOf(settings));
+                activity.startActivity(settings);
                 break;
         }
 

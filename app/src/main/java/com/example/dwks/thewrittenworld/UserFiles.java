@@ -7,9 +7,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ImageButton;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -21,7 +20,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static com.example.dwks.thewrittenworld.Constants.*;
+import static com.example.dwks.thewrittenworld.Constants.getInstance;
+import static com.example.dwks.thewrittenworld.Constants.placeObjects;
+import static com.example.dwks.thewrittenworld.Constants.places;
 
 public class UserFiles extends AppCompatActivity implements View.OnClickListener{
 
@@ -38,13 +39,12 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
     }
 
     private void setFields(){
-        Button save = (Button) findViewById(R.id.saveButton);
-        TextView userFiles = (TextView) findViewById(R.id.usersFiles);
+        ImageButton save = (ImageButton) findViewById(R.id.saveButton);
         fileName = (EditText) findViewById(R.id.enterFileName);
-        Button displayFiles = (Button) findViewById(R.id.displayFileList);
-        Button test = (Button) findViewById(R.id.listTest);
+        ImageButton displayFiles = (ImageButton) findViewById(R.id.displayFileList);
+        ImageButton filelistdisplay = (ImageButton) findViewById(R.id.listTest);
 
-        test.setOnClickListener(this);
+        filelistdisplay.setOnClickListener(this);
         save.setOnClickListener(this);
         displayFiles.setOnClickListener(this);
 
@@ -70,7 +70,7 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
             case (R.id.saveButton):
 
                 dbInstance.uploadSaveSelection(fileName.getText().toString(), this.gsonParsingSave());
-                //testWrite();
+                fileName.setText("");
                 break;
             case (R.id.displayFileList):
                 populateListsField();

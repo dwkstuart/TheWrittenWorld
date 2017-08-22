@@ -8,5 +8,9 @@
     <string name="shared_pref_file">sharedpref</string>
     <string name="placesHashMap">placesHashMap</string>
     <string name="placesTreeSet">placesTreeSet</string>
+    <string name="number_visited">NUM_VISITED</string>
+    <string name="title_activity_settings">Settings</string>
+    <integer name="GEOFENCE_RADIUS">50</integer>
+
 
 </resources>

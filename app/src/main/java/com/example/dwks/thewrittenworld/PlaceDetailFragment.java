@@ -72,7 +72,7 @@ public class PlaceDetailFragment extends Fragment {
 //
 
             //placeObjectList.addAll(Constants.placeObjects);
-            recyclerView.setAdapter(new MyPlaceDetailRecyclerViewAdapter(placeObjectList, mListener));
+            recyclerView.setAdapter(new PlaceDetailRecyclerViewAdapter(placeObjectList, mListener));
         }
         return view;
     }

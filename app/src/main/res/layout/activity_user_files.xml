@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,22 +7,28 @@
     android:orientation="vertical"
     android:layout_weight="2"
     tools:context="com.example.dwks.thewrittenworld.UserFiles"
-    android:weightSum="1">
+    android:weightSum="1"
+    tools:layout_editor_absoluteY="81dp"
+    tools:layout_editor_absoluteX="0dp">
 
     <TextView
         android:id="@+id/user_files_info"
         android:layout_width="240dp"
-        android:layout_height="46dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_height="0dp"
         android:text="Save and Load Your Selections"
-        app:layout_constraintHorizontal_bias="0.411"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:typeface="sans"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toTopOf="@+id/saveButton"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="16dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp" />
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="3dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/enterFileName"
@@ -31,34 +37,90 @@
         android:ems="10"
         android:inputType="text"
         android:hint="Enter Name For Selection"
-        tools:layout_editor_absoluteX="61dp"
-        tools:layout_editor_absoluteY="108dp" />
+        android:layout_marginStart="16dp"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toBottomOf="@+id/saveButton"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="16dp" />
 
-    <Button
+
+    <ImageButton
         android:id="@+id/saveButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save" />
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@color/transparent"
+        app:srcCompat="@drawable/cloud_upload"
+        tools:layout_constraintTop_creator="1"
+        tools:layout_constraintRight_creator="1"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="62dp"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginRight="20dp" />
 
-    <Button
-        android:id="@+id/listTest"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="onClick"
-        android:text="Show Current Locations" />
-
-    <Button
+    <ImageButton
         android:id="@+id/displayFileList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Show Saved Tours" />
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:layout_marginEnd="18dp"
+        android:background="@color/transparent"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/books"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toTopOf="@+id/listTest"
+        android:layout_marginStart="18dp"
+        app:layout_constraintRight_toRightOf="@+id/saveButton"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="35dp"
+        app:layout_constraintLeft_toLeftOf="@+id/saveButton"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp" />
 
     <TextView
-        android:id="@+id/usersFiles"
-        android:layout_width="match_parent"
+        android:id="@+id/showFiles"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0.45"
-        android:text="Files" />
+        android:text="Open Previous Selections"
+        android:textSize="18sp"
+        android:layout_marginStart="16dp"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toBottomOf="@+id/displayFileList"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="14dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="16dp" />
+
+    <ImageButton
+        android:id="@+id/listTest"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:background="@color/transparent"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/ticked_list"
+        tools:layout_constraintRight_creator="1"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="@+id/displayFileList"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="160dp"
+        app:layout_constraintLeft_toLeftOf="@+id/displayFileList" />
+
+    <TextView
+        android:id="@+id/currList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="View Current Tour"
+        android:textSize="18sp"
+        android:layout_marginStart="16dp"
+        tools:layout_constraintBottom_creator="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_constraintLeft_creator="1"
+        android:layout_marginBottom="178dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="16dp" />
 
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

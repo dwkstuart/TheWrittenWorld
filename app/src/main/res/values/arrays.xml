@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="list_preference_map_types">
+        <item>retro</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    <string-array name="test">1</string-array>
+
+    <string-array name="prefs_volume_names">
+        <item>HDMI Out</item>
+        <item>Media Stream</item>
+    </string-array>
+
+
+    <!-- Do not translate below this line -->
+    <string-array name="pref_map_values">
+        <item>retro_style_overlay</item>
+        <item>original</item>
+        <item>dark</item>
+    </string-array>
+
+</resources>
