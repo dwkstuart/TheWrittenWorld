@@ -50,26 +50,26 @@ public class PlaceDetailRecyclerViewAdapter extends RecyclerView.Adapter<PlaceDe
         holder.title.setText(mValues.get(holder.getAdapterPosition()).getBookTitle());
 
 
-        //set respond to check box
-        holder.visited.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            if (holder.visited.isChecked()){
-                                                mValues.get(holder.getAdapterPosition()).setVisited(true);
-                                            }
-                                            else if(!holder.visited.isChecked())
-                                                mValues.get(holder.getAdapterPosition()).setVisited(false);
-
-                                        }
-
-                                    });
+//        //set respond to check box
+//        holder.visited.setOnClickListener(new View.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(View view) {
+//                                            if (holder.visited.isChecked()){
+//                                                mValues.get(holder.getAdapterPosition()).setVisited(true);
+//                                            }
+//                                            else if(!holder.visited.isChecked())
+//                                                mValues.get(holder.getAdapterPosition()).setVisited(false);
+//
+//                                        }
+//
+//                                    });
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
                     mListener.onListFragmentInteraction(holder.mItem);
-                    PlaceObject object = holder.mItem;
+                    //PlaceObject object = holder.mItem;
 
                 }
             }
@@ -96,6 +96,7 @@ public class PlaceDetailRecyclerViewAdapter extends RecyclerView.Adapter<PlaceDe
             mAuthorName = view.findViewById(R.id.name);
             mContentView = view.findViewById(R.id.content);
             visited = view.findViewById(R.id.visitedCheckList);
+            visited.setEnabled(false);
             quote = view.findViewById(R.id.list_quote);
             title = view.findViewById(R.id.booktitle);
         }

@@ -42,9 +42,9 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
         ImageButton save = (ImageButton) findViewById(R.id.saveButton);
         fileName = (EditText) findViewById(R.id.enterFileName);
         ImageButton displayFiles = (ImageButton) findViewById(R.id.displayFileList);
-        ImageButton test = (ImageButton) findViewById(R.id.listTest);
+        ImageButton filelistdisplay = (ImageButton) findViewById(R.id.listTest);
 
-        test.setOnClickListener(this);
+        filelistdisplay.setOnClickListener(this);
         save.setOnClickListener(this);
         displayFiles.setOnClickListener(this);
 
@@ -70,7 +70,7 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
             case (R.id.saveButton):
 
                 dbInstance.uploadSaveSelection(fileName.getText().toString(), this.gsonParsingSave());
-                //testWrite();
+                fileName.setText("");
                 break;
             case (R.id.displayFileList):
                 populateListsField();

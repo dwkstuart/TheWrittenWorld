@@ -210,7 +210,7 @@ public class PlaceDetailShare extends AppCompatActivity implements View.OnClickL
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 photoUpload.setEnabled(true);
-                 
+
                 //https://stackoverflow.com/questions/41105586/android-firebase-tasksnapshot-method-should-only-be-accessed-within-privat//
 //                @SuppressWarnings("VisibleForTests") Uri url = taskSnapshot.getDownloadUrl();
 //                String pathURL = url.getPath();
