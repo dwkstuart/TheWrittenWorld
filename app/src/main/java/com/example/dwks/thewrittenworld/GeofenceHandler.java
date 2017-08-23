@@ -110,6 +110,7 @@ public class GeofenceHandler extends Application implements  GoogleApiClient.Con
      */
     private void populateGeofenceList() {
 
+        Log.d(TAG, "Size of fence is " + Float.parseFloat(String.valueOf(R.integer.GEOFENCE_RADIUS)));
 
 
         for (PlaceObject place : Constants.placeObjects) {
@@ -117,7 +118,7 @@ public class GeofenceHandler extends Application implements  GoogleApiClient.Con
             if (!place.isVisited()) {
                 Geofence geofence = (new Geofence.Builder()
                         .setRequestId(place.getDb_key())
-                        .setCircularRegion(place.getLatitude(), place.getLongitude(), Float.parseFloat(String.valueOf(R.integer.GEOFENCE_RADIUS)))
+                        .setCircularRegion(place.getLatitude(), place.getLongitude(), 50)
                         .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
                         .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
                         .setLoiteringDelay(5000)

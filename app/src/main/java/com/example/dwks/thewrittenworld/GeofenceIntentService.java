@@ -100,14 +100,8 @@ public class GeofenceIntentService extends IntentService implements
 ;
                 //ID matches DB Key
                 PlaceObject placeTriggered = Constants.places.get(triggeredID);
-                if (placeTriggered != null)
-                Log.d(TAG, "Place Object = " + placeTriggered.toString());
                 if (placeTriggered != null){
-                Log.d(TAG, "place trigger is not null" + placeTriggered.getBookTitle());
-                    //remove triggered fence
-//                    List<String> remove = new ArrayList<>();
-//                    remove.add(triggeredID);
-//                    Log.d(TAG, "geofence to remove = " + remove.toString());
+
                     GeofenceHandler geohandler = new GeofenceHandler(this.getApplicationContext(),REMOVE, triggeredID);
                     //geohandler.removeGeofence(triggeredID);
                     Log.d(TAG, Constants.geofenceArrayList.toString());
@@ -117,7 +111,6 @@ public class GeofenceIntentService extends IntentService implements
 
 
                 }
-                Log.d("Intent Service", "Triggered");
 
             }
 
@@ -137,7 +130,7 @@ public class GeofenceIntentService extends IntentService implements
         PlaceObject placeTriggered = Constants.places.get(ID);
         notificationIntent.putExtra("Place", placeTriggered);
 
-
+        Log.d(TAG,"Geofence triggered at " + placeTriggered.getLocation());
         // Construct a task stack.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 

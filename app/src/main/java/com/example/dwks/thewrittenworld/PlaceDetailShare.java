@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -23,8 +25,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.uxcam.UXCam;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class PlaceDetailShare extends AppCompatActivity implements View.OnClickListener {
 
@@ -63,6 +70,11 @@ public class PlaceDetailShare extends AppCompatActivity implements View.OnClickL
         imageView = (ImageView) findViewById(R.id.detailImage);
        getImageURL();
 
+        if (FirebaseAuth.getInstance().getCurrentUser() == null){
+            photoUpload.setEnabled(false);
+            Toast.makeText(this, "Only signed in users can upload images, sorry..", Toast.LENGTH_SHORT).show();
+        }
+
 
     }
 
@@ -79,7 +91,10 @@ public class PlaceDetailShare extends AppCompatActivity implements View.OnClickL
             imageURL = googleStreetViewImage;
 
         }
+
         Glide.with(getApplicationContext()).load(imageURL).into(imageView);
+        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
 
 
     }
@@ -156,6 +171,9 @@ public class PlaceDetailShare extends AppCompatActivity implements View.OnClickL
 
             case R.id.take_photo:
                 dispatchTakePictureIntent();
+                //galleryAddPic();
+                //uploadP();
+
                 photoUpload.setEnabled(false);//so taking photo until current is uploaded
                 break;
             case R.id.amazon:
@@ -173,9 +191,11 @@ public class PlaceDetailShare extends AppCompatActivity implements View.OnClickL
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private void dispatchTakePictureIntent() {
+        UXCam.allowShortBreakForAnotherApp();
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+
         }
     }
 
@@ -196,7 +216,7 @@ public class PlaceDetailShare extends AppCompatActivity implements View.OnClickL
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100,baos);
         imageView.setImageBitmap(bitmap);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         byte[] data = baos.toByteArray();
 
 
@@ -211,14 +231,88 @@ public class PlaceDetailShare extends AppCompatActivity implements View.OnClickL
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 photoUpload.setEnabled(true);
 
-                //https://stackoverflow.com/questions/41105586/android-firebase-tasksnapshot-method-should-only-be-accessed-within-privat//
-//                @SuppressWarnings("VisibleForTests") Uri url = taskSnapshot.getDownloadUrl();
-//                String pathURL = url.getPath();
-//                imageURL = url.getEncodedPath();
-//                Log.d("Share", "Upload" + imageURL + "pathurl = " + pathURL);
             }
         });
     }
 
+    private void uploadFile(){
+        String completePath = Environment.getExternalStorageDirectory() + "/" + mCurrentPhotoPath;
+        File file = new File(String.valueOf(getExternalFilesDir(completePath)));
+        String path = Environment.getExternalStorageDirectory().getPath();
+        Uri fileUp = Uri.fromFile(file);
+        Log.d("Share", "External path" + path);
+       // StorageReference photoRef = imageinstance.child("images/"+fileUp.getLastPathSegment());
+        UploadTask uploadTask = imageinstance.putFile(fileUp);
+
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                exception.printStackTrace();
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+               // Uri downloadUrl = taskSnapshot.getDownloadUrl();
+            }
+        });
+    }
+
+    ////////////////////////////////Android documentation code///////////////////
+    String mCurrentPhotoPath;
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        Log.d("Share", "storageDir" + storageDir.getAbsolutePath());
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        Log.d("Share", "current photo path" + mCurrentPhotoPath);
+        return image;
+    }
+
+    static final int REQUEST_TAKE_PHOTO = 1;
+
+//    private void dispatchTakePictureIntent() {
+//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        // Ensure that there's a camera activity to handle the intent
+//        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+//            // Create the File where the photo should go
+//            File photoFile = null;
+//            try {
+//                photoFile = createImageFile();
+//            } catch (IOException ex) {
+//                 ex.printStackTrace();
+//            }
+//            // Continue only if the File was successfully created
+//            if (photoFile != null) {
+//                Uri photoURI = FileProvider.getUriForFile(this,
+//                        "com.example.dwks.thewrittenworld.fileprovider",
+//                        photoFile);
+//                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+//                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+//
+//
+//
+//            }
+//        }
+//    }
+
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(mCurrentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        Log.d("Share", "Add gallery" + f.getAbsolutePath());
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
+    }
 
 }

@@ -61,7 +61,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UXCam.startWithKey("c89be14f3e7ec09");
+
         setContentView(R.layout.activity_map_display);
        // mToast = Toast.makeText(this,"",Toast.LENGTH_SHORT);
         Log.d(TAG, "onCreate()");
@@ -236,6 +236,8 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
     private void initializeGoogleMap() {
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_display);
+        UXCam.startWithKeyForSegment(mapFragment.getActivity(),"eb7908e9be67a5b");
+        Log.d(TAG, "UXcam" + String.valueOf(UXCam.isRecording()));
         mapFragment.getMapAsync(this);
 
     }
@@ -350,7 +352,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                 if(constants.lastLocation == null){
                             if(mToast!=null)
                                 mToast.cancel();
-                            mToast.makeText(getApplicationContext(), "Location not available", Toast.LENGTH_SHORT);
+                            mToast= Toast.makeText(getApplicationContext(), "Location not available", Toast.LENGTH_SHORT);
                             mToast.show();
                             break;
                         }
@@ -514,7 +516,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
         @Override
         protected boolean shouldRenderAsCluster(Cluster<PlaceObject> cluster) {
-            return cluster.getSize() > 10;
+            return cluster.getSize() > 5;
         }
 
         @Override

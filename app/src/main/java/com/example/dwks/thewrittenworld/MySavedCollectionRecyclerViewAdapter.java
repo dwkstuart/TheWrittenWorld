@@ -37,8 +37,9 @@ public class MySavedCollectionRecyclerViewAdapter extends RecyclerView.Adapter<M
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mIdView.setText("Visited " +  mValues.get(position).getNumberVisited() +
-                " out of " + mValues.get(position).getNumPlaces());
-        holder.mContentView.setText("Collection Name: " + mValues.get(position).getListName());
+                " /" + mValues.get(position).getNumPlaces());
+        holder.mContentView.setText("Collection Name: " +
+                "\n" + mValues.get(position).getListName());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

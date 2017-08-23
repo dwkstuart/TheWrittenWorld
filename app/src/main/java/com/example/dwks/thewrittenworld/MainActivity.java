@@ -52,7 +52,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UXCam.startWithKey("c89be14f3e7ec09");
+
+        UXCam.startWithKey("eb7908e9be67a5b");
+        Log.d(TAG, String.valueOf(UXCam.isRecording()));
         setContentView(R.layout.activity_main);
         //TODO remove on final  processAssest();
         Constants.notificationsOn=false;

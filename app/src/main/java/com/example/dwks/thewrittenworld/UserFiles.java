@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -70,7 +71,10 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
             case (R.id.saveButton):
 
                 dbInstance.uploadSaveSelection(fileName.getText().toString(), this.gsonParsingSave());
+                String file = fileName.getText().toString();
+                Toast.makeText(this, file + " saved successfully", Toast.LENGTH_SHORT).show();
                 fileName.setText("");
+
                 break;
             case (R.id.displayFileList):
                 populateListsField();
@@ -184,4 +188,6 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
         });
 
     }
+
+
 }

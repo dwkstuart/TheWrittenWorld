@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
+    <uses-permission android:name="android.permission.CAMERA"/>
     <uses-feature android:name="android.hardware.camera"
         android:required="true" />
 
@@ -17,6 +17,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.example.dwks.thewrittenworld.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"></meta-data>
+        </provider>
 
         <!--
      The API key for Google Maps-based APIs is defined as a string resource.
@@ -48,7 +58,8 @@
             android:name=".GeofenceIntentService"
             android:exported="false" />
 
-        <activity android:name=".PlaceDetailScreen" />
+        <activity android:name=".PlaceDetailScreen"
+            android:launchMode="singleTop"/>
         <activity
             android:name=".ListOfPlaces"
             android:launchMode="singleTop" />
@@ -57,7 +68,8 @@
         <activity android:name=".SavedCollections" />
         <activity android:name=".Credits" />
         <activity android:name=".Settings" />
-        <activity android:name=".PlaceDetailShare"></activity>
+        <activity android:name=".PlaceDetailShare"
+            android:launchMode="singleTask"></activity>
     </application>
 
 </manifest>
