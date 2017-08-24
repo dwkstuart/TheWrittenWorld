@@ -63,7 +63,7 @@ public class ToolBarMenuHandler {
 
     public boolean onOptionsItemSelected(MenuItem item){
         final Intent alerts = new Intent(activity, Search.class);
-        final Intent currentList = new Intent(activity, ListOfPlaces.class);
+        final Intent currentList = new Intent(activity, PlaceObjectList.class);
         final Intent returnToMap = new Intent (activity, MapDisplay.class);
         final Intent saveList = new Intent(activity, UserFiles.class);
         final Intent settings = new Intent(activity,Settings.class);

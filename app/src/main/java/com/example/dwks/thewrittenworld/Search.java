@@ -87,7 +87,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choose_and_load);
+        setContentView(R.layout.activity_search);
 
         setUpButtons();
         db =   new Database();
@@ -418,7 +418,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
         switch (v.getId()) {
 
             case R.id.view_selection:
-                Intent selectionview = new Intent(this, ListOfPlaces.class);
+                Intent selectionview = new Intent(this, PlaceObjectList.class);
 
                 parcelList.clear(); //clear list to avoid duplicates
                 parcelList.addAll(addedToList);//add currently added files

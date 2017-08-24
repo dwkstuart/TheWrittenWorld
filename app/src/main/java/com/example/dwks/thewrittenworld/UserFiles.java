@@ -81,7 +81,7 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
 
                 break;
             case (R.id.listTest):
-                Intent intent = new Intent(this, ListOfPlaces.class);
+                Intent intent = new Intent(this, PlaceObjectList.class);
                 startActivity(intent);
                 break;
 

@@ -66,7 +66,7 @@ public class SavedFiles extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MySavedCollectionRecyclerViewAdapter(Constants.getInstance().files, mListener));
+            recyclerView.setAdapter(new SavedCollectionRecyclerViewAdapter(Constants.getInstance().files, mListener));
         }
         return view;
     }

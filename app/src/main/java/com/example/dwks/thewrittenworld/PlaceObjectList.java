@@ -15,9 +15,9 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class ListOfPlaces extends AppCompatActivity implements PlaceDetailFragment.OnListFragmentInteractionListener{
+public class PlaceObjectList extends AppCompatActivity implements PlaceDetailFragment.OnListFragmentInteractionListener{
 
-    private final String TAG = ListOfPlaces.class.getSimpleName();
+    private final String TAG = PlaceObjectList.class.getSimpleName();
     private ArrayList<PlaceObject> temp = new ArrayList<>();
     private FloatingActionButton load;
     private String collectionTitle = "Your Current Tour";

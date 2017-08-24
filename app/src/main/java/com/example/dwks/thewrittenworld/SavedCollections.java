@@ -24,7 +24,7 @@ public class SavedCollections extends AppCompatActivity implements SavedFiles.On
     public void onListFragmentInteraction(SavedCollection item) {
         TreeSet<PlaceObject> savedSet = (TreeSet<PlaceObject>) item.getSelection();
        // Constants.placeObjects = (TreeSet) savedSet;
-        Intent currentList = new Intent(this,ListOfPlaces.class);
+        Intent currentList = new Intent(this,PlaceObjectList.class);
         ArrayList<PlaceObject> loadedPlaceList = new ArrayList<>();
         loadedPlaceList.addAll(savedSet);
         currentList.putParcelableArrayListExtra("LIST",loadedPlaceList);

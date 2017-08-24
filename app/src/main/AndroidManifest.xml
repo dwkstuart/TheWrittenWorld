@@ -61,7 +61,7 @@
         <activity android:name=".PlaceDetailScreen"
             android:launchMode="singleTop"/>
         <activity
-            android:name=".ListOfPlaces"
+            android:name=".PlaceObjectList"
             android:launchMode="singleTop" />
         <activity android:name=".FindNearby" />
         <activity android:name=".UserFiles" />

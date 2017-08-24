@@ -340,7 +340,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
             case (R.id.location_list):
 
-                Intent currentList = new Intent(getApplicationContext(),ListOfPlaces.class);
+                Intent currentList = new Intent(getApplicationContext(),PlaceObjectList.class);
                 ArrayList<PlaceObject> loadedPlaceList = new ArrayList<>();
                 loadedPlaceList.addAll(Constants.placeObjects);
                 currentList.putParcelableArrayListExtra("LIST",loadedPlaceList);
