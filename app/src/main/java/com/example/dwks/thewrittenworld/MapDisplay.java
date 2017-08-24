@@ -434,7 +434,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                 public void onStart() {
                     if (mToast != null)
                         mToast.cancel();
-                    mToast.makeText(getApplicationContext(), "Checking Database, Please Wait", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Checking Database, Please Wait", Toast.LENGTH_LONG).show();
 
                 }
 

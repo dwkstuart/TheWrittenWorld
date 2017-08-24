@@ -2,7 +2,6 @@ package com.example.dwks.thewrittenworld;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,6 +35,7 @@ public class ToolBarMenuHandler {
         MenuItem notifyon = menu.findItem(R.id.turn_on_notifications);
         MenuItem notifyOff = menu.findItem(R.id.turn_off_notifications);
         MenuItem save = menu.findItem(R.id.save_menu_item);
+        MenuItem logOut = menu.findItem(R.id.log_out_menu_button);
 
         if (Constants.placeObjects.size()>0) {
 
@@ -54,7 +54,7 @@ public class ToolBarMenuHandler {
         }
 
         if(FirebaseAuth.getInstance().getCurrentUser() == null){
-
+            logOut.setVisible(false);
             save.setVisible(false);
         }
             return true;
@@ -67,6 +67,7 @@ public class ToolBarMenuHandler {
         final Intent returnToMap = new Intent (activity, MapDisplay.class);
         final Intent saveList = new Intent(activity, UserFiles.class);
         final Intent settings = new Intent(activity,Settings.class);
+        final Intent logout = new Intent(activity, MainActivity.class);
 
 
 
@@ -117,11 +118,15 @@ public class ToolBarMenuHandler {
                 break;
 
             case R.id.settings_menu_item:
-                Log.d("toolbar", "Settings clicked");
 
-                Log.d("Menu", String.valueOf(settings));
                 activity.startActivity(settings);
                 break;
+            case R.id.log_out_menu_button:
+
+                logout.putExtra("SIGN_OUT", true);
+                activity.startActivity(logout);
+                break;
+
         }
 
         return true;

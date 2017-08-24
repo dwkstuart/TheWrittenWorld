@@ -69,10 +69,7 @@ public class ProcessSharedPref extends Application {
        // SharedPreferences sharedPref = context.getSharedPreferences(String.valueOf(R.string.shared_pref_file), Context.MODE_PRIVATE);
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
 
-        if(sharedPref.contains("TEST")){
-            return true;
-        }
-        return false;
+        return sharedPref.contains("TEST");
 
     }
 
@@ -81,10 +78,7 @@ public class ProcessSharedPref extends Application {
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
 
-        if(sharedPref.contains(String.valueOf(R.string.placesHashMap))){
-            return true;
-            }
-        return false;
+        return sharedPref.contains(String.valueOf(R.string.placesHashMap));
     }
 
     public void saveAddedTitles(ArrayList<PlaceObject> addedTitles){
@@ -97,7 +91,7 @@ public class ProcessSharedPref extends Application {
 
         SharedPreferences.Editor editor= sharedPref.edit();
         editor.putString("TEST",jsonArrayList);
-        editor.commit();
+        editor.apply();
         boolean check = this.savedListExists();
         Log.d(TAG, "Saved List data exist" + check);
     }

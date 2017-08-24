@@ -97,8 +97,7 @@ public class GeofenceIntentService extends IntentService implements
             List <Geofence>triggeringGeofence = geofencingEvent.getTriggeringGeofences();
             for(Geofence event : triggeringGeofence){
                String triggeredID = event.getRequestId();
-;
-                //ID matches DB Key
+//ID matches DB Key
                 PlaceObject placeTriggered = Constants.places.get(triggeredID);
                 if (placeTriggered != null){
 

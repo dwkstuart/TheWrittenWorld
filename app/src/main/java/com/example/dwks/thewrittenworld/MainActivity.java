@@ -82,12 +82,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
         });
         Button loadScreen = (Button) findViewById(R.id.setup);
+
+        final Intent launchMainApp = new Intent(this, MapDisplay.class);
+
         if (currentUser != null){
-            loadScreen.setText("Start Exploring");
+            startActivity(launchMainApp);
+            //loadScreen.setText("Start Exploring");
         }
 
-       //TODO handle case where location is not found
-        final Intent launchMainApp = new Intent(this, MapDisplay.class);
 
         loadScreen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,6 +122,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         if (Constants.geofenceArrayList.size()>0){
             Constants.notificationsOn = true;
+        }
+
+        Intent handleMenuOut = getIntent();
+        if(handleMenuOut.hasExtra("SIGN_OUT")){
+            this.revokeAccess();
         }
     }
 
@@ -375,8 +382,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             launch.setText("Start Exploring");
 
         } else {
-           // mStatusTextView.setText(R.string.signed_out);
-
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_out_button).setVisibility(View.GONE);
             Button launch = (Button) findViewById(R.id.setup);

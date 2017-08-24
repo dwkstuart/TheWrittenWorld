@@ -67,10 +67,7 @@ public class PlaceObject implements Parcelable, Comparable<PlaceObject>, Cluster
         latitude = parcel.readDouble();
         latLng = new LatLng(latitude,longitude);
         String visitCheck = parcel.readString();
-        if (visitCheck.equals("true")){
-            visited = true;
-        }
-        else visited = false;
+        visited = visitCheck.equals("true");
 
     }
 

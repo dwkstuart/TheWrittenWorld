@@ -72,7 +72,9 @@ public class PlaceObjectList extends AppCompatActivity implements PlaceDetailFra
                 }
 
                 Toast.makeText(getApplicationContext(),"Loaded collection " + collectionTitle , Toast.LENGTH_SHORT).show();
-
+                // Display map once new items are loaded
+                Intent displayMap = new Intent(getApplicationContext(), MapDisplay.class);
+                startActivity(displayMap);
             }
         });
     }

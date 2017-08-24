@@ -5,7 +5,6 @@
         <item>2</item>
         <item>3</item>
     </string-array>
-    <string-array name="test">1</string-array>
 
     <string-array name="prefs_volume_names">
         <item>HDMI Out</item>
