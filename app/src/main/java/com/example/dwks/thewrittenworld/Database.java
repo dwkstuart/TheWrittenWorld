@@ -273,7 +273,6 @@ public class Database {
         places.child("location").setValue(placeObject.getLocation());
         places.child("latitude").setValue(placeObject.getLatitude());
         places.child("longitude").setValue(placeObject.getLongitude());
-//                places.child("snippet").setValue(placeObject.getSnippet());
         places.child("description").setValue(placeObject.getLongDescription());
         places.child("title").setValue(placeObject.getBookTitle());
         places.child("quote").setValue(placeObject.getAssociatedQuote());

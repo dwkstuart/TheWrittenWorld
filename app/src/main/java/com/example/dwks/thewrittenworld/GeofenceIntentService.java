@@ -97,16 +97,13 @@ public class GeofenceIntentService extends IntentService implements
             List <Geofence>triggeringGeofence = geofencingEvent.getTriggeringGeofences();
             for(Geofence event : triggeringGeofence){
                String triggeredID = event.getRequestId();
-//ID matches DB Key
+
                 PlaceObject placeTriggered = Constants.places.get(triggeredID);
                 if (placeTriggered != null){
 
-                    GeofenceHandler geohandler = new GeofenceHandler(this.getApplicationContext(),REMOVE, triggeredID);
-                    //geohandler.removeGeofence(triggeredID);
-                    Log.d(TAG, Constants.geofenceArrayList.toString());
+                    new GeofenceHandler(this.getApplicationContext(),REMOVE, triggeredID);
 
                 this.sendNotification(placeTriggered.getBookTitle(), placeTriggered.getDb_key());
-
 
 
                 }
@@ -129,7 +126,6 @@ public class GeofenceIntentService extends IntentService implements
         PlaceObject placeTriggered = Constants.places.get(ID);
         notificationIntent.putExtra("Place", placeTriggered);
 
-        Log.d(TAG,"Geofence triggered at " + placeTriggered.getLocation());
         // Construct a task stack.
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 
@@ -180,8 +176,6 @@ public class GeofenceIntentService extends IntentService implements
 
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "Check self permissions and returns");
-        //    requestPermissions();
             return;
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
@@ -191,14 +185,12 @@ public class GeofenceIntentService extends IntentService implements
 
     @Override
     public void onLocationChanged(Location location) {
-        //Log.d(TAG, "Location changed, Lat= " + location.getLatitude() + " Long = " + location.getLongitude());
         startLocationUpdates();
-       // Log.d(TAG, String.valueOf(constants.lastLocation.getLatitude()));
     }
 
 
     private void findLocation() {
-        Log.d(TAG, "findLocation()");
+
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
            // requestPermissions();
             return;

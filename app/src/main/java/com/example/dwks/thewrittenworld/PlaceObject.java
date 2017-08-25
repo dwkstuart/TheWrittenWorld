@@ -31,7 +31,6 @@ public class PlaceObject implements Parcelable, Comparable<PlaceObject>, Cluster
 
 
     public PlaceObject(JSONObject input){
-        //Best to take JSON jsonObject here?
         jsonObject = input;
         this.initialisePOIObject();
     }
