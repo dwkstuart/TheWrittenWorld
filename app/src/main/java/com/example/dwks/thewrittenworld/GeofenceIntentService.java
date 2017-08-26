@@ -68,7 +68,6 @@ public class GeofenceIntentService extends IntentService implements
         Log.d(TAG,"Service started");
         createGoogleApi();
         googleApiClient.connect();
-        Context context = this.getApplicationContext();
     }
 
 
@@ -87,7 +86,7 @@ public class GeofenceIntentService extends IntentService implements
 
     @Override
     protected void onHandleIntent(Intent intent) {
-
+        Log.d(TAG, intent.toString());
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
                 if (geofencingEvent.hasError())
                     return;
@@ -97,10 +96,14 @@ public class GeofenceIntentService extends IntentService implements
             List <Geofence>triggeringGeofence = geofencingEvent.getTriggeringGeofences();
             for(Geofence event : triggeringGeofence){
                String triggeredID = event.getRequestId();
-;
+                Log.d(TAG, String.valueOf(Constants.places.size()));
+                new ProcessSharedPref(this).loadFromJson();
                 //ID matches DB Key
                 PlaceObject placeTriggered = Constants.places.get(triggeredID);
+                if (placeTriggered == null)
+                Log.d(TAG, "place triggered is null");
                 if (placeTriggered != null){
+                    Log.d(TAG, "place triggered is not null");
 
                     GeofenceHandler geohandler = new GeofenceHandler(this.getApplicationContext(),REMOVE, triggeredID);
                     //geohandler.removeGeofence(triggeredID);
@@ -201,7 +204,7 @@ public class GeofenceIntentService extends IntentService implements
     private void findLocation() {
         Log.d(TAG, "findLocation()");
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-           // requestPermissions();
+            //requestPermissions();
             return;
         }
         constants.lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);

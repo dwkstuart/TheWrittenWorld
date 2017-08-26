@@ -132,4 +132,11 @@ public class PlaceDetailScreen extends AppCompatActivity implements View.OnClick
 
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        new ProcessSharedPref(this).saveAsJson();
+
+    }
 }

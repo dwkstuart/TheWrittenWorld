@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         UXCam.startWithKey("eb7908e9be67a5b");
         Log.d(TAG, String.valueOf(UXCam.isRecording()));
         setContentView(R.layout.activity_main);
-        //TODO remove on final  processAssest();
+
         Constants.notificationsOn=false;
         requestPermissions();
         firebaseAuth = FirebaseAuth.getInstance();
@@ -375,7 +375,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             launch.setText("Start Exploring");
 
         } else {
-           // mStatusTextView.setText(R.string.signed_out);
 
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.sign_out_button).setVisibility(View.GONE);
@@ -385,6 +384,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
 
+    /**Helper method for populating Firebase database when adding large numbers off new elements
+     *
+     */
     private void processAssest(){
 
 

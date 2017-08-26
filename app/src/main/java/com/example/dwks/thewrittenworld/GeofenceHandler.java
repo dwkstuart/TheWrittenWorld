@@ -62,6 +62,10 @@ public class GeofenceHandler extends Application implements  GoogleApiClient.Con
 
             googleApiClient.connect();
         }
+        if (request_type.equals("REMOVEALL")){
+            Log.d(TAG, "remove all");
+            googleApiClient.connect();
+        }
 
 
     }
@@ -110,9 +114,6 @@ public class GeofenceHandler extends Application implements  GoogleApiClient.Con
      */
     private void populateGeofenceList() {
 
-        Log.d(TAG, "Size of fence is " + Float.parseFloat(String.valueOf(R.integer.GEOFENCE_RADIUS)));
-
-
         for (PlaceObject place : Constants.placeObjects) {
             //Create a geofence object for each place not ticked off as visited
             if (!place.isVisited()) {
@@ -121,14 +122,15 @@ public class GeofenceHandler extends Application implements  GoogleApiClient.Con
                         .setCircularRegion(place.getLatitude(), place.getLongitude(), 50)
                         .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
                         .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL)
-                        .setLoiteringDelay(5000)
+                        .setLoiteringDelay(10000)
                         .setExpirationDuration(Geofence.NEVER_EXPIRE)
                         .build());
-              //  Log.d(TAG,"added geofence" + geofence.toString());
+              // Log.d(TAG,"added geofence" + geofence.toString());
                 //TODO check if this arraylist needs to be constant
                 Constants.geofenceArrayList.add(geofence);
                 //Need to be able to link a geofence to an object to remove geofences individual from Pending Monitoring list
                 Constants.placeObjectGeofenceHashMap.put(place,geofence);
+                Log.d(TAG, String.valueOf(geofence));
             }
 
         }
@@ -150,24 +152,16 @@ public class GeofenceHandler extends Application implements  GoogleApiClient.Con
     private void addGeofences(GeofencingRequest request) {
         Log.d(TAG, "Add Geofenced method");
         pendingIntent = getGeofenceIntent();
-
+        Log.d(TAG, "add geofences pendingIntent");
         if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        //TODO add pending intent creator, add transition class
         geofencingApi.addGeofences(
                 googleApiClient,
                 request,
                 pendingIntent).setResultCallback(this);
 
-        Log.d(TAG,"geofence added" + request.toString());
+        Log.d(TAG,"geofence added " + pendingIntent.toString());
 
     }
     /////////////////////////////////////////////////////////////////////////////////
@@ -181,13 +175,16 @@ public class GeofenceHandler extends Application implements  GoogleApiClient.Con
                 removeAll.add(fence.getRequestId());
             }
             Log.d(TAG, "Size of list" + Constants.geofenceArrayList.size());
-            Constants.geofenceArrayList.clear();
-            if(!removeAll.isEmpty() && googleApiClient.isConnected()) {
+            Log.d(TAG, String.valueOf(googleApiClient.isConnected()));
+
+            if(googleApiClient.isConnected() && !removeAll.isEmpty()) {
                 geofencingApi.removeGeofences(googleApiClient, removeAll);
+                Constants.geofenceArrayList.clear();
+                Constants.notificationsOn = false;
+
             }
             Log.d(TAG, "Should be 0 " + Constants.geofenceArrayList.size());
         }
-        Constants.notificationsOn = false;
     }
 
      public  void removeGeofence(String toBeRemovedFence){
@@ -222,6 +219,10 @@ public class GeofenceHandler extends Application implements  GoogleApiClient.Con
             removeGeofence(removeFence);
             Log.d(TAG, "Remove Geofence " +  removeFence);
         }
+        else if (request_type.equals("REMOVEALL")){
+            removeAllGeofence();
+        }
+
     }
 
     @Override

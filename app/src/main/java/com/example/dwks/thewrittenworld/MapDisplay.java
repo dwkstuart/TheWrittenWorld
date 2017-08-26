@@ -325,8 +325,8 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
             case (R.id.stop_alerts):
             {
-                GeofenceHandler geofence = new GeofenceHandler(this, "", null);
-                geofence.removeAllGeofence();
+                GeofenceHandler geofence = new GeofenceHandler(this, "REMOVEALL", null);
+                //geofence.removeAllGeofence();
                 if (mToast != null)
                     mToast.cancel();
                 mToast = Toast.makeText(this, "Location Alerts Stopped", Toast.LENGTH_LONG);
@@ -496,6 +496,13 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
 
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        new ProcessSharedPref(this).saveAsJson();
+    }
+
     //////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -523,6 +530,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         public void setMinClusterSize(int minClusterSize) {
             super.setMinClusterSize(minClusterSize);
         }
+
 
     }
 }
