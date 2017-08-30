@@ -35,7 +35,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
         ResultCallback<Status> {
 
 
-    private GeofenceHandler gfG;
+    private GeofenceHandler geofenceHandler;
     private final static String TAG = Search.class.getSimpleName();
     private Toast mToast;
     //Buttons and text fields
@@ -99,7 +99,6 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
         ProcessSharedPref processSharedPref = new ProcessSharedPref(this);
         Log.d(TAG, String.valueOf(processSharedPref.savedListExists()));
         if (savedInstanceState == null && processSharedPref.savedListExists() ){
-            Log.d(TAG, "Into if statement");
             ArrayList<PlaceObject> temp = new ArrayList<>();
             temp = processSharedPref.loadAddedTitles();
             Log.d(TAG, String.valueOf(temp.size()));
@@ -120,14 +119,11 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.d(TAG, "onRestoreInstanceState Called");
+
         super.onRestoreInstanceState(savedInstanceState);
-    //    infoText.setText(savedInstanceState.getString(INFO_TEXT));
         parcelList = savedInstanceState.getParcelableArrayList(SELECTED_TITLES);
         addedToList.addAll(parcelList);
-//        if (Constants.placeObjects.isEmpty()){
-//            addedToList.clear();
-//        }
+
         showPicked();
     }
 
@@ -140,10 +136,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
         db.getUniqueTitles(new firebaseDataListener() {
                 @Override
                 public void onStart() {
-                    if(mToast != null)
-                        mToast.cancel();
-                    //mToast = Toast.makeText(getApplicationContext(),"Searching Database", Toast.LENGTH_SHORT);
-//                    mToast.show();
+
 
                 }
 
@@ -212,11 +205,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
             db.getAuthors(new firebaseDataListener() {
                 @Override
                 public void onStart() {
-                    if(mToast != null)
-                        mToast.cancel();
-                    Log.d(TAG,"Database start");
-                   // mToast = Toast.makeText(getApplicationContext(),"Searching Database", Toast.LENGTH_SHORT);
-//                    mToast.show();
+
                 }
 
                 @Override
@@ -256,7 +245,6 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
                 String name = object.getBookTitle();
                 picked.add(name);
             }
-//            infoText.setText("\n Number of Results : " + Constants.placeObjects.size());
             list.setText("");
             for(String title: picked){
                 list.append(title);
@@ -270,10 +258,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
      */
     private void setUpButtons() {
         list = (TextView) findViewById(R.id.selected_titles);
-//        ImageButton loadPlacesButton = (ImageButton) findViewById(R.id.loadPlaces);
-//        ImageButton filterByAuthor = (ImageButton) findViewById(R.id.filter_author);
-//        infoText = (TextView) findViewById(R.id
-//                .InfoBox);
+
         titleDropdownData.add("Choose a Book");
         titleDrop= (Spinner) findViewById(R.id.titleSpinner);
         viewSelection = (Button) findViewById(R.id.view_selection);
@@ -285,9 +270,6 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
         searchTitles.setThreshold(2);
         searchTitles.setOnItemClickListener(this);
 
-
-//        loadPlacesButton.setOnClickListener(this);
-//        filterByAuthor.setOnClickListener(this);
    }
 
     @Override
@@ -303,31 +285,28 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
      * @param title
      */
     private void findBookPlaces(String title){
-//          Database db = new Database();
         db.getBookPlaces(title, new firebaseDataListener() {
 
             @Override
             public void onStart() {
-              //  Toast.makeText(getApplicationContext(),"Loading Selection", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
-                String titlesList ="";
 
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                     PlaceObject object = new PlaceObject(postSnapshot);
-                    //Constants.placeObjects.add(object);
-                    Log.d(TAG,"Added to place object list " + object.getBookTitle());
+
                     //populate HashMap
                     addedToList.add(object);
-                    //Constants.places.put(object.getDb_key(), object);
-                    String newtitle = object.getBookTitle();
 
                 }
-                //infoText.setText("\n Number of Results : " + Constants.placeObjects.size());
+                if(mToast != null)
+                    mToast.cancel();
+                mToast = Toast.makeText(getApplicationContext(), "Added locations from " +
+                        selectedTitle + " to current selection", Toast.LENGTH_SHORT);
+                mToast.show();
 
-//                parcelList.addAll(addedToList);
                  getTitles();
                 showPicked();
             }
@@ -344,7 +323,6 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
      * @param selectedAuthor
      */
     private void findBookByAuthor(final String selectedAuthor){
-        //Database db = new Database();
         titleDropdownData.clear();
         titleDropdownData.add("Books by " + selectedAuthor );
         foundByTitle.clear();
@@ -354,7 +332,10 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
 
             @Override
             public void onStart() {
-                Toast.makeText(getApplicationContext(),"Loading Selection", Toast.LENGTH_LONG).show();
+                if(mToast != null)
+                    mToast.cancel();
+                mToast = Toast.makeText(getApplicationContext(),"Loading Selection", Toast.LENGTH_LONG);
+                        mToast.show();
             }
 
             @Override
@@ -454,6 +435,12 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
                     if(userTouch)// to stop the item selected list
                         findBookByAuthor(selectedAuthor);
                     userTouch = false;
+
+                    if(mToast != null)
+                        mToast.cancel();
+                    mToast = Toast.makeText(getApplicationContext(), "Choose book title from drop down", Toast.LENGTH_SHORT);
+                    mToast.show();
+
                     break;
                 case R.id.titleSpinner:
                     Log.d(TAG,adapterView.getSelectedItem().toString());
@@ -461,6 +448,9 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
                     if(userTouch)
                         findBookPlaces(selectedTitle);
                     userTouch = false;
+
+
+
                     break;
 
             }

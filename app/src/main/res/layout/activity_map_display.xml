@@ -104,7 +104,7 @@
             android:background="@color/transparent"
             android:scaleType="fitCenter"
 
-            app:srcCompat="@drawable/search_magnify" />
+            app:srcCompat="@drawable/search" />
 
         <ImageButton
             android:id="@+id/location_list"
