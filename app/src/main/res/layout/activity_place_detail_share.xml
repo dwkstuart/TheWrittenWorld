@@ -58,18 +58,6 @@
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintTop_creator="1" />
 
-    <Button
-        android:id="@+id/main_detail"
-        android:layout_width="63dp"
-        android:layout_height="50dp"
-        android:text="BACK"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp"
-
-        android:layout_marginTop="8dp" />
-
     <TextView
         android:id="@+id/description"
         android:layout_width="0dp"
@@ -122,15 +110,12 @@
         android:background="@color/transparent"
         android:scaleType="fitStart"
         app:srcCompat="@drawable/amazon_white"
-        app:layout_constraintTop_toTopOf="@+id/main_detail"
-        android:layout_marginTop="0dp"
-        app:layout_constraintLeft_toRightOf="@+id/main_detail"
-        android:layout_marginLeft="8dp"
         app:layout_constraintRight_toLeftOf="@+id/goodreads_search"
         android:layout_marginRight="8dp"
-        app:layout_constraintHorizontal_bias="0.991"
         app:layout_constraintBottom_toBottomOf="@+id/goodreads_search"
-        android:layout_marginBottom="0dp"
-        app:layout_constraintVertical_bias="0.0" />
+        android:layout_marginBottom="-10dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintHorizontal_bias="1.0" />
 
 </android.support.constraint.ConstraintLayout>

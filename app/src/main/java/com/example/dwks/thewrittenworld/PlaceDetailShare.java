@@ -8,8 +8,10 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -52,6 +54,7 @@ public class PlaceDetailShare extends AppCompatActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_detail_share);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setUpFields();
         Intent main = getIntent();
         placeObject = main.getParcelableExtra("place");
@@ -99,6 +102,16 @@ public class PlaceDetailShare extends AppCompatActivity implements View.OnClickL
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void goodreadsSearch(){
         String appendTitle = Uri.encode(placeObject.getBookTitle());
 
@@ -118,9 +131,6 @@ public class PlaceDetailShare extends AppCompatActivity implements View.OnClickL
 
     private void setUpFields(){
         titleTextView = (TextView) findViewById(R.id.location_title_share);
-        detailMain = (Button) findViewById(R.id.main_detail);
-        detailMain.setOnClickListener(this);
-        information = (Button) findViewById(R.id.more_info);
         photoUpload = (FloatingActionButton) findViewById(R.id.take_photo);
         photoUpload.setOnClickListener(this);
         ImageButton amazon = (ImageButton)  findViewById(R.id.amazon);
@@ -160,10 +170,6 @@ public class PlaceDetailShare extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-         case R.id.main_detail:   Intent back = new Intent(this, PlaceDetailScreen.class);
-            back.putExtra("Place", placeObject);
-            startActivity(back);
-             break;
 
             case R.id.goodreads_search:
                 goodreadsSearch();

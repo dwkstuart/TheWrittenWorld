@@ -86,8 +86,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         final Intent launchMainApp = new Intent(this, MapDisplay.class);
 
         if (currentUser != null){
-            startActivity(launchMainApp);
-            //loadScreen.setText("Start Exploring");
+            //startActivity(launchMainApp);
+            loadScreen.setText("Start Exploring");
         }
 
 
@@ -124,11 +124,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             Constants.notificationsOn = true;
         }
 
-        Intent handleMenuOut = getIntent();
-        if(handleMenuOut.hasExtra("SIGN_OUT")){
-            this.revokeAccess();
-        }
     }
+
 
     //    ////////////////////////////////////////////////////////////
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
@@ -292,7 +289,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             //Constants constants = Constants.getInstance();
             //constants.currentUser = acct;
             //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
+            Intent toMap = new Intent(this, MapDisplay.class);
+
             updateUI(true);
+            Intent logOut = getIntent();
+            if(!logOut.hasExtra("SIGN_OUT")){
+                Log.d(TAG,  logOut.toString());
+            startActivity(toMap);}
+            Log.d(TAG, logOut.toString());
         } else {
             // Signed out, show unauthenticated UI.
             updateUI(false);
@@ -337,6 +341,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     public void onResult(Status status) {
                         // [START_EXCLUDE]
                         updateUI(false);
+                        recreate();
                         // [END_EXCLUDE]
                     }
                 });

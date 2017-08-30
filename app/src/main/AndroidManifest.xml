@@ -42,7 +42,7 @@
 
         <activity
             android:name=".MainActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/Theme.AppCompat.Light">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -69,7 +69,11 @@
         <activity android:name=".Credits" />
         <activity android:name=".Settings" />
         <activity android:name=".PlaceDetailShare"
-            android:launchMode="singleTask"></activity>
+            android:launchMode="singleTask">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.dwks.thewrittenworld.PlaceDetailScreen"/>
+        </activity>
     </application>
 
 </manifest>
