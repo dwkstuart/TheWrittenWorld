@@ -38,10 +38,10 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
     private GeofenceHandler geofenceHandler;
     private final static String TAG = Search.class.getSimpleName();
     private Toast mToast;
+
     //Buttons and text fields
 
     private Button viewSelection;
-//    private TextView infoText;
     private Spinner titleDrop;
     private Spinner authorDrop;
     private AutoCompleteTextView searchTitles;
@@ -51,12 +51,6 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
     private String selectedTitle ="";
     private String selectedAuthor= "";
     private String searchTitle = "";
-   // private ArrayList<PlaceObject> placeObjects;
-
-//    private PendingIntent pendingIntent;
-//    private GoogleApiClient googleApiClient;
-    //get instance of Firebase database to use for queries
-    //private FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     //Saved instance text keys
     private final String  SELECTED_TITLES = "SELECLTED_TITLES";
@@ -77,9 +71,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
 
     private Database db;
 
-//    private TreeSet<PlaceObject> nearbyLong = new TreeSet<PlaceObject>();
-//    private TreeSet<PlaceObject> nearbyLat = new TreeSet<PlaceObject>();
-//    private TreeSet<PlaceObject> nearbyObject;
+
 
     Constants constants = Constants.getInstance();
 
@@ -250,6 +242,12 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
                 list.append(title);
                 list.append("\n");
             }
+            if (!picked.isEmpty()){
+            if(mToast != null)
+                mToast.cancel();
+            mToast = Toast.makeText(getApplicationContext(), "Added locations from slected book to current selection", Toast.LENGTH_SHORT);
+            mToast.show();}
+
         }
 
 
@@ -301,11 +299,6 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
                     addedToList.add(object);
 
                 }
-                if(mToast != null)
-                    mToast.cancel();
-                mToast = Toast.makeText(getApplicationContext(), "Added locations from " +
-                        selectedTitle + " to current selection", Toast.LENGTH_SHORT);
-                mToast.show();
 
                  getTitles();
                 showPicked();

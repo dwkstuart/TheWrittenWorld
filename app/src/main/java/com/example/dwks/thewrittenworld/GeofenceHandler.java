@@ -124,15 +124,13 @@ public class GeofenceHandler extends Application implements  GoogleApiClient.Con
                         .setLoiteringDelay(5000)
                         .setExpirationDuration(Geofence.NEVER_EXPIRE)
                         .build());
-              //  Log.d(TAG,"added geofence" + geofence.toString());
-                //TODO check if this arraylist needs to be constant
+
                 Constants.geofenceArrayList.add(geofence);
                 //Need to be able to link a geofence to an object to remove geofences individual from Pending Monitoring list
                 Constants.placeObjectGeofenceHashMap.put(place,geofence);
             }
 
         }
-        int arraylength = Constants.geofenceArrayList.size();
 
     }
 
@@ -148,16 +146,13 @@ public class GeofenceHandler extends Application implements  GoogleApiClient.Con
     }
     //add a request to the monitoring list
     private void addGeofences(GeofencingRequest request) {
-        Log.d(TAG, "Add Geofenced method");
+
         pendingIntent = getGeofenceIntent();
 
         if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
             //Permission check is called when app is launched
-
             return;
         }
-        //TODO add pending intent creator, add transition class
         geofencingApi.addGeofences(
                 googleApiClient,
                 request,

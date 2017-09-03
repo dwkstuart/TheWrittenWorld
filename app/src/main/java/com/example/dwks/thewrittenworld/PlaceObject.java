@@ -3,6 +3,7 @@ package com.example.dwks.thewrittenworld;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
@@ -67,6 +68,7 @@ public class PlaceObject implements Parcelable, Comparable<PlaceObject>, Cluster
         latLng = new LatLng(latitude,longitude);
         String visitCheck = parcel.readString();
         visited = visitCheck.equals("true");
+        Log.d(TAG, String.valueOf(visited));
 
     }
 
@@ -116,9 +118,6 @@ public class PlaceObject implements Parcelable, Comparable<PlaceObject>, Cluster
         return associatedQuote;
     }
 
-    public String getImageURI() {
-        return imageURI;
-    }
 
     public double getLatitude() {
 

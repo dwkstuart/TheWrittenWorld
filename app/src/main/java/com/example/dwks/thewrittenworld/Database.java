@@ -26,6 +26,7 @@ public class Database {
     public Database() {
         Log.d("DATABASE", "Database instance created");
         if(!peristanceEnabledCalled) {
+
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
             peristanceEnabledCalled = true;
         }
@@ -36,8 +37,6 @@ public class Database {
     public void getUniqueTitles(final firebaseDataListener listener){
         listener.onStart();
 
-       // FirebaseDatabase database = FirebaseDatabase.getInstance();
-      //database.setPersistenceEnabled(true);
         DatabaseReference myRef = database.getReference("places/");
         myRef.keepSynced(true);
         final Query titleQuery = myRef.orderByChild("title");
@@ -84,7 +83,6 @@ public class Database {
     public void getBookPlaces(String title, final firebaseDataListener listener) {
         listener.onStart();
 
-      //  FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("places/");
 
         final Query recentQuery = myRef.orderByChild("title").equalTo(title);
@@ -136,7 +134,6 @@ public class Database {
 
         listener.onStart();
 
-        //FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("places/");
         final Query longitudeQuery = myRef.orderByChild("longitude").startAt(minLong).endAt(maxLong);
 
@@ -163,7 +160,6 @@ public class Database {
         Double maxLat = userLat + 0.01;
         Double minLat = userLat - 0.01;
 
-        //FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("places/");
         final Query latitudeQuery = myRef.orderByChild("latitude").startAt(minLat).endAt(maxLat);
 
@@ -202,10 +198,8 @@ public class Database {
 
     public void getUsersLists(final firebaseDataListener listener){
 
-        Constants constants = Constants.getInstance();
         String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        //FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("user/" + UID);
 
         final Query usersLists = myRef;
