@@ -145,7 +145,7 @@ public class UserFiles extends AppCompatActivity implements View.OnClickListener
                     SavedCollection file = new SavedCollection(list.getKey(),list.getValue().toString());
                     files.add(file);
                 }
-                //TODO fix this recycler view
+
                 constants.files = files;
                 Intent fileListView = new Intent(getApplicationContext(), SavedCollections.class);
                 startActivity(fileListView);

@@ -2,7 +2,6 @@ package com.example.dwks.thewrittenworld;
 
 import android.location.Location;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.location.Geofence;
 
 import java.util.ArrayList;
@@ -23,8 +22,7 @@ class Constants {
 
     private Constants() {
     }
-    public GoogleSignInAccount currentUser;
-    //Globals, not good practice
+
     //Map with IDs from DB linked to objects, used to retrieve places when intents are fired
     public static HashMap<String,PlaceObject> places = new HashMap<>();
 
@@ -33,8 +31,8 @@ class Constants {
 
     public  static  HashMap<PlaceObject, Geofence> placeObjectGeofenceHashMap = new HashMap<>();
 
-    public Location lastLocation;
-    public List<SavedCollection> files = new ArrayList<>();
+    public static Location lastLocation;
+    public static List<SavedCollection> files = new ArrayList<>();
     public static boolean notificationsOn;
 
 }

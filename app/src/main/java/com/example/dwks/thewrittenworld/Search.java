@@ -54,7 +54,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
 
     //Saved instance text keys
     private final String  SELECTED_TITLES = "SELECLTED_TITLES";
-    private final String  INFO_TEXT = "Info text";
+    private final String  INFO_TEXT = "Info textu";
     private final String TITLES = "choosenTitles";
 
 

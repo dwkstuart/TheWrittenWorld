@@ -96,10 +96,7 @@ public class ToolBarMenuHandler {
                 Constants.places.clear();
 
                 activity.recreate();
-//                if (activity instanceof MapDisplay){
-//                 Intent refreshmap = new Intent(activity,MapDisplay.class);
-//                    activity.startActivity(refreshmap);
-//                    }
+
                 break;
             case R.id.turn_off_notifications:
                 new GeofenceHandler(activity,"",null)
