@@ -15,7 +15,6 @@ import java.util.List;
 /**
  * {@link RecyclerView.Adapter} that can display a {@link PlaceObject} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
  */
 public class PlaceDetailRecyclerViewAdapter extends RecyclerView.Adapter<PlaceDetailRecyclerViewAdapter.ViewHolder> {
 
@@ -50,27 +49,13 @@ public class PlaceDetailRecyclerViewAdapter extends RecyclerView.Adapter<PlaceDe
         holder.title.setText(mValues.get(holder.getAdapterPosition()).getBookTitle());
 
 
-//        //set respond to check box
-//        holder.visited.setOnClickListener(new View.OnClickListener() {
-//                                        @Override
-//                                        public void onClick(View view) {
-//                                            if (holder.visited.isChecked()){
-//                                                mValues.get(holder.getAdapterPosition()).setVisited(true);
-//                                            }
-//                                            else if(!holder.visited.isChecked())
-//                                                mValues.get(holder.getAdapterPosition()).setVisited(false);
-//
-//                                        }
-//
-//                                    });
+
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
                     mListener.onListFragmentInteraction(holder.mItem);
-                    //PlaceObject object = holder.mItem;
-
                 }
             }
         });

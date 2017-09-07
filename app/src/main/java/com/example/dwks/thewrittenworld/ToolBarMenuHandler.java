@@ -10,8 +10,9 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
-/**
- * Created by User on 10/08/2017.
+/**Utitly class that is used to enable easy setting of ActionBar menu in mulitple actvites and handle
+ * dynamically setting menu items visiable depenedant on status of application
+ * Created by David Stuart on 10/08/2017.
  */
 
 public class ToolBarMenuHandler {
@@ -32,13 +33,17 @@ public class ToolBarMenuHandler {
         MenuInflater inflater = activity.getMenuInflater();
         inflater.inflate(R.menu.top_bar_menu,menu);
 
+        //set up menu items
         MenuItem notifyon = menu.findItem(R.id.turn_on_notifications);
         MenuItem notifyOff = menu.findItem(R.id.turn_off_notifications);
         MenuItem save = menu.findItem(R.id.save_menu_item);
         MenuItem logOut = menu.findItem(R.id.log_out_menu_button);
 
+        //Only display notification on/off if there are items to set geofences for
+
         if (Constants.placeObjects.size()>0) {
 
+            //Determine which notification setting message to display
             if (Constants.notificationsOn) {
                 notifyOff.setVisible(true);
                 notifyon.setVisible(false);
@@ -61,15 +66,20 @@ public class ToolBarMenuHandler {
     }
 
 
+    /**    set up responses and intents for menu selction
+     *
+     * @param item menuitem pressed
+     * @return
+     */
     public boolean onOptionsItemSelected(MenuItem item){
+
         final Intent alerts = new Intent(activity, Search.class);
         final Intent currentList = new Intent(activity, PlaceObjectList.class);
         final Intent returnToMap = new Intent (activity, MapDisplay.class);
         final Intent saveList = new Intent(activity, UserFiles.class);
         final Intent settings = new Intent(activity,Settings.class);
         final Intent logout = new Intent(activity, MainActivity.class);
-
-
+        final Intent credits = new Intent(activity, Credits.class);
 
 
 
@@ -122,6 +132,10 @@ public class ToolBarMenuHandler {
 
                 logout.putExtra("SIGN_OUT", true);
                 activity.startActivity(logout);
+                break;
+            case R.id.credits_menu:
+
+                activity.startActivity(credits);
                 break;
 
         }

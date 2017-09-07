@@ -12,7 +12,6 @@
     tools:layout_editor_absoluteX="0dp">
 
     <TextView
-        android:id="@+id/user_files_info"
         android:layout_width="240dp"
         android:layout_height="0dp"
         android:text="Save and Load Your Selections"
@@ -80,7 +79,6 @@
         android:layout_marginRight="18dp" />
 
     <TextView
-        android:id="@+id/showFiles"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Open Previous Selections"
@@ -109,7 +107,6 @@
         app:layout_constraintLeft_toLeftOf="@+id/displayFileList" />
 
     <TextView
-        android:id="@+id/currList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="View Current Tour"

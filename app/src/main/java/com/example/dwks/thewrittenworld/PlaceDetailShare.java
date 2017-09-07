@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -13,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,19 +28,16 @@ import com.google.firebase.storage.UploadTask;
 import com.uxcam.UXCam;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
+/**Class for Place's activity screen with longer description and photo of location
+ * plus links to Amazon and Goodreads plus ability to add a photograph
+ *
+ */
 public class PlaceDetailShare extends AppCompatActivity implements View.OnClickListener {
 
     private PlaceObject placeObject;
     private TextView titleTextView;
-    private Button detailMain;
-    private Button information;
     private FloatingActionButton photoUpload;
-    private String title;
     private StorageReference imageinstance;
     private FirebaseStorage storage = FirebaseStorage.getInstance();
     private ImageView imageView;
@@ -58,11 +53,11 @@ public class PlaceDetailShare extends AppCompatActivity implements View.OnClickL
         setUpFields();
         Intent main = getIntent();
         placeObject = main.getParcelableExtra("place");
-        title = placeObject.getBookTitle();
+        String title = placeObject.getBookTitle();
         titleTextView.setText(title);
         description.setText(placeObject.getLongDescription());
 
-
+        //Checks if the user account has a personalised photograph for this location
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             StorageReference imageStorage = storage.getReference().child("images");//gets base level images
             StorageReference placeImages = imageStorage.child(placeObject.getDb_key());
@@ -81,6 +76,9 @@ public class PlaceDetailShare extends AppCompatActivity implements View.OnClickL
 
     }
 
+    /**Displays the default GoogleStreetView image if needed
+     *
+     */
     private void displayDefaultImage(){
 
         if (imageURL == null) {
@@ -112,6 +110,10 @@ public class PlaceDetailShare extends AppCompatActivity implements View.OnClickL
         return super.onOptionsItemSelected(item);
     }
 
+    /**Searches for the book title on Goodreads booksharing website
+     * Launches user web browser
+     *
+     */
     private void goodreadsSearch(){
         String appendTitle = Uri.encode(placeObject.getBookTitle());
 
@@ -121,6 +123,10 @@ public class PlaceDetailShare extends AppCompatActivity implements View.OnClickL
         startActivity(search);
     }
 
+    /**Searches for the book title on Amazon website
+     * Launches user web browser
+     *
+     */
     private void amazonSearch(){
         String appendTitle = Uri.encode(placeObject.getBookTitle());
 
@@ -141,6 +147,9 @@ public class PlaceDetailShare extends AppCompatActivity implements View.OnClickL
 
     }
 
+    /**Helper method to determine the image URL to display
+     *
+     */
     private void getImageURL() {
 
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
@@ -241,84 +250,5 @@ public class PlaceDetailShare extends AppCompatActivity implements View.OnClickL
         });
     }
 
-    private void uploadFile(){
-        String completePath = Environment.getExternalStorageDirectory() + "/" + mCurrentPhotoPath;
-        File file = new File(String.valueOf(getExternalFilesDir(completePath)));
-        String path = Environment.getExternalStorageDirectory().getPath();
-        Uri fileUp = Uri.fromFile(file);
-        Log.d("Share", "External path" + path);
-       // StorageReference photoRef = imageinstance.child("images/"+fileUp.getLastPathSegment());
-        UploadTask uploadTask = imageinstance.putFile(fileUp);
-
-        uploadTask.addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                exception.printStackTrace();
-            }
-        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
-               // Uri downloadUrl = taskSnapshot.getDownloadUrl();
-            }
-        });
-    }
-
-    ////////////////////////////////Android documentation code///////////////////
-    String mCurrentPhotoPath;
-
-    private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        Log.d("Share", "storageDir" + storageDir.getAbsolutePath());
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = image.getAbsolutePath();
-        Log.d("Share", "current photo path" + mCurrentPhotoPath);
-        return image;
-    }
-
-    static final int REQUEST_TAKE_PHOTO = 1;
-
-//    private void dispatchTakePictureIntent() {
-//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        // Ensure that there's a camera activity to handle the intent
-//        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-//            // Create the File where the photo should go
-//            File photoFile = null;
-//            try {
-//                photoFile = createImageFile();
-//            } catch (IOException ex) {
-//                 ex.printStackTrace();
-//            }
-//            // Continue only if the File was successfully created
-//            if (photoFile != null) {
-//                Uri photoURI = FileProvider.getUriForFile(this,
-//                        "com.example.dwks.thewrittenworld.fileprovider",
-//                        photoFile);
-//                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-//                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-//
-//
-//
-//            }
-//        }
-//    }
-
-    private void galleryAddPic() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(mCurrentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        Log.d("Share", "Add gallery" + f.getAbsolutePath());
-        mediaScanIntent.setData(contentUri);
-        this.sendBroadcast(mediaScanIntent);
-    }
 
 }

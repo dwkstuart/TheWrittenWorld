@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 /**
- * Created by User on 20/08/2017.
+ * Created by D Stuart on 20/08/2017.
  */
 
 public class Settings extends AppCompatActivity{

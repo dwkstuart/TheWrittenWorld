@@ -1,6 +1,5 @@
 package com.example.dwks.thewrittenworld;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -15,11 +14,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-/**
- * Created by User on 07/08/2017.
+/**Utility class that handles the saving and loading of values into the shared preferences
+ * Includes parsing arrays and maps into Json using Gson
+ * Created by David Stuart on 07/08/2017.
  */
 
-public class ProcessSharedPref extends Application {
+public class ProcessSharedPref  {
 
     Constants constants = Constants.getInstance();
     Context context;
@@ -29,8 +29,12 @@ public class ProcessSharedPref extends Application {
         this.context = context;
     }
 
-    //TEST
 
+    /**Saves the HashMap and TreeSet tracking the currently loaded PlaceObjects
+     * into the SharedPreferences as a Json file.
+     * Parses the complex data structures using Gson library
+     *
+     */
     public void saveAsJson(){
         Gson gson = new Gson();
         String jsonHashMap =  gson.toJson(Constants.places);
@@ -43,9 +47,12 @@ public class ProcessSharedPref extends Application {
         editor.putString(String.valueOf(R.string.placesTreeSet),jsonTreeSet);
 
         editor.apply();
-        //Log.d(TAG, "Shared pref get all result" + sharedPref.getAll());
     }
 
+    /**Loads the Json representations of the TreeSet and HashMap from SharedPreferences
+     * Parses them using Gson and stores them in the constants file
+     *
+     */
     public void loadFromJson(){
         Gson gson = new Gson();
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
@@ -53,7 +60,7 @@ public class ProcessSharedPref extends Application {
         String jsonHashMap =  sharedPref.getString(String.valueOf(R.string.placesHashMap), "");
         String jsonTreeSet = sharedPref.getString(String.valueOf(R.string.placesTreeSet), "");
 
-
+        //need to specify TokenType of data structure to Gson
         Map<String, PlaceObject> mapJson = gson.fromJson(jsonHashMap, new TypeToken<HashMap<String ,PlaceObject>>() {}.getType());
 
         Set<PlaceObject> set = gson.fromJson(jsonTreeSet, new TypeToken<TreeSet<PlaceObject>>() {}.getType());
@@ -63,7 +70,8 @@ public class ProcessSharedPref extends Application {
 
     }
     public boolean savedListExists(){
-       // SharedPreferences sharedPref = context.getSharedPreferences(String.valueOf(R.string.shared_pref_file), Context.MODE_PRIVATE);
+
+
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
 
         return sharedPref.contains("TEST");
@@ -71,15 +79,18 @@ public class ProcessSharedPref extends Application {
     }
 
     public boolean savedDataExists(){
-        //SharedPreferences sharedPref = context.getSharedPreferences(String.valueOf(R.string.shared_pref_file), Context.MODE_PRIVATE);
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
 
         return sharedPref.contains(String.valueOf(R.string.placesHashMap));
     }
 
+    /**Saves the curently added titles as a Json representation
+     * Used in the Search activity
+     * @param addedTitles
+     */
     public void saveAddedTitles(ArrayList<PlaceObject> addedTitles){
-       Log.d(TAG,"Saved added titles");
+
         Gson gson = new Gson();
         String jsonArrayList = gson.toJson(addedTitles);
         Log.d(TAG,jsonArrayList);
@@ -89,12 +100,15 @@ public class ProcessSharedPref extends Application {
         SharedPreferences.Editor editor= sharedPref.edit();
         editor.putString("TEST",jsonArrayList);
         editor.apply();
-        boolean check = this.savedListExists();
-        Log.d(TAG, "Saved List data exist" + check);
+
     }
 
+    /**Loads the currently added titles Json file from SharedPreferences and parses it into array
+     * used for handling Search activity lifecycle events
+     *
+     * @return
+     */
     public ArrayList<PlaceObject> loadAddedTitles(){
-        Log.d(TAG, "Load added titles called!!");
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
 

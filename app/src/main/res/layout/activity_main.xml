@@ -47,7 +47,6 @@
     <android.support.constraint.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/guideline"
         app:layout_constraintGuide_begin="20dp"
         android:orientation="vertical"
         tools:layout_editor_absoluteY="0dp"
@@ -78,7 +77,6 @@
         tools:layout_constraintLeft_creator="1" />
 
     <TextView
-        android:id="@+id/intro"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:fontFamily="cursive"

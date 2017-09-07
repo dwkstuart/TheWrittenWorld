@@ -45,6 +45,10 @@
 
         />
     <item
+        android:id="@+id/credits_menu"
+        android:enabled="true"
+        android:title="Credits" />
+    <item
         android:enabled="true"
         android:title="Log Out"
         android:id="@+id/log_out_menu_button"/>

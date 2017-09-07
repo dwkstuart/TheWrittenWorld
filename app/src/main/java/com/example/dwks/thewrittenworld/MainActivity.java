@@ -29,20 +29,15 @@ import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.uxcam.UXCam;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-//Homepage
-
+/**Main Activity page that allows users to log in using Google Sign In or skip straight to main map display
+ *
+ */
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener
 {
     private static final String TAG = MainActivity.class.getSimpleName();
     private GoogleApiClient mGooogleApiClient;
-    public FirebaseAuth firebaseAuth;
+    private FirebaseAuth firebaseAuth;
 
     private static final int RC_SIGN_IN = 9001;
 
@@ -54,15 +49,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        UXCam.startWithKey("eb7908e9be67a5b");
-        Log.d(TAG, String.valueOf(UXCam.isRecording()));
         setContentView(R.layout.activity_main);
-        //TODO remove on final  processAssest();
         Constants.notificationsOn=false;
+        //Requests permissions for location, camera and storage access on first load
         requestPermissions();
+        //Sets up
         firebaseAuth = FirebaseAuth.getInstance();
         final FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
+        //Starts GeofenceIntentService which also handles the location tracking, needed to find location before opening main map
         Intent service = new Intent(this, GeofenceIntentService.class);
 
         startService(service);
@@ -87,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         final Intent launchMainApp = new Intent(this, MapDisplay.class);
 
         if (currentUser != null){
-            //startActivity(launchMainApp);
             loadScreen.setText("Start Exploring");
         }
 
@@ -103,11 +97,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             }
         });
 
-
+        //Shared Preferences utility class instance
         ProcessSharedPref sharedPref = new ProcessSharedPref(this);
         if (sharedPref.savedDataExists()){
-            Log.d(TAG, "savedData exists = true, load from JSON" );
-        sharedPref.loadFromJson();}
+             sharedPref.loadFromJson(); //loads any saved shared preferences into app
+        }
 
 
         GoogleSignInOptions googleSign = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -128,7 +122,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
 
-    //    ////////////////////////////////////////////////////////////
+    /////CODE FOR CHECKING AND REQUESTING PERMISISONS    ////////////////////////////////////////////////////////////
+    //Adapted from Google Sample For Runtime Permissions
+    //https://github.com/googlesamples/android-RuntimePermissions
+    //
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
     /**
@@ -148,7 +145,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         // Provide an additional rationale to the user. This would happen if the user denied the
         // request previously, but didn't check the "Don't ask again" checkbox.
         if (shouldProvideRationale) {
-            Log.i(TAG, "Displaying permission rationale to provide additional context.");
             showSnackbar(R.string.permission_rationale, android.R.string.ok,
                     new View.OnClickListener() {
                         @Override
@@ -160,10 +156,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                         }
                     });
         } else {
-            Log.i(TAG, "Requesting permission");
             // Request permission. It's possible this can be auto answered if device policy
             // sets the permission in a given state or the user denied the permission
             // previously and checked "Never ask again".
+
+            //Requests permisions for accessing location, using Camera and Writing to External Storage
             ActivityCompat.requestPermissions(MainActivity.this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     REQUEST_PERMISSIONS_REQUEST_CODE);
@@ -216,6 +213,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         }
     }
 
+
+    /** GOOGLE SIGN IN PROCESS BOILERPLATE CODE ADPATED FROM THE ANDROID DOCUMENTATION
+     *
+     * @Link https://github.com/googlesamples/google-services/blob/master/android/signin/app/src/main/java/com/google/samples/quickstart/signin/SignInActivity.java#L51-L55
+     *
+     */
     /**
      * Shows a {@link Snackbar}.
      *
@@ -396,34 +399,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
 
-    private void processAssest(){
 
 
-        JSONArray inputJArray = null;
-        String mLine ="";
-        try {
-            inputJArray = new JSONArray(mLine);
-        }
-        catch (JSONException e){
-            Log.d(TAG, "oops");
-        }
-        ArrayList<PlaceObject> placeObjectArrayList = new ArrayList<>();
-        for (int i = 0; i < inputJArray.length(); i++){
-            JSONObject initalObject = null;
-            try {
-                initalObject = inputJArray.getJSONObject(i);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            PlaceObject poi = new PlaceObject(initalObject);
-            placeObjectArrayList.add(poi);
-        }
-        Database db = new Database();
-        int i = 190;
-        for(PlaceObject object: placeObjectArrayList){
-            db.loadInfo(object,i);
-            i++;
-        }
-
-    }
 }

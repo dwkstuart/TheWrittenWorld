@@ -9,8 +9,9 @@ import com.google.gson.reflect.TypeToken;
 import java.util.Set;
 import java.util.TreeSet;
 
-/**
- * Created by User on 09/08/2017.
+/** Parceable data object that holds a json string and name representing a user created collection of
+ * locations, parcable so can be passed in intent to list
+ * Created by David Stuart on 09/08/2017.
  */
 
 public class SavedCollection implements Parcelable{
@@ -31,9 +32,6 @@ public class SavedCollection implements Parcelable{
                 numberVisited++;
             }
         }
-
-
-
 
     }
 

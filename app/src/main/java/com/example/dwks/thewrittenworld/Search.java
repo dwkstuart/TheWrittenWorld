@@ -21,15 +21,16 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.GeofencingApi;
-import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
 
-//TODO Decide whether to update to just use GeofencingApiClient
+/**Finding locations associated with a book
+ * Enables filtering by author via drop downs
+ *
+ */
 
 public class Search extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener,
         ResultCallback<Status> {
@@ -41,22 +42,15 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
 
     //Buttons and text fields
 
-    private Button viewSelection;
     private Spinner titleDrop;
     private Spinner authorDrop;
     private AutoCompleteTextView searchTitles;
     private TextView list;
 
-    //private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    private String selectedTitle ="";
     private String selectedAuthor= "";
-    private String searchTitle = "";
 
     //Saved instance text keys
     private final String  SELECTED_TITLES = "SELECLTED_TITLES";
-    private final String  INFO_TEXT = "Info textu";
-    private final String TITLES = "choosenTitles";
-
 
     private ArrayList<String> titleDropdownData = new ArrayList<>();
     private ArrayList<String> authorDropdownData = new ArrayList<>();
@@ -67,13 +61,12 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
     private TreeSet<PlaceObject> addedToList = new TreeSet<>();
     private ArrayList<PlaceObject> parcelList = new ArrayList<>();
 
+    //tracks if user is interacting with screen or database is updating screen
     private boolean userTouch;
 
     private Database db;
 
 
-
-    Constants constants = Constants.getInstance();
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -83,19 +76,16 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
 
         setUpButtons();
         db =   new Database();
-//        pendingIntent = null;
-        GeofencingApi geofencingApi = LocationServices.GeofencingApi;
-       // infoText.setText("\n Number of markers set : " + Constants.placeObjects.size());
-        //if(constants.lastLocation != null)
-        //findNearby();
+
+        //GeofencingApi geofencingApi = LocationServices.GeofencingApi;
+
         ProcessSharedPref processSharedPref = new ProcessSharedPref(this);
-        Log.d(TAG, String.valueOf(processSharedPref.savedListExists()));
+
         if (savedInstanceState == null && processSharedPref.savedListExists() ){
-            ArrayList<PlaceObject> temp = new ArrayList<>();
+            ArrayList<PlaceObject> temp;
             temp = processSharedPref.loadAddedTitles();
             Log.d(TAG, String.valueOf(temp.size()));
             addedToList.addAll(temp);
-            //TODO decide if want to add to
             addedToList.addAll(Constants.placeObjects);
 
         }
@@ -119,12 +109,12 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
         showPicked();
     }
 
-    /**Gets the distinct book titles on
-     *
+    /**Gets the distinct book titles of the locations available on the database,
+     * excludes those that have already been added by the user
+     * Populates Spinner/dropdown
      */
     private void getTitles(){
 
-//        Database db =   new Database();
         db.getUniqueTitles(new firebaseDataListener() {
                 @Override
                 public void onStart() {
@@ -173,6 +163,9 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
 
     }
 
+    /**Method that filters the books in the dropdown list by the selected author
+     *
+     */
     private void filterByAuthor(){
             titleDropdownData.clear();
         TreeSet<PlaceObject> filteredList = foundByTitle;
@@ -187,13 +180,15 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
 
         titleDropdownData.addAll(titles);
 
-
     }
 
 
-        private void getAuthors(){
-            Log.d(TAG,"Get authors called");
-           // Database db =   new Database();
+    /**Method to return a list of distinct authors in the database,
+     *  used to populate a dropdown for giving users chance to filter by author
+     *
+     */
+    private void getAuthors(){
+
             db.getAuthors(new firebaseDataListener() {
                 @Override
                 public void onStart() {
@@ -231,7 +226,11 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
 
         }
 
-        private void showPicked(){
+    /**Displays a notification when user picks and title and adds it to the
+     * lst of previously picked titles displayed at bottom of the screen
+     *
+     */
+    private void showPicked(){
             TreeSet<String> picked = new TreeSet<String>();
             for (PlaceObject object: addedToList){
                 String name = object.getBookTitle();
@@ -259,7 +258,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
 
         titleDropdownData.add("Choose a Book");
         titleDrop= (Spinner) findViewById(R.id.titleSpinner);
-        viewSelection = (Button) findViewById(R.id.view_selection);
+        Button viewSelection = (Button) findViewById(R.id.view_selection);
         viewSelection.setOnClickListener(this);
         authorDrop =(Spinner) findViewById(R.id.author_dropdown);
         authorDropdownData.add("Filter by Author");
@@ -280,7 +279,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
 
     /**Method to return the locations from the databases assocaited with a particular title
      *
-     * @param title
+     * @param title of book
      */
     private void findBookPlaces(String title){
         db.getBookPlaces(title, new firebaseDataListener() {
@@ -311,7 +310,8 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
         });
     }
 
-    /**Method to return the locations from the databases assocaited with a particular title
+    /**Method to return the titles of the books by a particular author
+     * Sets the title drop down to just display books by that particular author
      *
      * @param selectedAuthor
      */
@@ -362,13 +362,16 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
 
     }
 
-    //saves current hasmmap and treeset if app is destroyed
+    //saves current hashmap and treeset if app is destroyed
     @Override
     protected void onDestroy() {
         super.onDestroy();
         handleSaving();
     }
 
+    /**
+     * Helper method for dealing with saving variables when activity is destroy, e.g. on rotation
+     */
     private void handleSaving(){
         ProcessSharedPref processSharedPref = new ProcessSharedPref(this);
         processSharedPref.saveAsJson();
@@ -412,12 +415,18 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
         searchTitles.setText("");
     }
 
+    /**Detects if user is interacting with screen or not,
+     *required to handle problem with items being selected when database updates alter content of spinner
+     */
     @Override
     public void onUserInteraction() {
         super.onUserInteraction();
         userTouch = true;
     }
 
+    /**Responds to user selecting and item from either dropdown
+     *
+     */
     private class onItemSelectedListener implements android.widget.AdapterView.OnItemSelectedListener {
         @Override
         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -437,7 +446,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
                     break;
                 case R.id.titleSpinner:
                     Log.d(TAG,adapterView.getSelectedItem().toString());
-                    selectedTitle = adapterView.getSelectedItem().toString();
+                    String selectedTitle = adapterView.getSelectedItem().toString();
                     if(userTouch)
                         findBookPlaces(selectedTitle);
                     userTouch = false;
@@ -463,6 +472,7 @@ public class Search extends AppCompatActivity implements View.OnClickListener, A
         super.onSaveInstanceState(outState);
         parcelList.addAll(addedToList);
         outState.putParcelableArrayList(SELECTED_TITLES, parcelList);
+        String TITLES = "choosenTitles";
         outState.putString(TITLES,list.getText().toString());
         handleSaving();
     }

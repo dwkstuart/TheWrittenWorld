@@ -15,11 +15,14 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+/**Sets up recyclerview of a list of Places with a
+ * count of number that have been visited
+ *
+ */
 public class PlaceObjectList extends AppCompatActivity implements PlaceDetailFragment.OnListFragmentInteractionListener{
 
     private final String TAG = PlaceObjectList.class.getSimpleName();
     private ArrayList<PlaceObject> temp = new ArrayList<>();
-    private FloatingActionButton load;
     private String collectionTitle = "Your Current Tour";
 
 
@@ -30,7 +33,7 @@ public class PlaceObjectList extends AppCompatActivity implements PlaceDetailFra
         final TextView filename = (TextView) findViewById(R.id.list_title);
         final TextView visitedCount = (TextView) findViewById(R.id.visit_count);
         filename.setText(collectionTitle);
-        load = (FloatingActionButton) findViewById(R.id.load_list);
+        FloatingActionButton load = (FloatingActionButton) findViewById(R.id.load_list);
 
         Intent open = getIntent();
         Log.d(TAG, open.toString());

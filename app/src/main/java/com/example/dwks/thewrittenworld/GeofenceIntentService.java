@@ -30,24 +30,21 @@ import java.util.List;
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
- * <p>
- * TODO: Customize class - update intent actions, extra parameters and static
- * helper methods.
+ * Adapted from GoogleSamples https://github.com/googlesamples/android-play-location/tree/master/Geofencing
+ *
+ * Also handles the location update services so Location Listener does not have to be created twice
  */
 @RequiresApi(api = Build.VERSION_CODES.CUPCAKE)
+
 public class GeofenceIntentService extends IntentService implements
         GoogleApiClient.ConnectionCallbacks,
         com.google.android.gms.location.LocationListener,
         GoogleApiClient.OnConnectionFailedListener {
 
-    private Constants constants = Constants.getInstance();
     private static final String TAG = "GeofenceTransitionsIS";
-    public static final String ADD = "ADD";
-    public static final String REMOVE = "REMOVE";
+    //public static final String ADD = "ADD";
+    private static final String REMOVE = "REMOVE";
 
-    //GoogleApi Client
-    //Geofencing
-   // private GeofencingApi geofencingApi;
     private GoogleApiClient googleApiClient;
 
     /**
@@ -55,7 +52,6 @@ public class GeofenceIntentService extends IntentService implements
      * constructor with the name for a worker thread.
      */
     public GeofenceIntentService() {
-        // Use the TAG to name the worker thread.
         super(TAG);
     }
 
@@ -120,10 +116,10 @@ public class GeofenceIntentService extends IntentService implements
      * If the user clicks the notification, control goes to the MainActivity.
      */
     private void sendNotification(String notificationDetails, String ID) {
-        // Create an explicit content Intent that starts the main Activity.
+        // Create an explicit content Intent that starts the PlaceDetailScreen activity.
         Intent notificationIntent = new Intent(getApplicationContext(), PlaceDetailScreen.class);
-        notificationIntent.putExtra("ID", ID);
-        PlaceObject placeTriggered = Constants.places.get(ID);
+        notificationIntent.putExtra("ID", ID); //puts the ID for the PlaceObject
+        PlaceObject placeTriggered = Constants.places.get(ID); //Puts the object as a bundable extra
         notificationIntent.putExtra("Place", placeTriggered);
 
         // Construct a task stack.
@@ -144,7 +140,6 @@ public class GeofenceIntentService extends IntentService implements
 
         // Define the notification settings.
         builder.setSmallIcon(R.drawable.book_outlint_marker)
-               //.setColor(Color.RED)
                 .setContentTitle(notificationDetails)
                 .setContentText(placeTriggered.getLocation())
                 .setContentIntent(notificationPendingIntent
@@ -162,6 +157,7 @@ public class GeofenceIntentService extends IntentService implements
         mNotificationManager.notify(0, builder.build());
     }
 
+    /////////////////////////////////Sets up location tracking details ////////////////////////////////
 
     private static final int UPDATEINTERVAL = 20000;
     private static final int FASTESTINTERVAL = 15000;
@@ -183,6 +179,7 @@ public class GeofenceIntentService extends IntentService implements
 
     }
 
+
     @Override
     public void onLocationChanged(Location location) {
         startLocationUpdates();
@@ -192,10 +189,10 @@ public class GeofenceIntentService extends IntentService implements
     private void findLocation() {
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-           // requestPermissions();
+           // Permissions are requested on start up
             return;
         }
-        constants.lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+        Constants.lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
 
         startLocationUpdates();
 

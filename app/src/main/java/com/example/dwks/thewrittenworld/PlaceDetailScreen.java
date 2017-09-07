@@ -24,9 +24,7 @@ public class PlaceDetailScreen extends AppCompatActivity implements View.OnClick
     private static final String TAG = PlaceDetailScreen.class.getSimpleName();
     private PlaceObject placeObject;
     private CheckBox checkBox;
-    private Button detailMain;
-    private Button information;
-   // private String ClassFrom;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +57,7 @@ public class PlaceDetailScreen extends AppCompatActivity implements View.OnClick
 
             }
             checkBox.setOnClickListener(this);
-            information = (Button) findViewById(R.id.more_info);
+            Button information = (Button) findViewById(R.id.more_info);
             information.setOnClickListener(this);
 
 
@@ -82,6 +80,11 @@ public class PlaceDetailScreen extends AppCompatActivity implements View.OnClick
     }
 
 
+    /**Called when map fragment is ready
+     * Marker added to map displat and zoom and title enabled
+     *
+     * @param googleMap
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         GoogleMap map = googleMap;
@@ -90,7 +93,7 @@ public class PlaceDetailScreen extends AppCompatActivity implements View.OnClick
         map.setMyLocationEnabled(true);
         map.setBuildingsEnabled(true);
         map.setMapType(2);
-       // setupBottomNavBar();
+
         //place marker of point of interest and zoom camera
         if(placeObject != null){
             LatLng placeLocation = new LatLng(placeObject.getLatitude(),placeObject.getLongitude());

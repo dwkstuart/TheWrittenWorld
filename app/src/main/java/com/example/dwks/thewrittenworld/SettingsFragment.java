@@ -8,7 +8,7 @@ import android.support.v7.preference.PreferenceScreen;
 
 import static com.example.dwks.thewrittenworld.R.*;
 
-/**
+/**Setting that lets you change the appearance of the map **not implemented**
  * Created by User on 20/08/2017.
  */
 

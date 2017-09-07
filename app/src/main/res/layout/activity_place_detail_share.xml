@@ -86,7 +86,6 @@
         app:srcCompat="@drawable/goodreads_icon" />
 
     <TextView
-        android:id="@+id/selfie"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"

@@ -11,30 +11,31 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-/**Class to handle all the Firebase queries
+/**
+ * Class to handle all the Firebase queries
  * Created by User on 05/08/2017.
  */
 
 public class Database {
 
     private FirebaseDatabase database;
-    static boolean peristanceEnabledCalled = false;
+    private static boolean peristanceEnabledCalled = false;
     private static final String TAG = Database.class.getSimpleName();
 
 
-
     public Database() {
-        Log.d("DATABASE", "Database instance created");
-        if(!peristanceEnabledCalled) {
+        //Persistance enabled can only be set on first calling of Database
+        if (!peristanceEnabledCalled) {
 
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
             peristanceEnabledCalled = true;
         }
-        database= FirebaseDatabase.getInstance();
+        database = FirebaseDatabase.getInstance();
     }
 
-    //Find list of unique titles
-    public void getUniqueTitles(final firebaseDataListener listener){
+    //Find list of unique titles in the databse
+    public void getUniqueTitles(final firebaseDataListener listener) {
+
         listener.onStart();
 
         DatabaseReference myRef = database.getReference("places/");
@@ -44,19 +45,20 @@ public class Database {
         titleQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                //Listener returns data to calling method
                 listener.onSuccess(dataSnapshot);
 
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-               listener.onFailed(databaseError);
+                listener.onFailed(databaseError);
             }
         });
     }
 
     //Find list of authors titles
-    public void getAuthors(final firebaseDataListener listener){
+    public void getAuthors(final firebaseDataListener listener) {
         listener.onStart();
 
 
@@ -79,7 +81,13 @@ public class Database {
     }
 
 
-
+    /**
+     * Method to return the locations for a particular
+     * book title on the database
+     *
+     * @param title    of the book
+     * @param listener to return database
+     */
     public void getBookPlaces(String title, final firebaseDataListener listener) {
         listener.onStart();
 
@@ -100,9 +108,15 @@ public class Database {
         });
     }
 
+    /**
+     * Returns the data of Locations for all books by a specified author
+     *
+     * @param author   name of author
+     * @param listener
+     */
     public void getBooksByAuthor(String author, final firebaseDataListener listener) {
         listener.onStart();
-        Log.d(TAG,author);
+        Log.d(TAG, author);
         //  FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("places/");
 
@@ -111,7 +125,6 @@ public class Database {
         recentQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-               // Log.d(TAG, "Books by author data snapshot?" +dataSnapshot.toString());
                 listener.onSuccess(dataSnapshot);
             }
 
@@ -125,9 +138,13 @@ public class Database {
 
     //Cannot search by two where clauses in Firebase, create set of objects with near longitude and latitude and then find where they intersect
 
+    /**
+     * Method to return locations within a certain range of longitude either side of the users location
+     *
+     * @param listener
+     */
     public void nearbyPlacesLongitude(final firebaseDataListener listener) {
-        Constants constants = Constants.getInstance();
-        Double userLong = constants.lastLocation.getLongitude();
+        Double userLong = Constants.lastLocation.getLongitude();
 
         Double maxLong = userLong + 0.03;
         Double minLong = userLong - 0.03;
@@ -152,9 +169,15 @@ public class Database {
         });
     }
 
+    /**
+     * Method to return locations within a certain range of latitude
+     * either side of the users location
+     *
+     * @param listener
+     */
     public void nearbyPlacesLatitude(final firebaseDataListener listener) {
         Constants constants = Constants.getInstance();
-        Double userLat = constants.lastLocation.getLatitude();
+        Double userLat = Constants.lastLocation.getLatitude();
 
 
         Double maxLat = userLat + 0.01;
@@ -165,7 +188,7 @@ public class Database {
 
         latitudeQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot){
+            public void onDataChange(DataSnapshot dataSnapshot) {
                 listener.onSuccess(dataSnapshot);
             }
 
@@ -178,36 +201,40 @@ public class Database {
 
     }
 
-    public void uploadSaveSelection(String name, String jsonfile){
+    /**
+     * Uploads a file to the Firebase database
+     *
+     * @param name     of file user has chosen
+     * @param jsonfile containing details of users collection and places visited
+     */
+    public void uploadSaveSelection(String name, String jsonfile) {
 
+        //get logged in users unique FirebaseAuth id
         String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
-        Constants constants = Constants.getInstance();
 
 
         DatabaseReference mRef = database.getReference();
-        DatabaseReference childRef = mRef.child("user");
-        DatabaseReference userID = childRef.child(UID);
+        DatabaseReference childRef = mRef.child("user"); //Accesses the users folder of the Firebase database
+        DatabaseReference userID = childRef.child(UID);//Creates/accesses a child in the NoSQL database with the Firebase AuthID
         userID.child(name).setValue(jsonfile);
-
-
-
 
 
     }
 
-    public void getUsersLists(final firebaseDataListener listener){
+    /**
+     * Returns all the users saved files
+     *
+     * @param listener
+     */
+    public void getUsersLists(final firebaseDataListener listener) {
 
         String UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("user/" + UID);
 
-        final Query usersLists = myRef;
-        Log.d("userlist query", myRef.toString());
-
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot){
+            public void onDataChange(DataSnapshot dataSnapshot) {
                 listener.onSuccess(dataSnapshot);
             }
 
@@ -219,7 +246,15 @@ public class Database {
         });
     }
 
-    public void uploadLocation (final firebaseDataListener listener){
+    ///////Methods that were used to upload locations from the sample data json file, could be used if functionality was added to have users generate locations within app////
+
+    /**
+     * Fetches the number of locations currently in the Firebase database, needed so any uploaded locations
+     * are added at the with correct key to maintain array
+     *
+     * @param listener
+     */
+    public void currentArrayLength(final firebaseDataListener listener) {
 
         DatabaseReference mRef = database.getReference();
         final DatabaseReference childRef = mRef.child("places");
@@ -227,7 +262,7 @@ public class Database {
         final Query query = mRef.orderByKey().startAt("places").limitToFirst(1);
 
         final ChildEventListener eventListener;
-        query.addChildEventListener(eventListener =new ChildEventListener() {
+        query.addChildEventListener(eventListener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 listener.onSuccess(dataSnapshot);
@@ -249,16 +284,21 @@ public class Database {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError){}
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
-
 
 
     }
 
-    public void loadInfo(PlaceObject placeObject, int arrayPos){
+    /**
+     * Add a location to the FirebaseDatabase
+     *
+     * @param placeObject
+     * @param arrayPos
+     */
+    public void loadInfo(PlaceObject placeObject, int arrayPos) {
 
-        Log.d("Load", "load info called");
         DatabaseReference mRef = database.getReference();
         DatabaseReference childRef = mRef.child("places");
         DatabaseReference places = childRef.child(String.valueOf(arrayPos));

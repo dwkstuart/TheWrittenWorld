@@ -28,11 +28,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
-import com.uxcam.UXCam;
 
 import java.util.ArrayList;
 import java.util.TreeSet;
 
+/**Activity class for displaying the screen with the main map,
+ * provides access icons to other functionality and displays selected locations as markers
+ */
 public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         ClusterManager.OnClusterItemInfoWindowClickListener<PlaceObject>,
         View.OnClickListener {
@@ -41,21 +43,15 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     private static final String TAG = MapDisplay.class.getSimpleName();
     Constants constants = Constants.getInstance();
 
-   // private HashMap<Marker, PlaceObject> markersCollection = new HashMap<>();
     private MapFragment mapFragment;
     private GoogleMap map;
-    private FloatingActionButton findLocal;
     private Toast mToast;
     private ClusterManager<PlaceObject> clusterManager = null;
     private CameraPosition cameraPosition;
     private int ZOOM = 14; //inital zoom
 
-    ///Buttons
-    private ImageButton save;
-    private ImageButton search;
     private ImageButton alertOn;
     private ImageButton alertOff;
-    private ImageButton seeList;
 
 
     @Override
@@ -63,26 +59,24 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_map_display);
-       // mToast = Toast.makeText(this,"",Toast.LENGTH_SHORT);
-        Log.d(TAG, "onCreate()");
-        if(savedInstanceState == null)
-            Log.d(TAG, "Saved instance state null");
 
+        //If map has been loaded before then will reload previous zoom and location on being recreated
         if (savedInstanceState !=null) {
             cameraPosition = (CameraPosition)
                     savedInstanceState.get("MAP_STATE");
-            Log.d(TAG, "Create instance state" + cameraPosition.toString());
-
         }
         configueButtons();
         initializeGoogleMap();
 
-        findLocal = (FloatingActionButton) findViewById(R.id.findLocal);
+        FloatingActionButton findLocal = (FloatingActionButton) findViewById(R.id.findLocal);
         findLocal.setOnClickListener(this);
         checkAlertButton();
 
     }
 
+    /**Sets the overlay on the map to style it, in future versions choice of different styles would be available
+     *
+     */
     private void setStyle() {
         try {
             // Customise the styling of the base map using a JSON object defined
@@ -92,25 +86,29 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                             this, R.raw.retro_style_overlay));
 
             if (!success) {
-                Log.e(TAG, "Style parsing failed.");
             }
         } catch (Resources.NotFoundException e) {
             Log.e(TAG, "Can't find style. Error: ", e);
         }
     }
 
+    /**Helper method to configure all the buttons and icons
+     * Sets some of the visibilty depending if user is logged in or not
+     *
+     */
     private void configueButtons(){
-        save = (ImageButton) findViewById(R.id.save_files);
+        ImageButton save = (ImageButton) findViewById(R.id.save_files);
         save.setOnClickListener(this);
         alertOn =(ImageButton) findViewById(R.id.set_alerts);
         alertOn.setOnClickListener(this);
         alertOff =(ImageButton) findViewById(R.id.stop_alerts);
         alertOff.setOnClickListener(this);
-        search= (ImageButton) findViewById(R.id.search_locations);
+        ImageButton search = (ImageButton) findViewById(R.id.search_locations);
         search.setOnClickListener(this);
-        seeList =(ImageButton) findViewById(R.id.location_list);
+        ImageButton seeList = (ImageButton) findViewById(R.id.location_list);
         seeList.setOnClickListener(this);
 
+        //only registered users can save and load , if not logged in save button hidden
         if(FirebaseAuth.getInstance().getCurrentUser()==null){
             save.setVisibility(View.GONE);
         }
@@ -131,25 +129,21 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         }
     }
 
-    //
+
+    /**Method to set the initial zoom centred on user location first time they open the map
+     * If location cannot be determined then postion is set as default
+     *
+     */
     private void setInitalZoom(){
         LatLng currentspot = null;
         Log.d(TAG, "setInitalZoom");
 
-
-
-
-            if (constants.lastLocation != null) {
-               // Log.d(TAG, "Map display user location is not null" + constants.lastLocation.getLatitude());
-
-                currentspot = new LatLng(constants.lastLocation.getLatitude(), constants.lastLocation.getLongitude());
-             //   Log.d(TAG, currentspot.toString());
-
+            if (Constants.lastLocation != null) {
+                currentspot = new LatLng(Constants.lastLocation.getLatitude(), Constants.lastLocation.getLongitude());
             }
             if (cameraPosition == null) {
                 Log.d(TAG, "Camera position is null");
 
-                //for case when user first starts app and currentspot and location service are both null
                 if(currentspot ==null){
                 currentspot = new LatLng(0, 0);
                 ZOOM = 1;}
@@ -162,7 +156,9 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
             }
     }
 
-
+    /**Toggles the notification set/disable buttons visible or not visible depending on notification state
+     *
+     */
     private void checkAlertButton(){
         if (Constants.notificationsOn){
             alertOff.setVisibility(View.VISIBLE);
@@ -182,7 +178,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         }
     }
 
-
+////////Methods to add menu to Action Bar ////////
     private ToolBarMenuHandler toolBarMenuHandler = new ToolBarMenuHandler(this);
 
 
@@ -227,22 +223,28 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     protected void onResume(){
         super.onResume();
         initializeGoogleMap();
-        if(Constants.getInstance().lastLocation !=null)
+        if(Constants.lastLocation !=null)
             locateNearby();
         checkAlertButton();
 
     }
 
 
+    /**Gets Google map fragment
+     *
+     */
     private void initializeGoogleMap() {
+
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_display);
-        UXCam.startWithKeyForSegment(mapFragment.getActivity(),"eb7908e9be67a5b");
-        Log.d(TAG, "UXcam" + String.valueOf(UXCam.isRecording()));
         mapFragment.getMapAsync(this);
 
     }
 
 
+    /**Sets up the clusters and other map annotations when fragment is returned
+     *
+     * @param googleMap
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
@@ -279,6 +281,9 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         addMarkers();
     }
 
+    /**Adds cluster items to a fetched map
+     *
+     */
     private void addMarkers() {
         map.clear();
         clusterManager.clearItems();
@@ -300,9 +305,10 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     }
 
 
-
-
-
+    /**Handles all the click events for buttons
+     *
+     * @param view
+     */
 
     @Override
     public void onClick(View view) {
@@ -349,7 +355,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                 break;
 
             case (R.id.findLocal):
-                if(constants.lastLocation == null){
+                if(Constants.lastLocation == null){
                             if(mToast!=null)
                                 mToast.cancel();
                             mToast= Toast.makeText(getApplicationContext(), "Location not available", Toast.LENGTH_SHORT);
@@ -386,8 +392,6 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                 break;
         }
         checkAlertButton();
-       // switchAlertButton();
-
     }
 
 
@@ -401,7 +405,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         nearbyObject = nearbyLat;
         nearbyObject.retainAll(nearbyLong);
 
-        //TODO put this in pop up
+        ///Automatically adds nearby locations to the current list of users chosen locations
         Constants.placeObjects.addAll(nearbyObject);
 
         for(PlaceObject object: Constants.placeObjects) {
@@ -417,9 +421,10 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
         addMarkers();
     }
 
+    /**Access the databases to find locations within a certain radius of the users location
+     * Populates two treesets for latitude and longitude locations, by finding interset of the sets, only returns locations within a defined radius
+     */
     private void locateNearby(){
-        Log.d(TAG, "Locate nearby method called");
-
 
         if(mToast != null)
             mToast.cancel();
@@ -428,7 +433,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
         Database db = new Database();
 
-        if (Constants.getInstance().lastLocation !=null) {
+        if (Constants.lastLocation !=null) {
             db.nearbyPlacesLatitude(new firebaseDataListener() {
                 @Override
                 public void onStart() {
@@ -442,12 +447,9 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                 public void onSuccess(DataSnapshot dataSnapshot) {
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                         PlaceObject object = new PlaceObject(postSnapshot);
-                        Log.d(TAG, object.getBookTitle() + " " + object.getLongitude());
                         nearbyLong.add(object);
                     }
-                    //Log.d(TAG,"Longitude set = " + nearbyLong.toString());
-                    Log.d(TAG, "Nearby long set "
-                            + nearbyLong.toString());
+
                 }
 
                 @Override
@@ -459,9 +461,8 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
             db.nearbyPlacesLongitude(new firebaseDataListener() {
                 @Override
-                public void onStart() {
-                    Log.d(TAG, "long search start");
-                }
+                public void onStart() {}
+
 
                 @Override
                 public void onSuccess(DataSnapshot dataSnapshot) {
@@ -469,8 +470,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
                         PlaceObject object = new PlaceObject(postSnapshot);
                         nearbyLat.add(object);
                     }
-                    Log.d(TAG, "Nearby lat set "
-                            + nearbyLat.toString());                }
+                       }
 
                 @Override
                 public void onFailed(DatabaseError databaseError) {
@@ -498,7 +498,9 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
     }
     //////////////////////////////////////////////////////////////////////////////////////
 
-
+    /**Customises the ClusterIcon depending on if the users has marked the location as visited or not
+     *
+     */
     private class SetIcon extends DefaultClusterRenderer<PlaceObject> {
         @Override
         protected void onBeforeClusterItemRendered(PlaceObject item, MarkerOptions markerOptions) {
@@ -516,7 +518,7 @@ public class MapDisplay extends AppCompatActivity implements OnMapReadyCallback,
 
         @Override
         protected boolean shouldRenderAsCluster(Cluster<PlaceObject> cluster) {
-            return cluster.getSize() > 5;
+            return cluster.getSize() > 5; //sets the number of items close together before they are made into a cluster
         }
 
         @Override

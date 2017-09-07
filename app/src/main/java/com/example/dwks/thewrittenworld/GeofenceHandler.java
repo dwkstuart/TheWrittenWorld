@@ -37,7 +37,7 @@ public class GeofenceHandler extends Application implements  GoogleApiClient.Con
         GoogleApiClient.OnConnectionFailedListener,
         com.google.android.gms.location.LocationListener, ResultCallback<Status> {
 
-    Context context;
+    private Context context;
     //Geofencing
     private GeofencingApi geofencingApi;
     private PendingIntent pendingIntent;
@@ -45,13 +45,14 @@ public class GeofenceHandler extends Application implements  GoogleApiClient.Con
     private String request_type ="";
     private String removeFence;
     private static final String TAG = GeofenceHandler.class.getSimpleName();
-    Constants constants = Constants.getInstance();
+    //Constants constants = Constants.getInstance();
 
     public GeofenceHandler(Context appContext, String request_type, String fenceToBeRemoved) {
     Log.d(TAG,"Create geofences constructed with request type of " + request_type);
         this.request_type = request_type;
         this.removeFence = fenceToBeRemoved;
         context = appContext;
+
         //initialise APIs
         createGoogleApi();
 
@@ -181,7 +182,7 @@ public class GeofenceHandler extends Application implements  GoogleApiClient.Con
         Constants.notificationsOn = false;
     }
 
-     public  void removeGeofence(String toBeRemovedFence){
+     private void removeGeofence(String toBeRemovedFence){
          Log.d(TAG, "Remove fences method call");
 
          List<String> remove = new ArrayList<>();
@@ -198,8 +199,8 @@ public class GeofenceHandler extends Application implements  GoogleApiClient.Con
         }
     }
 
-    public static final String ADD = "ADD";
-    public static final String REMOVE = "REMOVE";
+    private static final String ADD = "ADD";
+    private static final String REMOVE = "REMOVE";
 
 
     @Override

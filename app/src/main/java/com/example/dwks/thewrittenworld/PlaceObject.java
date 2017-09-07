@@ -3,7 +3,6 @@ package com.example.dwks.thewrittenworld;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.database.DataSnapshot;
@@ -12,8 +11,8 @@ import com.google.maps.android.clustering.ClusterItem;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * Created by User on 22/07/2017.
+/**Data object that holds information on each location with its latitude and longitude, book title
+ * author, quotes and other information *
  */
 
 public class PlaceObject implements Parcelable, Comparable<PlaceObject>, ClusterItem {
@@ -31,15 +30,21 @@ public class PlaceObject implements Parcelable, Comparable<PlaceObject>, Cluster
     private String db_key ="test";
 
 
+    /**Constructor for creating PlaceObject from a suitable JSon Object
+     *
+     * @param input JsonObject
+     */
     public PlaceObject(JSONObject input){
         jsonObject = input;
         this.initialisePOIObject();
     }
 
 
-
-    //Constructor for getting place object from Firebase query
-    public PlaceObject(DataSnapshot dataSnapshot){
+    /**Constructor for creating a PlaceObject from a Firebase Datasnapshot
+     *
+     * @param dataSnapshot
+     */
+     public PlaceObject(DataSnapshot dataSnapshot){
         bookTitle = dataSnapshot.child("title").getValue().toString();
         latitude = Double.parseDouble(dataSnapshot.child("latitude").getValue().toString());
         longitude = Double.parseDouble(dataSnapshot.child("longitude").getValue().toString());
@@ -68,7 +73,6 @@ public class PlaceObject implements Parcelable, Comparable<PlaceObject>, Cluster
         latLng = new LatLng(latitude,longitude);
         String visitCheck = parcel.readString();
         visited = visitCheck.equals("true");
-        Log.d(TAG, String.valueOf(visited));
 
     }
 
